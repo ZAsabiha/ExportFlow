@@ -1,0 +1,25 @@
+.token-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.success-icon {
+    color: #16a34a;
+    width: 40px;
+    height: 40px;
+}
+
+.token-code {
+    margin: 20px 0;
+    padding: 16px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
