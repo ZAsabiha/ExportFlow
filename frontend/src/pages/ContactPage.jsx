@@ -1,19 +1,30 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import PublicNavbar from "../components/PublicNavbar";
+import { submitContactForm } from "../api/contactApi";
+import { ApiError } from "../api/client";
 import "./InfoPages.css";
 
 export default function ContactPage() {
     const [form, setForm] = useState({ name: "", email: "", message: "" });
     const [sent, setSent] = useState(false);
+    const [error, setError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
     const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // No backend endpoint for this yet — swap this for a real POST /api/contact call
-        // once one exists. For now it just confirms receipt in the UI.
-        setSent(true);
+        setError("");
+        setSubmitting(true);
+        try {
+            await submitContactForm(form.name, form.email, form.message);
+            setSent(true);
+        } catch (err) {
+            setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -41,6 +52,8 @@ export default function ContactPage() {
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="contact-form">
+                            {error && <div className="info-error">{error}</div>}
+
                             <label>Name</label>
                             <input value={form.name} onChange={update("name")} placeholder="Your name" required />
 
@@ -50,8 +63,8 @@ export default function ContactPage() {
                             <label>Message</label>
                             <textarea rows={5} value={form.message} onChange={update("message")} placeholder="How can we help?" required />
 
-                            <button type="submit" className="info-submit">
-                                <Send size={16} /> Send message
+                            <button type="submit" className="info-submit" disabled={submitting}>
+                                <Send size={16} /> {submitting ? "Sending..." : "Send message"}
                             </button>
                         </form>
                     )}

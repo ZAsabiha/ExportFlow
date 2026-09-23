@@ -121,6 +121,12 @@ a.sidebar-item {
     border-bottom: 1px solid #e2e8f0;
 }
 
+.search-wrapper {
+    position: relative;
+    width: 360px;
+    max-width: 100%;
+}
+
 .search-box {
     display: flex;
     align-items: center;
@@ -130,7 +136,7 @@ a.sidebar-item {
     height: 38px;
     border-radius: 8px;
     border: 1px solid #cbd5e1;
-    width: 360px;
+    width: 100%;
     max-width: 100%;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -205,6 +211,108 @@ a.sidebar-item {
 .search-clear-btn:hover {
     background: #e2e8f0;
     color: #0f172a;
+}
+
+.search-results-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 100%;
+    max-width: 90vw;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    z-index: 50;
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.search-results-empty {
+    padding: 20px 16px;
+    margin: 0;
+    font-size: 13px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.search-results-group:not(:last-child) {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.search-results-group-label {
+    padding: 8px 16px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 8px 16px;
+    border: none;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.search-result-item:hover {
+    background: #f8fafc;
+}
+
+.search-result-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.search-result-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-result-body strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result-body small {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result-status {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 3px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
 }
 
 .navbar-actions {

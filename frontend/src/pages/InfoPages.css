@@ -114,6 +114,18 @@
     line-height: 1.5;
 }
 
+.info-error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 4px;
+}
+
 .portal-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

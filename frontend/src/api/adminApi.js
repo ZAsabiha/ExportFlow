@@ -27,6 +27,11 @@ export function getAvailablePermissions() {
     return apiRequest("/admin/permissions");
 }
 
+// Global search (TopNavbar) - matches across all orders/shipments/invoices/users.
+export function globalSearch(q) {
+    return apiRequest(`/admin/search${buildQuery({ q })}`);
+}
+
 // Reports API - both the paginated table below and the PDF download read from the same
 // admin_report_view database view on the backend (see AdminReportServiceImpl).
 export function getAdminReports({ page = 0, size, search, stage, paymentStatus } = {}) {

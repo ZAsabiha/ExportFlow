@@ -4,6 +4,11 @@ export function getDashboard() {
     return apiRequest("/client/dashboard");
 }
 
+// Global search (TopNavbar) - scoped to the logged-in buyer's own orders/shipments/invoices.
+export function globalSearch(q) {
+    return apiRequest(`/client/search${buildQuery({ q })}`);
+}
+
 // Returns a page: { content, page, size, totalElements, totalPages }.
 export function getOrders({ page = 0, size } = {}) {
     return apiRequest(`/client/orders${buildQuery({ page, size })}`);

@@ -125,6 +125,11 @@ export function downloadExportReport() {
     return apiRequest(`/export-manager/reports/excel`, { method: "GET" }, { asBlob: true });
 }
 
+// Global search (TopNavbar) - matches across all orders/shipments/invoices.
+export function globalSearch(q) {
+    return apiRequest(`/export-manager/search${buildQuery({ q })}`);
+}
+
 // Notifications API
 export function getNotifications({ page = 0, size } = {}) {
     return apiRequest(`/export-manager/notifications${buildQuery({ page, size })}`);
