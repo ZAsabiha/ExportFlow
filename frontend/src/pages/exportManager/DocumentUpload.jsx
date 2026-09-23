@@ -1,14 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import Pagination from "../../components/Pagination";
-import { FileText, Download, Eye, UploadCloud, RefreshCw, X, Search } from "lucide-react";
+import { FileText, Download, Eye, UploadCloud, RefreshCw, X, Search, FileSpreadsheet, Archive, RotateCcw, AlertTriangle } from "lucide-react";
 import {
     getAllDocuments,
     getOrders,
     uploadDocumentsBatch,
-    downloadDocumentBlob
+    downloadDocumentBlob,
+    launchBulkDocumentImport,
+    getBulkImportStatus,
+    getBulkImportErrors,
+    retryBulkImport
 } from "../../api/exportManagerApi";
 import "../../components/dashboard.css";
+
+// Bulk import job statuses that mean the batch job is still running, so status polling
+// should keep going until it lands on one outside this set.
+const IN_PROGRESS_STATUSES = ["STARTING", "STARTED"];
+const BULK_IMPORT_POLL_MS = 3000;
 
 // Orders are only fetched here to populate the "purchase order" dropdown, so this pulls
 // a generous bounded batch rather than the paginated order-history page size.
@@ -38,6 +47,19 @@ export default function DocumentUpload() {
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
 
+    // Bulk import (Excel manifest + ZIP of files) state
+    const [manifestFile, setManifestFile] = useState(null);
+    const [documentsZipFile, setDocumentsZipFile] = useState(null);
+    const [bulkLaunching, setBulkLaunching] = useState(false);
+    const [bulkJob, setBulkJob] = useState(null);
+    const [bulkError, setBulkError] = useState(null);
+    const [bulkErrors, setBulkErrors] = useState([]);
+    const [bulkErrorsPage, setBulkErrorsPage] = useState(0);
+    const [bulkErrorsPageInfo, setBulkErrorsPageInfo] = useState({ size: 10, totalElements: 0, totalPages: 0 });
+    const [showBulkErrors, setShowBulkErrors] = useState(false);
+    const [bulkRetrying, setBulkRetrying] = useState(false);
+    const pollTimerRef = useRef(null);
+
     const fetchData = async (targetPage = page) => {
         setLoading(true);
         setError(null);
@@ -66,6 +88,87 @@ export default function DocumentUpload() {
         fetchData(0);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // Poll the batch job's status while it's still running, then stop once it lands on
+    // a terminal state (COMPLETED / FAILED / STOPPED / ABANDONED).
+    useEffect(() => {
+        if (!bulkJob || !IN_PROGRESS_STATUSES.includes(bulkJob.status)) {
+            return undefined;
+        }
+        pollTimerRef.current = setTimeout(async () => {
+            try {
+                const updated = await getBulkImportStatus(bulkJob.jobExecutionId);
+                setBulkJob(updated);
+                if (!IN_PROGRESS_STATUSES.includes(updated.status)) {
+                    fetchData(0);
+                }
+            } catch (err) {
+                setBulkError(err.message || "Failed to refresh import status");
+            }
+        }, BULK_IMPORT_POLL_MS);
+        return () => clearTimeout(pollTimerRef.current);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [bulkJob]);
+
+    const handleManifestChange = (e) => {
+        setManifestFile(e.target.files && e.target.files[0] ? e.target.files[0] : null);
+    };
+
+    const handleDocumentsZipChange = (e) => {
+        setDocumentsZipFile(e.target.files && e.target.files[0] ? e.target.files[0] : null);
+    };
+
+    const handleBulkLaunch = async (e) => {
+        e.preventDefault();
+        if (!manifestFile || !documentsZipFile) {
+            setBulkError("Please select both a manifest spreadsheet and a ZIP of documents.");
+            return;
+        }
+        setBulkLaunching(true);
+        setBulkError(null);
+        setShowBulkErrors(false);
+        setBulkErrors([]);
+        try {
+            const status = await launchBulkDocumentImport(manifestFile, documentsZipFile);
+            setBulkJob(status);
+            setManifestFile(null);
+            setDocumentsZipFile(null);
+        } catch (err) {
+            setBulkError(err.message || "Failed to launch bulk import");
+        } finally {
+            setBulkLaunching(false);
+        }
+    };
+
+    const fetchBulkErrors = async (targetPage = 0) => {
+        if (!bulkJob) return;
+        setBulkError(null);
+        try {
+            const data = await getBulkImportErrors(bulkJob.jobExecutionId, { page: targetPage });
+            setBulkErrors(Array.isArray(data.content) ? data.content : []);
+            setBulkErrorsPage(data.page ?? targetPage);
+            setBulkErrorsPageInfo({ size: data.size, totalElements: data.totalElements, totalPages: data.totalPages });
+            setShowBulkErrors(true);
+        } catch (err) {
+            setBulkError(err.message || "Failed to load import errors");
+        }
+    };
+
+    const handleBulkRetry = async () => {
+        if (!bulkJob) return;
+        setBulkRetrying(true);
+        setBulkError(null);
+        try {
+            const status = await retryBulkImport(bulkJob.jobExecutionId);
+            setBulkJob(status);
+            setShowBulkErrors(false);
+            setBulkErrors([]);
+        } catch (err) {
+            setBulkError(err.message || "Failed to retry import job");
+        } finally {
+            setBulkRetrying(false);
+        }
+    };
 
     const handleFileChange = (e) => {
         if (e.target.files) {
@@ -109,6 +212,21 @@ export default function DocumentUpload() {
             setError(err.message || "Failed to upload document(s)");
         } finally {
             setUploading(false);
+        }
+    };
+
+    const statusColors = (status) => {
+        switch (status) {
+            case "COMPLETED":
+                return { bg: "#dcfce7", text: "#15803d" };
+            case "FAILED":
+            case "ABANDONED":
+                return { bg: "#fee2e2", text: "#991b1b" };
+            case "STARTING":
+            case "STARTED":
+                return { bg: "#dbeafe", text: "#1d4ed8" };
+            default:
+                return { bg: "#f1f5f9", text: "#475569" };
         }
     };
 
@@ -258,6 +376,167 @@ export default function DocumentUpload() {
                         <strong> Download Tokens</strong> must be generated under <em>Token Center</em> to allow buyers (clients) to securely view and download these trade documents.
                     </p>
                 </div>
+            </div>
+
+            <div className="panel" style={{ marginTop: "25px" }}>
+                <h2>Bulk Import (Manifest + ZIP)</h2>
+                <p style={{ fontSize: "13px", color: "#64748b", marginTop: "6px" }}>
+                    Attach documents to many orders in one submission: an Excel manifest listing
+                    <code style={{ margin: "0 4px" }}>orderCode / documentType / fileName</code>
+                    per row, plus a single ZIP containing those files.
+                </p>
+                <form onSubmit={handleBulkLaunch}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", margin: "15px 0" }}>
+                        <div>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Manifest (.xlsx)</label>
+                            <div className="upload-box" style={{ padding: "20px", marginTop: "4px" }}>
+                                <input
+                                    type="file"
+                                    id="manifestUpload"
+                                    accept=".xlsx,.xls"
+                                    onChange={handleManifestChange}
+                                />
+                                <label htmlFor="manifestUpload" style={{ cursor: "pointer" }}>
+                                    <FileSpreadsheet size={28} color="#3b82f6" />
+                                    <p style={{ marginTop: "8px", fontSize: "13px", fontWeight: 600 }}>
+                                        {manifestFile ? manifestFile.name : "Select manifest spreadsheet"}
+                                    </p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Documents (.zip)</label>
+                            <div className="upload-box" style={{ padding: "20px", marginTop: "4px" }}>
+                                <input
+                                    type="file"
+                                    id="documentsZipUpload"
+                                    accept=".zip"
+                                    onChange={handleDocumentsZipChange}
+                                />
+                                <label htmlFor="documentsZipUpload" style={{ cursor: "pointer" }}>
+                                    <Archive size={28} color="#3b82f6" />
+                                    <p style={{ marginTop: "8px", fontSize: "13px", fontWeight: 600 }}>
+                                        {documentsZipFile ? documentsZipFile.name : "Select documents ZIP"}
+                                    </p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    {bulkError && (
+                        <div style={{ background: "#fee2e2", color: "#991b1b", padding: "10px 14px", borderRadius: "8px", marginBottom: "15px", fontSize: "13px" }}>
+                            {bulkError}
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="primary-action"
+                        disabled={bulkLaunching || !manifestFile || !documentsZipFile}
+                    >
+                        {bulkLaunching ? "Launching Import..." : "Launch Bulk Import"}
+                    </button>
+                </form>
+
+                {bulkJob && (
+                    <div style={{ marginTop: "20px", padding: "16px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <span style={{ fontWeight: 700, color: "#1e293b" }}>Job #{bulkJob.jobExecutionId}</span>
+                                <span style={{
+                                    padding: "3px 10px", borderRadius: "6px", fontSize: "12px", fontWeight: 700,
+                                    background: statusColors(bulkJob.status).bg, color: statusColors(bulkJob.status).text
+                                }}>
+                                    {bulkJob.status}
+                                    {IN_PROGRESS_STATUSES.includes(bulkJob.status) ? "..." : ""}
+                                </span>
+                            </div>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                {bulkJob.skippedCount > 0 && (
+                                    <button
+                                        type="button"
+                                        className="secondary-action"
+                                        style={{ marginTop: 0, width: "auto", display: "flex", alignItems: "center", gap: "6px" }}
+                                        onClick={() => (showBulkErrors ? setShowBulkErrors(false) : fetchBulkErrors(0))}
+                                    >
+                                        <AlertTriangle size={14} /> {showBulkErrors ? "Hide" : "View"} Errors ({bulkJob.skippedCount})
+                                    </button>
+                                )}
+                                {bulkJob.status === "FAILED" && (
+                                    <button
+                                        type="button"
+                                        className="secondary-action"
+                                        style={{ marginTop: 0, width: "auto", display: "flex", alignItems: "center", gap: "6px" }}
+                                        onClick={handleBulkRetry}
+                                        disabled={bulkRetrying}
+                                    >
+                                        <RotateCcw size={14} /> {bulkRetrying ? "Retrying..." : "Retry"}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginTop: "14px" }}>
+                            <div>
+                                <div style={{ fontSize: "12px", color: "#64748b" }}>Rows Read</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>{bulkJob.readCount}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: "12px", color: "#64748b" }}>Documents Imported</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: "#15803d" }}>{bulkJob.successCount}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: "12px", color: "#64748b" }}>Skipped / Failed Rows</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: bulkJob.skippedCount > 0 ? "#b91c1c" : "#1e293b" }}>{bulkJob.skippedCount}</div>
+                            </div>
+                        </div>
+
+                        {bulkJob.exitDescription && (
+                            <p style={{ fontSize: "12px", color: "#64748b", marginTop: "10px", whiteSpace: "pre-wrap" }}>
+                                {bulkJob.exitDescription}
+                            </p>
+                        )}
+
+                        {showBulkErrors && (
+                            <div style={{ marginTop: "16px" }}>
+                                <table style={{ marginTop: "0" }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Row</th>
+                                            <th>Order Code</th>
+                                            <th>File Name</th>
+                                            <th>Reason</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {bulkErrors.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="4" style={{ textAlign: "center", padding: "16px", color: "#64748b" }}>No error rows found.</td>
+                                            </tr>
+                                        ) : (
+                                            bulkErrors.map((err, idx) => (
+                                                <tr key={`${err.rowNumber}-${idx}`}>
+                                                    <td>{err.rowNumber}</td>
+                                                    <td>{err.orderCode}</td>
+                                                    <td>{err.fileName}</td>
+                                                    <td style={{ color: "#b91c1c" }}>{err.message}</td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                                <Pagination
+                                    page={bulkErrorsPage}
+                                    size={bulkErrorsPageInfo.size}
+                                    totalElements={bulkErrorsPageInfo.totalElements}
+                                    totalPages={bulkErrorsPageInfo.totalPages}
+                                    onPageChange={(nextPage) => fetchBulkErrors(nextPage)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
