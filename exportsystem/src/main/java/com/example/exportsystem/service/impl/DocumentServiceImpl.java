@@ -100,22 +100,32 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private TradeDocument storeAndPersist(Order order, DocumentType documentType, MultipartFile file) {
+        try {
+            return storeFromStream(order, documentType, file.getInputStream(), file.getOriginalFilename(),
+                    file.getSize(), file.getContentType());
+        } catch (java.io.IOException e) {
+            throw new java.io.UncheckedIOException("Failed to read uploaded file " + file.getOriginalFilename(), e);
+        }
+    }
+
+    @Override
+    public TradeDocument storeFromStream(Order order, DocumentType documentType, java.io.InputStream in,
+                                          String originalFileName, long size, String contentType) {
         String extension = "";
-        String original = file.getOriginalFilename();
-        if (original != null && original.contains(".")) {
-            extension = original.substring(original.lastIndexOf('.'));
+        if (originalFileName != null && originalFileName.contains(".")) {
+            extension = originalFileName.substring(originalFileName.lastIndexOf('.'));
         }
         String storedFileName = UUID.randomUUID() + extension;
-        Path storedPath = fileStorageService.store(file, storedFileName);
+        Path storedPath = fileStorageService.store(in, storedFileName);
 
         TradeDocument doc = new TradeDocument();
         doc.setOrder(order);
         doc.setDocumentType(documentType);
-        doc.setOriginalFileName(original);
+        doc.setOriginalFileName(originalFileName);
         doc.setStoredFileName(storedFileName);
         doc.setFilePath(storedPath.toString());
-        doc.setFileSizeBytes(file.getSize());
-        doc.setContentType(file.getContentType());
+        doc.setFileSizeBytes(size);
+        doc.setContentType(contentType);
         return documentRepository.save(doc);
     }
 

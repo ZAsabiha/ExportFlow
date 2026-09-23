@@ -96,6 +96,35 @@ export function uploadDocumentsBatch(orderId, documentType, files) {
         body: formData
     });
 }
+
+// Bulk document import: one Excel manifest (orderCode / documentType / fileName per row)
+// plus one ZIP of the actual files, attaching documents to many existing orders in a
+// single submission. Runs as a background batch job - launch returns immediately with a
+// jobExecutionId to poll via getBulkImportStatus.
+export function launchBulkDocumentImport(manifestFile, documentsZipFile) {
+    const formData = new FormData();
+    formData.append("manifest", manifestFile);
+    formData.append("documents", documentsZipFile);
+    return apiRequest("/export-manager/documents/bulk-import", {
+        method: "POST",
+        body: formData
+    });
+}
+
+export function getBulkImportStatus(jobExecutionId) {
+    return apiRequest(`/export-manager/documents/bulk-import/${jobExecutionId}`);
+}
+
+export function getBulkImportErrors(jobExecutionId, { page = 0, size } = {}) {
+    return apiRequest(`/export-manager/documents/bulk-import/${jobExecutionId}/errors${buildQuery({ page, size })}`);
+}
+
+export function retryBulkImport(jobExecutionId) {
+    return apiRequest(`/export-manager/documents/bulk-import/${jobExecutionId}/retry`, {
+        method: "POST"
+    });
+}
+
 // Tokens API
 export function getAllTokens({ page = 0, size } = {}) {
     return apiRequest(`/export-manager/tokens${buildQuery({ page, size })}`);
@@ -115,6 +144,32 @@ export function generateToken({ orderId, buyerEmail, expiryDays }) {
 export function revokeToken(token) {
     return apiRequest(`/export-manager/tokens/${token}`, {
         method: "DELETE"
+    });
+}
+
+// Bulk token generation: one Excel manifest (orderCode / buyerEmail / expiryDays per row)
+// issuing a download token per order in a single submission. Runs as a background batch
+// job - launch returns immediately with a jobExecutionId to poll via getBulkTokenGenerationStatus.
+export function launchBulkTokenGeneration(manifestFile) {
+    const formData = new FormData();
+    formData.append("manifest", manifestFile);
+    return apiRequest("/export-manager/tokens/bulk-generate", {
+        method: "POST",
+        body: formData
+    });
+}
+
+export function getBulkTokenGenerationStatus(jobExecutionId) {
+    return apiRequest(`/export-manager/tokens/bulk-generate/${jobExecutionId}`);
+}
+
+export function getBulkTokenGenerationErrors(jobExecutionId, { page = 0, size } = {}) {
+    return apiRequest(`/export-manager/tokens/bulk-generate/${jobExecutionId}/errors${buildQuery({ page, size })}`);
+}
+
+export function retryBulkTokenGeneration(jobExecutionId) {
+    return apiRequest(`/export-manager/tokens/bulk-generate/${jobExecutionId}/retry`, {
+        method: "POST"
     });
 }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,12 +35,20 @@ public class FileStorageServiceImpl implements FileStorageService {
     @Override
     public Path store(MultipartFile file, String generatedFileName) {
         try {
+            return store(file.getInputStream(), generatedFileName);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to store file " + generatedFileName, e);
+        }
+    }
+
+    @Override
+    public Path store(InputStream in, String generatedFileName) {
+        try {
             Path target = root.resolve(generatedFileName).normalize();
             if (!target.getParent().equals(root)) {
-
                 throw new IllegalArgumentException("Invalid file name: " + generatedFileName);
             }
-            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
             return target;
         } catch (IOException e) {
             throw new UncheckedIOException("Failed to store file " + generatedFileName, e);
