@@ -18,10 +18,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-// Reads the bulk token-generation manifest (.xlsx) one row at a time. The header row is
-// required but column order is not fixed - columns are matched by name. @StepScope + the
-// jobParameters SpEL binding mean a fresh reader (and fresh Workbook) is created for each
-// job execution, since the manifest path differs every run.
+
 @Component
 @StepScope
 public class ExcelTokenManifestItemReader implements ItemReader<TokenGenerationRow> {
@@ -83,7 +80,7 @@ public class ExcelTokenManifestItemReader implements ItemReader<TokenGenerationR
         try {
             workbook.close();
         } catch (IOException ignored) {
-            // Best effort - the staging file is cleaned up once the job completes regardless.
+            
         }
     }
 

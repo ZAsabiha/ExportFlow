@@ -2,11 +2,10 @@ package com.example.exportsystem.controller;
 
 import com.example.exportsystem.common.PaginationDefaults;
 import com.example.exportsystem.dto.PageResponse;
+import com.example.exportsystem.dto.admin.AdminDashboardSummary;
 import com.example.exportsystem.dto.admin.AdminUserResponse;
 import com.example.exportsystem.dto.admin.AuditLogResponse;
-import com.example.exportsystem.dto.admin.UpdateUserPermissionsRequest;
 import com.example.exportsystem.dto.admin.UpdateUserStatusRequest;
-import com.example.exportsystem.entity.Permission;
 import com.example.exportsystem.entity.User;
 import com.example.exportsystem.repository.UserRepository;
 import com.example.exportsystem.service.AdminService;
@@ -18,9 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 @RestController
@@ -55,17 +51,9 @@ public class AdminController {
         return ResponseEntity.ok(adminService.setUserEnabled(currentUser(authentication), id, request.getEnabled()));
     }
 
-    @PutMapping("/users/{id}/permissions")
-    public ResponseEntity<AdminUserResponse> setUserPermissions(Authentication authentication,
-                                                                   @PathVariable Long id,
-                                                                   @Valid @RequestBody UpdateUserPermissionsRequest request) {
-        return ResponseEntity.ok(adminService.setUserPermissions(currentUser(authentication), id, request.getPermissions()));
-    }
-
-    // Lets the frontend render the permission checklist without hardcoding the enum values.
-    @GetMapping("/permissions")
-    public ResponseEntity<List<String>> listAvailablePermissions() {
-        return ResponseEntity.ok(Arrays.stream(Permission.values()).map(Enum::name).toList());
+    @GetMapping("/dashboard-summary")
+    public ResponseEntity<AdminDashboardSummary> getDashboardSummary() {
+        return ResponseEntity.ok(adminService.getDashboardSummary());
     }
 
     @GetMapping("/audit-logs")

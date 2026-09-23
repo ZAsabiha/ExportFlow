@@ -15,12 +15,10 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
     List<Shipment> findByOrder_Id(Long orderId);
     List<Shipment> findByOrder_IdIn(List<Long> orderIds);
 
-    // Paginated variant for the client's "my shipments" history page - matches the same
-    // buyer-name based ownership rule used for orders (see OrderRepository).
+
     Page<Shipment> findByOrder_BuyerNameIgnoreCase(String buyerName, Pageable pageable);
 
-    // Global search - Export Manager/Admin portals: matches tracking number/carrier plus
-    // the parent order's code and buyer, since that's how a shipment is usually looked up.
+    
     @Query("""
             SELECT s FROM Shipment s JOIN s.order o
             WHERE LOWER(s.trackingNumber) LIKE LOWER(CONCAT('%', :q, '%'))
@@ -30,7 +28,7 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
             """)
     List<Shipment> searchAll(@Param("q") String q, Pageable pageable);
 
-    // Global search - Client portal: scoped to the logged-in buyer's own shipments only.
+
     @Query("""
             SELECT s FROM Shipment s JOIN s.order o
             WHERE LOWER(o.buyerName) = LOWER(:buyerName)

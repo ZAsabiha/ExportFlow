@@ -58,6 +58,21 @@ public class Order {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    // ---- Document-upload deadline (set by Admin once documents are government-verified) ----
+    private LocalDateTime documentDeadline;
+    private String deadlineNote;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean deadlineReminderSent = false;
+
+    // ---- Government verification (manual, set only by Admin) ----
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean governmentVerified = false;
+    private LocalDateTime governmentVerifiedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "government_verified_by")
+    private User governmentVerifiedBy;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -129,6 +144,24 @@ public class Order {
 
     public User getCreatedBy() { return createdBy; }
     public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
+
+    public LocalDateTime getDocumentDeadline() { return documentDeadline; }
+    public void setDocumentDeadline(LocalDateTime documentDeadline) { this.documentDeadline = documentDeadline; }
+
+    public String getDeadlineNote() { return deadlineNote; }
+    public void setDeadlineNote(String deadlineNote) { this.deadlineNote = deadlineNote; }
+
+    public boolean isDeadlineReminderSent() { return deadlineReminderSent; }
+    public void setDeadlineReminderSent(boolean deadlineReminderSent) { this.deadlineReminderSent = deadlineReminderSent; }
+
+    public boolean isGovernmentVerified() { return governmentVerified; }
+    public void setGovernmentVerified(boolean governmentVerified) { this.governmentVerified = governmentVerified; }
+
+    public LocalDateTime getGovernmentVerifiedAt() { return governmentVerifiedAt; }
+    public void setGovernmentVerifiedAt(LocalDateTime governmentVerifiedAt) { this.governmentVerifiedAt = governmentVerifiedAt; }
+
+    public User getGovernmentVerifiedBy() { return governmentVerifiedBy; }
+    public void setGovernmentVerifiedBy(User governmentVerifiedBy) { this.governmentVerifiedBy = governmentVerifiedBy; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

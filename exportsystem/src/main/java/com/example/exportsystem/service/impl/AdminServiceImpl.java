@@ -1,9 +1,12 @@
 package com.example.exportsystem.service.impl;
 
+import com.example.exportsystem.dto.admin.AdminDashboardSummary;
 import com.example.exportsystem.dto.admin.AdminUserResponse;
-import com.example.exportsystem.entity.Permission;
+import com.example.exportsystem.entity.DownloadTokenStatus;
 import com.example.exportsystem.entity.Role;
 import com.example.exportsystem.entity.User;
+import com.example.exportsystem.repository.AuditLogRepository;
+import com.example.exportsystem.repository.DownloadTokenRepository;
 import com.example.exportsystem.repository.UserRepository;
 import com.example.exportsystem.service.AdminService;
 import com.example.exportsystem.service.AuditLogService;
@@ -12,8 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +25,15 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
     private final AuditLogService auditLogService;
+    private final AuditLogRepository auditLogRepository;
+    private final DownloadTokenRepository downloadTokenRepository;
 
-    public AdminServiceImpl(UserRepository userRepository, AuditLogService auditLogService) {
+    public AdminServiceImpl(UserRepository userRepository, AuditLogService auditLogService,
+                             AuditLogRepository auditLogRepository, DownloadTokenRepository downloadTokenRepository) {
         this.userRepository = userRepository;
         this.auditLogService = auditLogService;
+        this.auditLogRepository = auditLogRepository;
+        this.downloadTokenRepository = downloadTokenRepository;
     }
 
     @Override
@@ -51,22 +59,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    @Transactional
-    public AdminUserResponse setUserPermissions(User actingAdmin, Long userId, Set<String> permissionNames) {
-        User user = findOrThrow(userId);
-        Set<Permission> permissions = new HashSet<>();
-        for (String name : permissionNames) {
-            try {
-                permissions.add(Permission.valueOf(name));
-            } catch (IllegalArgumentException ex) {
-                throw new IllegalArgumentException("Unknown permission: " + name);
-            }
+    public AdminDashboardSummary getDashboardSummary() {
+        long activeTokens = downloadTokenRepository.countByStatus(DownloadTokenStatus.ACTIVE);
+        long totalTokens = downloadTokenRepository.count();
+
+        Map<String, Long> activeAccountsByRole = new LinkedHashMap<>();
+        for (Object[] row : userRepository.countEnabledUsersByRole()) {
+            activeAccountsByRole.put((String) row[0], (Long) row[1]);
         }
-        user.setPermissions(permissions);
-        User saved = userRepository.save(user);
-        auditLogService.log(actingAdmin.getEmail(), "ADMIN", "Permissions Updated",
-                "Set permissions for " + saved.getEmail() + " to " + permissions);
-        return toResponse(saved);
+
+        AdminDashboardSummary summary = new AdminDashboardSummary();
+        summary.setTotalUsers(userRepository.count());
+        summary.setActiveTokens(activeTokens);
+        summary.setActiveTokenRate(totalTokens == 0 ? 100.0 : (activeTokens * 100.0 / totalTokens));
+        summary.setTotalAuditLogs(auditLogRepository.count());
+        summary.setLastAuditLogAt(auditLogRepository.findFirstByOrderByCreatedAtDesc()
+                .map(log -> log.getCreatedAt()).orElse(null));
+        summary.setActiveAccountsByRole(activeAccountsByRole);
+        return summary;
     }
 
     private User findOrThrow(Long id) {
@@ -80,7 +90,6 @@ public class AdminServiceImpl implements AdminService {
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
         response.setRoles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
-        response.setPermissions(user.getPermissions().stream().map(Enum::name).collect(Collectors.toSet()));
         response.setEnabled(user.isEnabled());
         return response;
     }

@@ -15,10 +15,7 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-// Resolves each manifest row against an existing Order and confirms the referenced file
-// is present in the accompanying ZIP. Bad rows (unknown order, bad documentType, missing
-// zip entry) throw RowImportException, which the step is configured to skip rather than
-// fail the whole job on - see DocumentImportJobConfig.
+
 @Component
 @StepScope
 public class DocumentImportProcessor implements ItemProcessor<DocumentImportRow, ResolvedDocumentImport>, DisposableBean {

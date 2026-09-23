@@ -1,9 +1,9 @@
-import React, { useMemo, useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import Pagination from "../../components/Pagination";
-import { Search, CheckCircle2, XCircle, KeyRound, X, AlertCircle } from "lucide-react";
+import { Search, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import { getUsers, setUserStatus, setUserPermissions, getAvailablePermissions } from "../../api/adminApi";
+import { getUsers, setUserStatus } from "../../api/adminApi";
 import { ApiError } from "../../api/client";
 import "../../components/dashboard.css";
 
@@ -23,13 +23,6 @@ const ROLE_BADGE_STYLES = {
   EXPORT_MANAGER: { background: "#dbeafe", color: "#1e40af" },
   CLIENT: { background: "#fef3c7", color: "#92400e" },
 };
-
-function formatPermission(name) {
-  return name
-    .split("_")
-    .map((word) => word[0] + word.slice(1).toLowerCase())
-    .join(" ");
-}
 
 function initials(username = "") {
   return username.slice(0, 2).toUpperCase();
@@ -63,7 +56,7 @@ function StatusPill({ enabled }) {
 function EmptyState({ hasFilters, onClear }) {
   return (
     <tr>
-      <td colSpan={6} className="empty-state">
+      <td colSpan={5} className="empty-state">
         {hasFilters ? (
           <>
             <p>No users match your search or filter.</p>
@@ -96,9 +89,6 @@ export default function Users() {
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-
-  const [availablePermissions, setAvailablePermissions] = useState([]);
-  const [permissionsModalUser, setPermissionsModalUser] = useState(null);
 
   const [rowActionError, setRowActionError] = useState(null);
   const [pendingUserId, setPendingUserId] = useState(null);
@@ -136,13 +126,6 @@ export default function Users() {
     fetchUsers();
   }, [fetchUsers]);
 
-  // The available permission set comes from the backend enum, not hardcoded here.
-  useEffect(() => {
-    getAvailablePermissions()
-      .then(setAvailablePermissions)
-      .catch(() => setAvailablePermissions([]));
-  }, []);
-
   const hasActiveFilters = search !== "" || roleFilter !== "ALL";
 
   const clearFilters = useCallback(() => {
@@ -165,17 +148,11 @@ export default function Users() {
     }
   }, []);
 
-  const savePermissions = useCallback(async (userId, permissions) => {
-    const updated = await setUserPermissions(userId, permissions); // let the modal handle errors
-    setUsers((current) => current.map((u) => (u.id === updated.id ? updated : u)));
-    setPermissionsModalUser(null);
-  }, []);
-
   return (
     <DashboardLayout>
       <div>
         <h1 className="page-title">User Management</h1>
-        <p className="page-subtitle">Manage users, roles and permissions</p>
+        <p className="page-subtitle">Manage user accounts and roles</p>
       </div>
 
       <div className="panel users-toolbar">
@@ -218,7 +195,6 @@ export default function Users() {
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Permissions</th>
               <th>Status</th>
               <th className="col-action">Action</th>
             </tr>
@@ -227,13 +203,13 @@ export default function Users() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="empty-state">
+                <td colSpan={5} className="empty-state">
                   Loading users...
                 </td>
               </tr>
             ) : loadError ? (
               <tr>
-                <td colSpan={6} className="empty-state">
+                <td colSpan={5} className="empty-state">
                   <p>{loadError}</p>
                   <button className="link-button" onClick={fetchUsers}>
                     Retry
@@ -260,16 +236,6 @@ export default function Users() {
                       {user.roles.map((role) => (
                         <RoleBadge key={role} role={role} />
                       ))}
-                    </td>
-
-                    <td>
-                      <button
-                        className="permissions-button"
-                        onClick={() => setPermissionsModalUser(user)}
-                      >
-                        <KeyRound size={14} />
-                        {user.permissions.length} granted
-                      </button>
                     </td>
 
                     <td>
@@ -310,15 +276,6 @@ export default function Users() {
           onPageChange={(next) => setPage(next)}
         />
       </div>
-
-      {permissionsModalUser && (
-        <PermissionsModal
-          user={permissionsModalUser}
-          allPermissions={availablePermissions}
-          close={() => setPermissionsModalUser(null)}
-          save={savePermissions}
-        />
-      )}
 
       <style>{`
         .users-toolbar {
@@ -374,23 +331,6 @@ export default function Users() {
           font-weight: 600;
         }
 
-        .permissions-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 6px 12px;
-          border-radius: 6px;
-          border: 1px solid #e2e5ea;
-          background: #fff;
-          font-size: 13px;
-          cursor: pointer;
-          transition: border-color 0.15s ease, background 0.15s ease;
-        }
-        .permissions-button:hover {
-          border-color: #cbd2dc;
-          background: #f9fafb;
-        }
-
         .status-pill {
           display: inline-flex;
           align-items: center;
@@ -443,237 +383,5 @@ export default function Users() {
         .link-button:hover { text-decoration: underline; }
       `}</style>
     </DashboardLayout>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Permissions modal
-// ---------------------------------------------------------------------------
-
-function PermissionsModal({ user, allPermissions, close, save }) {
-  const [selected, setSelected] = useState(new Set(user.permissions));
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(null);
-  const dialogRef = useRef(null);
-  const firstCheckboxRef = useRef(null);
-
-  // Close on Escape, focus the dialog on open.
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") close();
-    };
-    document.addEventListener("keydown", onKeyDown);
-    firstCheckboxRef.current?.focus();
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [close]);
-
-  const toggle = (permission) => {
-    setSelected((current) => {
-      const copy = new Set(current);
-      if (copy.has(permission)) {
-        copy.delete(permission);
-      } else {
-        copy.add(permission);
-      }
-      return copy;
-    });
-  };
-
-  const allSelected = allPermissions.length > 0 && selected.size === allPermissions.length;
-  const toggleAll = () => {
-    setSelected(allSelected ? new Set() : new Set(allPermissions));
-  };
-
-  const hasChanges =
-    selected.size !== user.permissions.length ||
-    user.permissions.some((p) => !selected.has(p));
-
-  const onOverlayClick = (e) => {
-    if (e.target === e.currentTarget) close();
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    setError(null);
-    try {
-      await save(user.id, [...selected]);
-    } catch (err) {
-      setError(errorMessage(err, "Couldn't save permissions. Please try again."));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  return (
-    <div className="modal-overlay" onMouseDown={onOverlayClick} role="presentation">
-      <div
-        className="panel modal-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="permissions-modal-title"
-        ref={dialogRef}
-      >
-        <div className="modal-header">
-          <div>
-            <h2 id="permissions-modal-title">Permissions</h2>
-            <p className="modal-subtitle">{user.username}</p>
-          </div>
-          <button className="icon-button" onClick={close} aria-label="Close">
-            <X size={18} />
-          </button>
-        </div>
-
-        {error && (
-          <div className="inline-banner error">
-            <AlertCircle size={16} />
-            {error}
-          </div>
-        )}
-
-        {allPermissions.length === 0 ? (
-          <p className="modal-subtitle">No permissions available to assign.</p>
-        ) : (
-          <>
-            <div className="modal-select-all">
-              <button className="link-button" onClick={toggleAll}>
-                {allSelected ? "Deselect all" : "Select all"}
-              </button>
-            </div>
-
-            <div className="permissions-list">
-              {allPermissions.map((permission, index) => (
-                <label key={permission} className="permission-row">
-                  <input
-                    type="checkbox"
-                    ref={index === 0 ? firstCheckboxRef : null}
-                    checked={selected.has(permission)}
-                    onChange={() => toggle(permission)}
-                  />
-                  {formatPermission(permission)}
-                </label>
-              ))}
-            </div>
-          </>
-        )}
-
-        <div className="modal-footer">
-          <button className="button-secondary" onClick={close} disabled={saving}>
-            Cancel
-          </button>
-          <button
-            className="button-primary"
-            disabled={!hasChanges || saving}
-            onClick={handleSave}
-          >
-            {saving ? "Saving..." : "Save changes"}
-          </button>
-        </div>
-      </div>
-
-      <style>{`
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(15, 23, 42, 0.45);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 50;
-        }
-        .modal-card {
-          width: 400px;
-          max-width: calc(100vw - 32px);
-          padding: 20px;
-        }
-        .modal-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          margin-bottom: 4px;
-        }
-        .modal-header h2 { margin: 0; font-size: 18px; }
-        .modal-subtitle { margin: 2px 0 0; color: #6b7280; font-size: 13px; }
-        .icon-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: #6b7280;
-          padding: 4px;
-          border-radius: 6px;
-        }
-        .icon-button:hover { background: #f3f4f6; color: #111827; }
-
-        .inline-banner {
-          margin: 10px 0;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 8px 12px;
-          border-radius: 8px;
-          font-size: 13px;
-        }
-        .inline-banner.error {
-          background: #fef2f2;
-          color: #b91c1c;
-          border: 1px solid #fecaca;
-        }
-
-        .modal-select-all {
-          display: flex;
-          justify-content: flex-end;
-          margin-bottom: 8px;
-        }
-
-        .permissions-list {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          max-height: 280px;
-          overflow-y: auto;
-        }
-        .permission-row {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 8px 6px;
-          border-radius: 6px;
-          font-size: 14px;
-          cursor: pointer;
-        }
-        .permission-row:hover { background: #f9fafb; }
-
-        .modal-footer {
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px;
-          margin-top: 18px;
-        }
-        .button-secondary,
-        .button-primary {
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-size: 13px;
-          font-weight: 500;
-          cursor: pointer;
-        }
-        .button-secondary {
-          background: #fff;
-          border: 1px solid #e2e5ea;
-          color: #374151;
-        }
-        .button-secondary:hover:not(:disabled) { background: #f9fafb; }
-        .button-primary {
-          background: #111827;
-          border: 1px solid #111827;
-          color: #fff;
-        }
-        .button-primary:hover:not(:disabled) { background: #1f2937; }
-        .button-primary:disabled {
-          background: #d1d5db;
-          border-color: #d1d5db;
-          cursor: not-allowed;
-        }
-      `}</style>
-    </div>
   );
 }

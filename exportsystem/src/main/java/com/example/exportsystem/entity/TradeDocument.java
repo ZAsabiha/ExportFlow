@@ -23,7 +23,7 @@ public class TradeDocument {
     @Column(nullable = false)
     private String originalFileName;
 
-    // Name of the file as stored on disk (UUID-based, collision-safe)
+    // Name of the file as stored on disk 
     @Column(nullable = false, unique = true)
     private String storedFileName;
 

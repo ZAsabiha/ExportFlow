@@ -46,17 +46,15 @@ public class AuthService {
 
         String targetRoleName = resolveRoleName(request.getRole());
 
+        // The CLIENT role starts with full access to its portal by default; an admin can revoke
+        // it (or grant more) later from the Roles page - every CLIENT shares the same set, since
+        // permissions are configured per-role, not per-user.
         Role role = roleRepository.findByName(targetRoleName)
-                .orElseGet(() -> roleRepository.save(Role.builder().name(targetRoleName).build()));
+                .orElseGet(() -> roleRepository.save("CLIENT".equals(targetRoleName)
+                        ? Role.builder().name(targetRoleName).permissions(Set.of(Permission.VIEW_SHIPMENTS)).build()
+                        : Role.builder().name(targetRoleName).build()));
 
         user.getRoles().add(role);
-
-        // New clients start with full access to their portal; an admin can revoke specific
-        // view permissions later from the Users page. Other roles get no default permissions
-        // yet - add similar grants here if EXPORT_MANAGER/ADMIN gain gated view-only pages too.
-        if ("CLIENT".equals(targetRoleName)) {
-            user.getPermissions().add(Permission.VIEW_SHIPMENTS);
-        }
 
         userRepository.save(user);
     }
@@ -140,7 +138,10 @@ public class AuthService {
     }
 
     private Set<String> toPermissionNames(User user) {
-        return user.getPermissions().stream().map(Enum::name).collect(Collectors.toSet());
+        return user.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .map(Enum::name)
+                .collect(Collectors.toSet());
     }
 
     private String primaryRoleName(User user) {

@@ -4,12 +4,12 @@ export function getDashboard() {
     return apiRequest("/client/dashboard");
 }
 
-// Global search (TopNavbar) - scoped to the logged-in buyer's own orders/shipments/invoices.
+
 export function globalSearch(q) {
     return apiRequest(`/client/search${buildQuery({ q })}`);
 }
 
-// Returns a page: { content, page, size, totalElements, totalPages }.
+
 export function getOrders({ page = 0, size } = {}) {
     return apiRequest(`/client/orders${buildQuery({ page, size })}`);
 }
@@ -64,4 +64,31 @@ export function downloadDocumentBlob(id, token) {
 export function getDocumentDownloadUrl(id, token) {
     const query = new URLSearchParams({ token });
     return `${API_BASE_URL}/client/documents/${id}/download?${query}`;
+}
+
+// Claims: a client's complaint against one of their own orders, optionally with a proof
+// attachment. Admin-only to review/resolve - see adminApi.js's claim functions.
+export function fileClaim({ orderId, message, proofFile }) {
+    const formData = new FormData();
+    formData.append("orderId", orderId);
+    formData.append("message", message);
+    if (proofFile) {
+        formData.append("proofFile", proofFile);
+    }
+    return apiRequest("/client/claims", {
+        method: "POST",
+        body: formData
+    });
+}
+
+export function getMyClaims({ page = 0, size } = {}) {
+    return apiRequest(`/client/claims${buildQuery({ page, size })}`);
+}
+
+export function getMyClaim(id) {
+    return apiRequest(`/client/claims/${id}`);
+}
+
+export function downloadMyClaimProofBlob(id) {
+    return apiRequest(`/client/claims/${id}/proof/download`, { method: "GET" }, { asBlob: true });
 }

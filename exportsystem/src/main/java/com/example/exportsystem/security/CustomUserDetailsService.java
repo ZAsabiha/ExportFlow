@@ -28,10 +28,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         // Roles gate which portal/controllers a user can reach (hasRole(...)); permissions are
-        // extra admin-assignable authorities on top, exposed unprefixed (hasAuthority(...)).
+        // extra authorities configured per-role (Roles page) and shared by every user with that
+        // role, exposed unprefixed (hasAuthority(...)).
         List<GrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
-        user.getPermissions().forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.name())));
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+            role.getPermissions().forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.name())));
+        });
 
         return org.springframework.security.core.userdetails.User
                 .builder()

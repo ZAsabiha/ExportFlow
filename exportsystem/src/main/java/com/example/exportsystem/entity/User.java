@@ -36,15 +36,6 @@ public class User {
     // the same as TRUE so existing accounts aren't accidentally locked out.
     private Boolean enabled = Boolean.TRUE;
 
-    // Admin-assignable, per-user capabilities on top of the user's role(s). A separate
-    // element-collection table (user_permissions) rather than an ALTER on `users`, so there's
-    // no NOT NULL backfill concern - an absent row just means an empty set.
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_permissions", joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "permission")
-    private Set<Permission> permissions = new HashSet<>();
-
     public User() {}
 
     public User(Long id, String username, String email, String password, Set<Role> roles) {
@@ -101,14 +92,6 @@ public class User {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(Set<Permission> permissions) {
-        this.permissions = permissions != null ? permissions : new HashSet<>();
     }
 
     public static UserBuilder builder() {

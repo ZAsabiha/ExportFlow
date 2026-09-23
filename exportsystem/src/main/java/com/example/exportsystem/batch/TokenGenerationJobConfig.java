@@ -14,11 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-// tokenGenerationJob: the bulk "Excel manifest" download token generation. One step,
-// chunked so a large manifest commits incrementally instead of in one giant transaction,
-// and fault-tolerant so a bad row (see RowTokenGenerationException) is skipped and
-// reported rather than failing the whole job - see TokenGenerationSkipListener. Chunk size
-// is smaller than the document import job's since each row also sends an invoice email.
+
 @Configuration
 public class TokenGenerationJobConfig {
 

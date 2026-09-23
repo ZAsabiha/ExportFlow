@@ -31,6 +31,11 @@ public class OrderResponse {
     private PaymentStatus paymentStatus;
     private LocalDateTime createdAt;
 
+    private LocalDateTime documentDeadline;
+    private String deadlineNote;
+    private boolean governmentVerified;
+    private LocalDateTime governmentVerifiedAt;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -81,4 +86,16 @@ public class OrderResponse {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getDocumentDeadline() { return documentDeadline; }
+    public void setDocumentDeadline(LocalDateTime documentDeadline) { this.documentDeadline = documentDeadline; }
+
+    public String getDeadlineNote() { return deadlineNote; }
+    public void setDeadlineNote(String deadlineNote) { this.deadlineNote = deadlineNote; }
+
+    public boolean isGovernmentVerified() { return governmentVerified; }
+    public void setGovernmentVerified(boolean governmentVerified) { this.governmentVerified = governmentVerified; }
+
+    public LocalDateTime getGovernmentVerifiedAt() { return governmentVerifiedAt; }
+    public void setGovernmentVerifiedAt(LocalDateTime governmentVerifiedAt) { this.governmentVerifiedAt = governmentVerifiedAt; }
 }

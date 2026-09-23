@@ -111,6 +111,10 @@ public class OrderServiceImpl implements OrderService {
         r.setStage(order.getStage());
         r.setPaymentStatus(order.getPaymentStatus());
         r.setCreatedAt(order.getCreatedAt());
+        r.setDocumentDeadline(order.getDocumentDeadline());
+        r.setDeadlineNote(order.getDeadlineNote());
+        r.setGovernmentVerified(order.isGovernmentVerified());
+        r.setGovernmentVerifiedAt(order.getGovernmentVerifiedAt());
         return r;
     }
 }
