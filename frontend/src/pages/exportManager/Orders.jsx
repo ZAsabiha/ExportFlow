@@ -4,6 +4,7 @@ import Pagination from "../../components/Pagination";
 import { Search, Filter, ArrowRight, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getOrders, quoteOrder, declineOrder, advanceOrderStage } from "../../api/exportManagerApi";
+import { deadlineColors, formatDeadline } from "../../utils/deadline";
 import "../../components/dashboard.css";
 
 const STAGES = ["CREATED", "APPROVED", "DOCUMENTS", "PAID", "SHIPMENT", "COMPLETED"];
@@ -189,17 +190,18 @@ export default function Orders() {
                             <th>Needed By</th>
                             <th>Request Status</th>
                             <th>Pipeline Stage</th>
+                            <th>Doc Deadline</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan="9" style={{ textAlign: "center", padding: "20px" }}>Loading orders...</td>
+                                <td colSpan="10" style={{ textAlign: "center", padding: "20px" }}>Loading orders...</td>
                             </tr>
                         ) : filteredOrders.length === 0 ? (
                             <tr>
-                                <td colSpan="9" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>No matching orders found.</td>
+                                <td colSpan="10" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>No matching orders found.</td>
                             </tr>
                         ) : (
                             filteredOrders.map((order) => {
@@ -228,6 +230,19 @@ export default function Orders() {
                                                     color: order.stage === "COMPLETED" ? "#15803d" : "#1e40af"
                                                 }}>
                                                     {order.stage}
+                                                </span>
+                                            ) : (
+                                                <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {order.documentDeadline ? (
+                                                <span style={{
+                                                    padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
+                                                    background: deadlineColors(order.documentDeadline).bg,
+                                                    color: deadlineColors(order.documentDeadline).text
+                                                }} title={order.deadlineNote || ""}>
+                                                    {formatDeadline(order.documentDeadline)}
                                                 </span>
                                             ) : (
                                                 <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>

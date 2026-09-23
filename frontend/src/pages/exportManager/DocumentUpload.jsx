@@ -12,6 +12,7 @@ import {
     getBulkImportErrors,
     retryBulkImport
 } from "../../api/exportManagerApi";
+import { deadlineColors, formatDeadline } from "../../utils/deadline";
 import "../../components/dashboard.css";
 
 // Bulk import job statuses that mean the batch job is still running, so status polling
@@ -247,6 +248,8 @@ export default function DocumentUpload() {
         const codeStr = (doc.orderCode || "").toLowerCase();
         return idStr.includes(search) || nameStr.includes(search) || codeStr.includes(search);
     });
+
+    const orderByCode = Object.fromEntries(orders.map((o) => [o.orderCode, o]));
 
     const handlePreview = async (doc) => {
         try {
@@ -560,6 +563,7 @@ export default function DocumentUpload() {
                             <th>Document Name</th>
                             <th>Type</th>
                             <th>Order Code</th>
+                            <th>Doc Deadline</th>
                             <th>Uploaded At</th>
                             <th>File Size</th>
                             <th>Actions</th>
@@ -568,16 +572,19 @@ export default function DocumentUpload() {
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>Loading document repository...</td>
+                                <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>Loading document repository...</td>
                             </tr>
                         ) : filteredDocs.length === 0 ? (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
+                                <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
                                     {uploadedDocs.length === 0 ? "No uploaded trade documents found." : "No matching documents found."}
                                 </td>
                             </tr>
                         ) : (
-                            filteredDocs.map((doc) => (
+                            filteredDocs.map((doc) => {
+                                const relatedOrder = orderByCode[doc.orderCode];
+                                const deadline = relatedOrder?.documentDeadline;
+                                return (
                                 <tr key={doc.id}>
                                     <td style={{ fontWeight: 600 }}>DOC-{doc.id}</td>
                                     <td style={{ fontWeight: 600, color: "#1e293b" }}>{doc.fileName}</td>
@@ -590,6 +597,18 @@ export default function DocumentUpload() {
                                         </span>
                                     </td>
                                     <td><span style={{ fontWeight: 600, color: "#2563eb" }}>{doc.orderCode}</span></td>
+                                    <td>
+                                        {deadline ? (
+                                            <span style={{
+                                                padding: "3px 8px", borderRadius: "6px", fontSize: "12px", fontWeight: 600,
+                                                background: deadlineColors(deadline).bg, color: deadlineColors(deadline).text
+                                            }} title={relatedOrder?.deadlineNote || ""}>
+                                                {formatDeadline(deadline)}
+                                            </span>
+                                        ) : (
+                                            <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>
+                                        )}
+                                    </td>
                                     <td style={{ color: "#64748b" }}>{doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : "N/A"}</td>
                                     <td style={{ color: "#64748b" }}>{formatBytes(doc.fileSizeBytes)}</td>
                                     <td>
@@ -603,7 +622,8 @@ export default function DocumentUpload() {
                                         </div>
                                     </td>
                                 </tr>
-                            ))
+                                );
+                            })
                         )}
                     </tbody>
                 </table>

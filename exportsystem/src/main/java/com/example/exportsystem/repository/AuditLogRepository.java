@@ -8,11 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AuditLogRepository extends JpaRepository<AuditLog, Long> {
 
+    // Powers the Admin Dashboard's "Last log Xm ago" subtitle.
+    Optional<AuditLog> findFirstByOrderByCreatedAtDesc();
+
     // search matches actor email/action/details; action filters to an exact action label.
-    // Both optional (pass null to skip).
+    
     @Query(value = """
             SELECT a FROM AuditLog a
             WHERE (CAST(:search AS string) IS NULL OR LOWER(a.actorEmail) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%'))

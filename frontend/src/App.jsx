@@ -13,9 +13,9 @@ import AboutPage from "./pages/AboutPage";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import Users from "./pages/admin/Users";
-import Roles from "./pages/admin/Roles";
 import AuditLogs from "./pages/admin/AuditLogs";
 import SystemReports from "./pages/admin/SystemReports";
+import Claims from "./pages/admin/Claims";
 
 
 import ExportManagerDashboard from "./pages/exportManager/ExportManagerDashboard";
@@ -31,6 +31,7 @@ import ClientOrders from "./pages/client/ClientOrders";
 import ClientShipments from "./pages/client/ClientShipments";
 import ClientInvoices from "./pages/client/ClientInvoices";
 import ClientDocuments from "./pages/client/ClientDocuments";
+import ClientClaims from "./pages/client/ClientClaims";
 
 function App() {
     return (
@@ -46,9 +47,9 @@ function App() {
                     {/* Admin Portal Routes */}
                     <Route path="/admin" element={<ProtectedRoute portal="admin"><AdminDashboard /></ProtectedRoute>} />
                     <Route path="/admin/users" element={<ProtectedRoute portal="admin"><Users /></ProtectedRoute>} />
-                    <Route path="/admin/roles" element={<ProtectedRoute portal="admin"><Roles /></ProtectedRoute>} />
                     <Route path="/admin/audit-logs" element={<ProtectedRoute portal="admin"><AuditLogs /></ProtectedRoute>} />
                     <Route path="/admin/reports" element={<ProtectedRoute portal="admin"><SystemReports /></ProtectedRoute>} />
+                    <Route path="/admin/claims" element={<ProtectedRoute portal="admin"><Claims /></ProtectedRoute>} />
 
                     {/* Export Manager Portal Routes */}
                     <Route path="/manager" element={<ProtectedRoute portal="manager"><ExportManagerDashboard /></ProtectedRoute>} />
@@ -64,6 +65,7 @@ function App() {
                     <Route path="/client/shipments" element={<ProtectedRoute portal="client" permission="VIEW_SHIPMENTS"><ClientShipments /></ProtectedRoute>} />
                     <Route path="/client/invoices" element={<ProtectedRoute portal="client"><ClientInvoices /></ProtectedRoute>} />
                     <Route path="/client/documents" element={<ProtectedRoute portal="client"><ClientDocuments /></ProtectedRoute>} />
+                    <Route path="/client/claims" element={<ProtectedRoute portal="client"><ClientClaims /></ProtectedRoute>} />
 
                     {/* Catch-all fallback */}
                     <Route path="*" element={<Navigate to="/" replace />} />

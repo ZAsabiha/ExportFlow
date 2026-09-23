@@ -19,6 +19,7 @@ public final class PaginationDefaults {
     public static final int USERS_PAGE_SIZE = 10;
     public static final int AUDIT_LOGS_PAGE_SIZE = 10;
     public static final int ADMIN_REPORTS_PAGE_SIZE = 20;
+    public static final int CLAIMS_PAGE_SIZE = 20;
 
 
     private static final int MAX_PAGE_SIZE = 500;

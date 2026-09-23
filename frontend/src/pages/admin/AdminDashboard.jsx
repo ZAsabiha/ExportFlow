@@ -1,24 +1,86 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import { Users, ShieldCheck, FileText, KeyRound, ArrowUpRight, Activity } from "lucide-react";
 import "../../components/dashboard.css";
 import { useNavigate } from "react-router-dom";
+import { getAdminDashboardSummary, getAuditLogs } from "../../api/adminApi";
+import { ApiError } from "../../api/client";
+
+const ROLE_META = {
+    ADMIN: { label: "Admin", color: "#2563eb", description: "Full CRUD control, user & role management, audit log access, data override." },
+    EXPORT_MANAGER: { label: "Export Manager", color: "#059669", description: "Create/update orders & shipments, generate download tokens, upload docs." },
+    CLIENT: { label: "Client (Buyer)", color: "#d97706", description: "Read-only access to own orders/invoices, unlock docs using tokens." },
+};
+
+const ROLE_LABEL = { ADMIN: "Admin", EXPORT_MANAGER: "Export Manager", CLIENT: "Client" };
+
+const ROLE_BADGE_STYLE = {
+    ADMIN: { background: "#fee2e2", color: "#991b1b" },
+    EXPORT_MANAGER: { background: "#dbeafe", color: "#1e40af" },
+    CLIENT: { background: "#fef3c7", color: "#92400e" },
+};
+
+function errorMessage(err, fallback) {
+    return err instanceof ApiError && err.message ? err.message : fallback;
+}
+
+function timeAgo(isoString) {
+    if (!isoString) return "No logs yet";
+    const diffMs = Date.now() - new Date(isoString).getTime();
+    const minutes = Math.floor(diffMs / 60000);
+    if (minutes < 1) return "Last log just now";
+    if (minutes < 60) return `Last log ${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `Last log ${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `Last log ${days}d ago`;
+}
 
 export default function AdminDashboard() {
     const navigate = useNavigate();
 
-    const stats = [
-        { title: "Total Users", value: "42", subtitle: "3 Roles Active", icon: <Users size={24} /> },
-        { title: "Active Tokens", value: "128", subtitle: "99.4% Verified", icon: <KeyRound size={24} /> },
-        { title: "System Audit Logs", value: "1,840", subtitle: "Last log 2m ago", icon: <FileText size={24} /> },
-        { title: "Role Security Score", value: "100%", subtitle: "Spring Security Active", icon: <ShieldCheck size={24} /> }
-    ];
+    const [summary, setSummary] = useState(null);
+    const [summaryError, setSummaryError] = useState(null);
 
-    const recentLogs = [
-        { id: "LOG-501", user: "manager@exportflow.com", role: "Export Manager", action: "Generated Download Token TOK-EXP-9921", time: "10 mins ago" },
-        { id: "LOG-502", user: "buyer@globaltrade.com", role: "Client", action: "Downloaded Commercial Invoice PDF", time: "25 mins ago" },
-        { id: "LOG-503", user: "admin@exportflow.com", role: "Admin", action: "Updated user role for sales@exportflow.com", time: "1 hour ago" },
-        { id: "LOG-504", user: "manager@exportflow.com", role: "Export Manager", action: "Uploaded Bill of Lading (BL-8849)", time: "3 hours ago" }
+    const [recentLogs, setRecentLogs] = useState([]);
+    const [logsError, setLogsError] = useState(null);
+    const [logsLoading, setLogsLoading] = useState(true);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setSummary(await getAdminDashboardSummary());
+                setSummaryError(null);
+            } catch (err) {
+                setSummaryError(errorMessage(err, "Couldn't load dashboard summary."));
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            setLogsLoading(true);
+            try {
+                const data = await getAuditLogs({ page: 0, size: 4 });
+                setRecentLogs(data.content);
+                setLogsError(null);
+            } catch (err) {
+                setRecentLogs([]);
+                setLogsError(errorMessage(err, "Couldn't load audit logs."));
+            } finally {
+                setLogsLoading(false);
+            }
+        })();
+    }, []);
+
+    const activeAccountsByRole = summary?.activeAccountsByRole ?? {};
+    const rolesActive = Object.keys(activeAccountsByRole).length;
+
+    const stats = [
+        { title: "Total Users", value: Number(summary?.totalUsers ?? 0).toLocaleString(), subtitle: `${rolesActive} Roles Active`, icon: <Users size={24} /> },
+        { title: "Active Tokens", value: Number(summary?.activeTokens ?? 0).toLocaleString(), subtitle: `${(summary?.activeTokenRate ?? 0).toFixed(1)}% Active`, icon: <KeyRound size={24} /> },
+        { title: "System Audit Logs", value: Number(summary?.totalAuditLogs ?? 0).toLocaleString(), subtitle: timeAgo(summary?.lastAuditLogAt), icon: <FileText size={24} /> },
+        { title: "Role Security Score", value: "100%", subtitle: "Spring Security Active", icon: <ShieldCheck size={24} /> }
     ];
 
     return (
@@ -37,6 +99,10 @@ export default function AdminDashboard() {
                     </button>
                 </div>
             </div>
+
+            {summaryError && (
+                <p style={{ color: "#dc2626", fontSize: "13px", marginTop: "10px" }}>{summaryError}</p>
+            )}
 
             <div className="stats-grid">
                 {stats.map((item, idx) => (
@@ -62,29 +128,17 @@ export default function AdminDashboard() {
                     </div>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "15px" }}>
-                        <div style={{ border: "1px solid #e2e8f0", padding: "16px", borderRadius: "10px", background: "#f8fafc" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "#1e293b" }}>
-                                <ShieldCheck size={18} color="#2563eb" /> Admin
+                        {Object.entries(ROLE_META).map(([roleKey, meta]) => (
+                            <div key={roleKey} style={{ border: "1px solid #e2e8f0", padding: "16px", borderRadius: "10px", background: "#f8fafc" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "#1e293b" }}>
+                                    {roleKey === "ADMIN" ? <ShieldCheck size={18} color={meta.color} /> : <Users size={18} color={meta.color} />} {meta.label}
+                                </div>
+                                <p style={{ fontSize: "13px", color: "#64748b", margin: "8px 0" }}>{meta.description}</p>
+                                <span style={{ fontSize: "12px", fontWeight: 600, color: meta.color }}>
+                                    {Number(activeAccountsByRole[roleKey] ?? 0).toLocaleString()} Active Accounts
+                                </span>
                             </div>
-                            <p style={{ fontSize: "13px", color: "#64748b", margin: "8px 0" }}>Full CRUD control, user & role management, audit log access, data override.</p>
-                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#2563eb" }}>4 Active Accounts</span>
-                        </div>
-
-                        <div style={{ border: "1px solid #e2e8f0", padding: "16px", borderRadius: "10px", background: "#f8fafc" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "#059669" }}>
-                                <Users size={18} color="#059669" /> Export Manager
-                            </div>
-                            <p style={{ fontSize: "13px", color: "#64748b", margin: "8px 0" }}>Create/update orders & shipments, generate download tokens, upload docs.</p>
-                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#059669" }}>14 Active Accounts</span>
-                        </div>
-
-                        <div style={{ border: "1px solid #e2e8f0", padding: "16px", borderRadius: "10px", background: "#f8fafc" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "#d97706" }}>
-                                <Users size={18} color="#d97706" /> Client (Buyer)
-                            </div>
-                            <p style={{ fontSize: "13px", color: "#64748b", margin: "8px 0" }}>Read-only access to own orders/invoices, unlock docs using tokens.</p>
-                            <span style={{ fontSize: "12px", fontWeight: 600, color: "#d97706" }}>24 Active Accounts</span>
-                        </div>
+                        ))}
                     </div>
                 </div>
 
@@ -93,10 +147,6 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "15px" }}>
                         <button className="secondary-action" onClick={() => navigate("/admin/users")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 0 }}>
                             <span>User Management</span>
-                            <ArrowUpRight size={16} />
-                        </button>
-                        <button className="secondary-action" onClick={() => navigate("/admin/roles")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 0 }}>
-                            <span>Roles & Permissions</span>
                             <ArrowUpRight size={16} />
                         </button>
                         <button className="secondary-action" onClick={() => navigate("/admin/audit-logs")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 0 }}>
@@ -130,26 +180,45 @@ export default function AdminDashboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {recentLogs.map((log) => (
-                            <tr key={log.id}>
-                                <td style={{ fontWeight: 600 }}>{log.id}</td>
-                                <td>{log.user}</td>
-                                <td>
-                                    <span style={{
-                                        padding: "3px 8px",
-                                        borderRadius: "6px",
-                                        fontSize: "12px",
-                                        fontWeight: 600,
-                                        background: log.role === "Admin" ? "#fee2e2" : log.role === "Export Manager" ? "#dbeafe" : "#fef3c7",
-                                        color: log.role === "Admin" ? "#991b1b" : log.role === "Export Manager" ? "#1e40af" : "#92400e"
-                                    }}>
-                                        {log.role}
-                                    </span>
+                        {logsLoading ? (
+                            <tr>
+                                <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                    Loading recent logs...
                                 </td>
-                                <td>{log.action}</td>
-                                <td style={{ color: "#64748b" }}>{log.time}</td>
                             </tr>
-                        ))}
+                        ) : logsError ? (
+                            <tr>
+                                <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                    {logsError}
+                                </td>
+                            </tr>
+                        ) : recentLogs.length === 0 ? (
+                            <tr>
+                                <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                    No audit logs yet.
+                                </td>
+                            </tr>
+                        ) : (
+                            recentLogs.map((log) => (
+                                <tr key={log.id}>
+                                    <td style={{ fontWeight: 600 }}>LOG-{log.id}</td>
+                                    <td>{log.user || "—"}</td>
+                                    <td>
+                                        <span style={{
+                                            padding: "3px 8px",
+                                            borderRadius: "6px",
+                                            fontSize: "12px",
+                                            fontWeight: 600,
+                                            ...(ROLE_BADGE_STYLE[log.role] || { background: "#f1f5f9", color: "#475569" })
+                                        }}>
+                                            {ROLE_LABEL[log.role] || log.role || "—"}
+                                        </span>
+                                    </td>
+                                    <td>{log.action}</td>
+                                    <td style={{ color: "#64748b" }}>{new Date(log.timestamp).toLocaleString()}</td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

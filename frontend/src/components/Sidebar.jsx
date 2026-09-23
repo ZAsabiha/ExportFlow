@@ -9,8 +9,8 @@ import {
     Receipt,
     KeyRound,
     BarChart3,
-    ShieldCheck,
     History,
+    AlertTriangle,
     LogOut
 } from "lucide-react";
 
@@ -39,9 +39,9 @@ export default function Sidebar() {
         Admin: [
             { name: "Dashboard", path: "/admin", icon: <LayoutDashboard size={20} /> },
             { name: "Users", path: "/admin/users", icon: <Users size={20} /> },
-            { name: "Roles", path: "/admin/roles", icon: <ShieldCheck size={20} /> },
             { name: "Audit Logs", path: "/admin/audit-logs", icon: <History size={20} /> },
             { name: "Reports", path: "/admin/reports", icon: <BarChart3 size={20} /> },
+            { name: "Claims", path: "/admin/claims", icon: <AlertTriangle size={20} /> },
         ],
         "Export Manager": [
             { name: "Dashboard", path: "/manager", icon: <LayoutDashboard size={20} /> },
@@ -56,6 +56,7 @@ export default function Sidebar() {
             { name: "Shipments", path: "/client/shipments", icon: <Package size={20} />, permission: "VIEW_SHIPMENTS" },
             { name: "Invoices", path: "/client/invoices", icon: <Receipt size={20} /> },
             { name: "Documents", path: "/client/documents", icon: <FileText size={20} /> },
+            { name: "Claims", path: "/client/claims", icon: <AlertTriangle size={20} /> },
         ],
     };
 

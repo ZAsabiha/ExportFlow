@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,17 +16,13 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByOrderCode(String orderCode);
 
-    // Used by the Client Portal: orders are matched to the logged-in buyer by
-    // display name (Order has no direct FK to User - see ClientServiceImpl).
+
     List<Order> findByBuyerNameIgnoreCaseOrderByCreatedAtDesc(String buyerName);
 
-    // Paginated variant of the above for the client's "order history" list view; sort is
-    // supplied by the caller's Pageable instead of being baked into the query.
+
     Page<Order> findByBuyerNameIgnoreCase(String buyerName, Pageable pageable);
 
-    // Global search - Export Manager/Admin portals: matches across every field the
-    // top-of-page search box promises ("Search orders, buyers, shipments...").
-    // The Pageable caller passes in a small fixed limit; this isn't a browsable page.
+ 
     @Query("""
             SELECT o FROM Order o
             WHERE LOWER(o.orderCode) LIKE LOWER(CONCAT('%', :q, '%'))
@@ -36,8 +33,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             """)
     List<Order> searchAll(@Param("q") String q, Pageable pageable);
 
-    // Global search - Client portal: same field set, scoped to the logged-in buyer's
-    // own orders only.
+
     @Query("""
             SELECT o FROM Order o
             WHERE LOWER(o.buyerName) = LOWER(:buyerName)
@@ -46,4 +42,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                 OR LOWER(o.destination) LIKE LOWER(CONCAT('%', :q, '%')))
             """)
     List<Order> searchForBuyer(@Param("buyerName") String buyerName, @Param("q") String q, Pageable pageable);
+
+    // Powers the deadline reminder scheduler: orders with a deadline at or before the cutoff
+    // (now + 24h, so this also catches ones already overdue) that haven't been reminded yet.
+    List<Order> findByDocumentDeadlineNotNullAndDocumentDeadlineLessThanEqualAndDeadlineReminderSentFalse(LocalDateTime cutoff);
 }
