@@ -103,7 +103,7 @@ export default function ExportManagerDashboard() {
             </div>
 
             {error && (
-                <div style={{ background: "#fee2e2", color: "#991b1b", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
+                <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
                     {error}
                 </div>
             )}
@@ -147,7 +147,7 @@ export default function ExportManagerDashboard() {
                     <h2>Recent Orders</h2>
                     <button
                         onClick={() => navigate("/manager/orders")}
-                        style={{ background: "none", border: "none", color: "#2563eb", cursor: "pointer", fontWeight: 600, fontSize: "14px" }}
+                        style={{ background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", fontWeight: 600, fontSize: "14px" }}
                     >
                         View All Orders &rarr;
                     </button>
@@ -171,23 +171,23 @@ export default function ExportManagerDashboard() {
                             </tr>
                         ) : recentOrders.length === 0 ? (
                             <tr>
-                                <td colSpan="6" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>No orders found yet - client requests will appear here.</td>
+                                <td colSpan="6" style={{ textAlign: "center", padding: "20px", color: "var(--slate-500)" }}>No orders found yet - client requests will appear here.</td>
                             </tr>
                         ) : (
                             recentOrders.map((order) => (
                                 <tr key={order.id}>
-                                    <td style={{ fontWeight: 700, color: "#1e293b" }}>{order.orderCode || `EXP-${order.id}`}</td>
+                                    <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{order.orderCode || `EXP-${order.id}`}</td>
                                     <td style={{ fontWeight: 600 }}>{order.buyerName}</td>
-                                    <td style={{ color: "#475569" }}>{order.productName ? `${order.productName} (${order.quantity})` : "General Export Cargo"}</td>
-                                    <td style={{ fontWeight: 700, color: "#0f766e" }}>${Number(order.amount).toLocaleString()}</td>
+                                    <td style={{ color: "var(--slate-600)" }}>{order.productName ? `${order.productName} (${order.quantity})` : "General Export Cargo"}</td>
+                                    <td style={{ fontWeight: 700, color: "var(--teal-700)" }}>${Number(order.amount).toLocaleString()}</td>
                                     <td>
                                         <span style={{
                                             padding: "4px 10px",
                                             borderRadius: "12px",
                                             fontSize: "12px",
                                             fontWeight: 700,
-                                            background: order.stage === "COMPLETED" ? "#dcfce7" : "#dbeafe",
-                                            color: order.stage === "COMPLETED" ? "#15803d" : "#1e40af"
+                                            background: order.stage === "COMPLETED" ? "var(--green-100)" : "var(--blue-100)",
+                                            color: order.stage === "COMPLETED" ? "var(--green-700)" : "var(--blue-800)"
                                         }}>
                                             {order.stage}
                                         </span>
@@ -196,7 +196,7 @@ export default function ExportManagerDashboard() {
                                         <span style={{
                                             fontSize: "12px",
                                             fontWeight: 600,
-                                            color: order.paymentStatus === "PAID" ? "#16a34a" : "#d97706"
+                                            color: order.paymentStatus === "PAID" ? "var(--green-600)" : "var(--amber-600)"
                                         }}>
                                             {order.paymentStatus}
                                         </span>

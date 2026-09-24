@@ -321,7 +321,6 @@ Tests run against an in-memory **H2** database, and the PostgreSQL-only SQL scri
 - **Cloud file storage:** move trade documents from local disk to S3, Azure Blob, or MinIO, and serve downloads through pre-signed URLs.
 - **Online payments:** connect a payment gateway (such as Stripe or SSLCommerz) so invoices can be paid online and the order moves to `PAID` automatically.
 - **Live carrier tracking:** pull shipment status and ETA from carrier and logistics APIs instead of entering them by hand.
-- **Real-time notifications:** push notifications over WebSocket or Server-Sent Events instead of polling.
 - **Admin-managed roles:** a UI for editing role permissions, a separate approval step for Export Manager and Admin sign-ups, and **2FA / email verification**.
 - **Analytics dashboard:** charts of export volume, revenue by destination, and turnaround time per stage.
 - **Document integrity:** file checksums, virus scanning of uploads, and digital signatures or QR verification for issued invoices and certificates.

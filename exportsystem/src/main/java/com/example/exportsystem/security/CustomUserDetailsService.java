@@ -27,9 +27,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        // Roles gate which portal/controllers a user can reach (hasRole(...)); permissions are
-        // extra authorities configured per-role (Roles page) and shared by every user with that
-        // role, exposed unprefixed (hasAuthority(...)).
         List<GrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));

@@ -7,9 +7,9 @@ import { ApiError } from "../../api/client";
 import "../../components/dashboard.css";
 
 const ROLE_BADGE_STYLES = {
-    ADMIN: { background: "#fee2e2", color: "#991b1b" },
-    EXPORT_MANAGER: { background: "#dbeafe", color: "#1e40af" },
-    CLIENT: { background: "#fef3c7", color: "#92400e" },
+    ADMIN: { background: "var(--red-100)", color: "var(--red-800)" },
+    EXPORT_MANAGER: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    CLIENT: { background: "var(--amber-100)", color: "var(--amber-800)" },
 };
 
 // Matches the action labels AuditLogServiceImpl callers actually log - see backend.
@@ -88,7 +88,7 @@ export default function AuditLogs() {
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
                 <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center" }}>
                     <div className="search-box" style={{ flex: 1, minWidth: "280px" }}>
-                        <Search size={18} color="#64748b" />
+                        <Search size={18} color="var(--slate-500)" />
                         <input
                             type="text"
                             placeholder="Search logs by user or activity details..."
@@ -98,14 +98,14 @@ export default function AuditLogs() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <Filter size={18} color="#64748b" />
+                        <Filter size={18} color="var(--slate-500)" />
                         <select
                             value={actionFilter}
                             onChange={(e) => {
                                 setActionFilter(e.target.value);
                                 setPage(0);
                             }}
-                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }}
+                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--slate-300)", outline: "none" }}
                         >
                             <option value="ALL">All Actions</option>
                             {ACTIONS.map((action) => (
@@ -131,17 +131,17 @@ export default function AuditLogs() {
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={6} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={6} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     Loading logs...
                                 </td>
                             </tr>
                         ) : loadError ? (
                             <tr>
-                                <td colSpan={6} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={6} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     <p>{loadError}</p>
                                     <button
                                         onClick={fetchLogs}
-                                        style={{ marginTop: "8px", background: "none", border: "none", color: "#2563eb", cursor: "pointer", fontSize: "13px" }}
+                                        style={{ marginTop: "8px", background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", fontSize: "13px" }}
                                     >
                                         Retry
                                     </button>
@@ -149,13 +149,13 @@ export default function AuditLogs() {
                             </tr>
                         ) : logs.length === 0 ? (
                             <tr>
-                                <td colSpan={6} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={6} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     {hasActiveFilters ? (
                                         <>
                                             No logs match your search/filter.{" "}
                                             <button
                                                 onClick={clearFilters}
-                                                style={{ background: "none", border: "none", color: "#2563eb", cursor: "pointer", fontSize: "13px" }}
+                                                style={{ background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", fontSize: "13px" }}
                                             >
                                                 Clear filters
                                             </button>
@@ -168,7 +168,7 @@ export default function AuditLogs() {
                         ) : (
                             logs.map((log) => (
                                 <tr key={log.id}>
-                                    <td style={{ fontSize: "13px", color: "#64748b" }}>{log.timestamp?.slice(0, 19).replace("T", " ")}</td>
+                                    <td style={{ fontSize: "13px", color: "var(--slate-500)" }}>{log.timestamp?.slice(0, 19).replace("T", " ")}</td>
                                     <td>{log.user || "—"}</td>
                                     <td>
                                         <span style={{
@@ -176,14 +176,14 @@ export default function AuditLogs() {
                                             borderRadius: "6px",
                                             fontSize: "11px",
                                             fontWeight: 700,
-                                            ...(ROLE_BADGE_STYLES[log.role] || { background: "#f1f5f9", color: "#475569" }),
+                                            ...(ROLE_BADGE_STYLES[log.role] || { background: "var(--slate-100)", color: "var(--slate-600)" }),
                                         }}>
                                             {log.role}
                                         </span>
                                     </td>
-                                    <td><span style={{ fontWeight: 600, color: "#334155" }}>{log.action}</span></td>
-                                    <td style={{ fontSize: "13px", color: "#475569" }}>{log.details}</td>
-                                    <td style={{ fontSize: "12px", fontFamily: "var(--mono)", color: "#64748b" }}>{log.ip || "—"}</td>
+                                    <td><span style={{ fontWeight: 600, color: "var(--slate-700)" }}>{log.action}</span></td>
+                                    <td style={{ fontSize: "13px", color: "var(--slate-600)" }}>{log.details}</td>
+                                    <td style={{ fontSize: "12px", fontFamily: "var(--mono)", color: "var(--slate-500)" }}>{log.ip || "—"}</td>
                                 </tr>
                             ))
                         )}

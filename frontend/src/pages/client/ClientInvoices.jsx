@@ -54,7 +54,7 @@ export default function ClientInvoices() {
             <p className="page-subtitle">Billing details, payment status and downloadable commercial invoices.</p>
 
             <div className="panel table-panel" style={{ marginTop: "25px" }}>
-                {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
+                {error && <p role="alert" style={{ color: "var(--red-700)" }}>{error}</p>}
                 <table>
                     <thead>
                         <tr>
@@ -72,16 +72,16 @@ export default function ClientInvoices() {
                         {!loading && invoices.length === 0 && <tr><td colSpan="7">No invoices found.</td></tr>}
                         {!loading && invoices.map((inv) => (
                             <tr key={inv.id}>
-                                <td style={{ fontWeight: 700, color: "#1e293b" }}>{inv.id}</td>
-                                <td><span style={{ fontWeight: 600, color: "#2563eb" }}>{inv.orderCode}</span></td>
-                                <td style={{ fontWeight: 700, color: "#0f766e" }}>{inv.amount} {inv.currency || ""}</td>
-                                <td style={{ color: "#64748b" }}>{inv.issueDate}</td>
-                                <td style={{ color: "#64748b" }}>{inv.dueDate}</td>
+                                <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{inv.id}</td>
+                                <td><span style={{ fontWeight: 600, color: "var(--blue-600)" }}>{inv.orderCode}</span></td>
+                                <td style={{ fontWeight: 700, color: "var(--teal-700)" }}>{inv.amount} {inv.currency || ""}</td>
+                                <td style={{ color: "var(--slate-500)" }}>{inv.issueDate}</td>
+                                <td style={{ color: "var(--slate-500)" }}>{inv.dueDate}</td>
                                 <td>
                                     <span style={{
                                         padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
-                                        background: inv.status === "PAID" ? "#dcfce7" : "#fef3c7",
-                                        color: inv.status === "PAID" ? "#15803d" : "#92400e"
+                                        background: inv.status === "PAID" ? "var(--green-100)" : "var(--amber-100)",
+                                        color: inv.status === "PAID" ? "var(--green-700)" : "var(--amber-800)"
                                     }}>
                                         {inv.status}
                                     </span>
@@ -90,13 +90,13 @@ export default function ClientInvoices() {
                                     <div style={{ display: "flex", gap: "10px" }}>
                                         <button
                                             onClick={() => handlePreview(inv)}
-                                            style={{ background: "none", border: "none", color: "#3b82f6", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                                            style={{ background: "none", border: "none", color: "var(--blue-500)", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
                                         >
                                             <Eye size={14} /> Preview
                                         </button>
                                         <button
                                             onClick={() => handleDownload(inv)}
-                                            style={{ background: "none", border: "none", color: "#059669", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                                            style={{ background: "none", border: "none", color: "var(--emerald-600)", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
                                         >
                                             <Download size={14} /> Download
                                         </button>

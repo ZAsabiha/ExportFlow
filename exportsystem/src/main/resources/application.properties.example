@@ -19,6 +19,8 @@ spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.defer-datasource-initialization=true
 spring.sql.init.mode=always
 spring.sql.init.platform=postgresql
+spring.sql.init.data-locations=optional:classpath:access-rules.sql
+app.security.access-rules-refresh-ms=30000
 
 # Spring Batch (bulk document import): we launch documentImportJob ourselves from
 # BulkDocumentImportController, so don't auto-run any Job bean on startup. Postgres

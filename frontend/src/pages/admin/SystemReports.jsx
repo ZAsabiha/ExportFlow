@@ -11,22 +11,22 @@ const STAGES = ["CREATED", "APPROVED", "DOCUMENTS", "PAID", "SHIPMENT", "COMPLET
 const PAYMENT_STATUSES = ["PENDING", "PAID"];
 
 const REQUEST_STATUS_STYLE = {
-    PENDING: { background: "#fef3c7", color: "#92400e" },
-    QUOTED: { background: "#dbeafe", color: "#1e40af" },
-    ACCEPTED: { background: "#dcfce7", color: "#15803d" },
-    REJECTED: { background: "#fee2e2", color: "#991b1b" },
+    PENDING: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    QUOTED: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    ACCEPTED: { background: "var(--green-100)", color: "var(--green-700)" },
+    REJECTED: { background: "var(--red-100)", color: "var(--red-800)" },
 };
 
 const PAYMENT_STATUS_STYLE = {
-    PENDING: { background: "#fef3c7", color: "#92400e" },
-    PAID: { background: "#dcfce7", color: "#15803d" },
+    PENDING: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    PAID: { background: "var(--green-100)", color: "var(--green-700)" },
 };
 
 const SHIPMENT_STATUS_STYLE = {
-    PENDING: { background: "#f1f5f9", color: "#475569" },
-    IN_TRANSIT: { background: "#dbeafe", color: "#1e40af" },
-    DELIVERED: { background: "#dcfce7", color: "#15803d" },
-    DELAYED: { background: "#fee2e2", color: "#991b1b" },
+    PENDING: { background: "var(--slate-100)", color: "var(--slate-600)" },
+    IN_TRANSIT: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    DELIVERED: { background: "var(--green-100)", color: "var(--green-700)" },
+    DELAYED: { background: "var(--red-100)", color: "var(--red-800)" },
 };
 
 function errorMessage(err, fallback) {
@@ -35,7 +35,7 @@ function errorMessage(err, fallback) {
 
 function badge(value, styleMap) {
     if (!value) return "—";
-    const style = styleMap[value] || { background: "#f1f5f9", color: "#475569" };
+    const style = styleMap[value] || { background: "var(--slate-100)", color: "var(--slate-600)" };
     return (
         <span style={{ padding: "3px 8px", borderRadius: "6px", fontSize: "11px", fontWeight: 700, ...style }}>
             {value.replace(/_/g, " ")}
@@ -146,18 +146,18 @@ export default function SystemReports() {
                         <Download size={18} />
                         {downloading ? "Preparing PDF..." : "Download Full Report (PDF)"}
                     </button>
-                    {downloadError && <p style={{ color: "#dc2626", fontSize: "12px", marginTop: "6px", textAlign: "right" }}>{downloadError}</p>}
+                    {downloadError && <p style={{ color: "var(--red-600)", fontSize: "12px", marginTop: "6px", textAlign: "right" }}>{downloadError}</p>}
                 </div>
             </div>
 
             {summaryError && (
-                <p style={{ color: "#dc2626", fontSize: "13px", marginTop: "10px" }}>{summaryError}</p>
+                <p style={{ color: "var(--red-600)", fontSize: "13px", marginTop: "10px" }}>{summaryError}</p>
             )}
 
             <div className="stats-grid">
                 <div className="stat-card">
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <DollarSign size={24} color="#10b981" />
+                        <DollarSign size={24} color="var(--emerald-500)" />
                     </div>
                     <h3>${Number(summary?.totalExportValue ?? 0).toLocaleString()}</h3>
                     <p style={{ fontWeight: 600, margin: 0 }}>Total Export Value</p>
@@ -165,8 +165,8 @@ export default function SystemReports() {
 
                 <div className="stat-card">
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <Package size={24} color="#3b82f6" />
-                        <span style={{ color: "#3b82f6", fontSize: "12px", fontWeight: 700 }}>{Number(summary?.totalOrders ?? 0).toLocaleString()} Orders</span>
+                        <Package size={24} color="var(--blue-500)" />
+                        <span style={{ color: "var(--blue-500)", fontSize: "12px", fontWeight: 700 }}>{Number(summary?.totalOrders ?? 0).toLocaleString()} Orders</span>
                     </div>
                     <h3>{Number(summary?.exportedVolume ?? 0).toLocaleString()} units</h3>
                     <p style={{ fontWeight: 600, margin: 0 }}>Exported Volume</p>
@@ -174,7 +174,7 @@ export default function SystemReports() {
 
                 <div className="stat-card">
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <Truck size={24} color="#8b5cf6" />
+                        <Truck size={24} color="var(--violet-500)" />
                     </div>
                     <h3>{Number(summary?.activeShipments ?? 0).toLocaleString()}</h3>
                     <p style={{ fontWeight: 600, margin: 0 }}>Active Shipments</p>
@@ -182,8 +182,8 @@ export default function SystemReports() {
 
                 <div className="stat-card">
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <Clock3 size={24} color="#f59e0b" />
-                        <span style={{ color: "#f59e0b", fontSize: "12px", fontWeight: 700 }}>{Number(summary?.pendingRequests ?? 0).toLocaleString()} pending</span>
+                        <Clock3 size={24} color="var(--amber-500)" />
+                        <span style={{ color: "var(--amber-500)", fontSize: "12px", fontWeight: 700 }}>{Number(summary?.pendingRequests ?? 0).toLocaleString()} pending</span>
                     </div>
                     <h3>{(summary?.onTimeDeliveryRate ?? 100).toFixed(1)}%</h3>
                     <p style={{ fontWeight: 600, margin: 0 }}>On-Time Delivery Rate</p>
@@ -193,7 +193,7 @@ export default function SystemReports() {
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
                 <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center" }}>
                     <div className="search-box" style={{ flex: 1, minWidth: "280px" }}>
-                        <Search size={18} color="#64748b" />
+                        <Search size={18} color="var(--slate-500)" />
                         <input
                             type="text"
                             placeholder="Search by order code, buyer, product, or client..."
@@ -203,11 +203,11 @@ export default function SystemReports() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                        <Filter size={18} color="#64748b" />
+                        <Filter size={18} color="var(--slate-500)" />
                         <select
                             value={stageFilter}
                             onChange={(e) => { setStageFilter(e.target.value); setPage(0); }}
-                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }}
+                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--slate-300)", outline: "none" }}
                         >
                             <option value="ALL">All Stages</option>
                             {STAGES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -215,7 +215,7 @@ export default function SystemReports() {
                         <select
                             value={paymentFilter}
                             onChange={(e) => { setPaymentFilter(e.target.value); setPage(0); }}
-                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }}
+                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--slate-300)", outline: "none" }}
                         >
                             <option value="ALL">All Payment Status</option>
                             {PAYMENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -244,17 +244,17 @@ export default function SystemReports() {
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={11} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={11} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     Loading report...
                                 </td>
                             </tr>
                         ) : loadError ? (
                             <tr>
-                                <td colSpan={11} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={11} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     <p>{loadError}</p>
                                     <button
                                         onClick={fetchRows}
-                                        style={{ marginTop: "8px", background: "none", border: "none", color: "#2563eb", cursor: "pointer", fontSize: "13px" }}
+                                        style={{ marginTop: "8px", background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", fontSize: "13px" }}
                                     >
                                         Retry
                                     </button>
@@ -262,13 +262,13 @@ export default function SystemReports() {
                             </tr>
                         ) : rows.length === 0 ? (
                             <tr>
-                                <td colSpan={11} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={11} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     {hasActiveFilters ? (
                                         <>
                                             No orders match your search/filter.{" "}
                                             <button
                                                 onClick={clearFilters}
-                                                style={{ background: "none", border: "none", color: "#2563eb", cursor: "pointer", fontSize: "13px" }}
+                                                style={{ background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", fontSize: "13px" }}
                                             >
                                                 Clear filters
                                             </button>
@@ -281,17 +281,17 @@ export default function SystemReports() {
                         ) : (
                             rows.map((r) => (
                                 <tr key={r.orderId}>
-                                    <td style={{ fontWeight: 600, color: "#334155" }}>{r.orderCode}</td>
+                                    <td style={{ fontWeight: 600, color: "var(--slate-700)" }}>{r.orderCode}</td>
                                     <td>{r.buyerName}</td>
-                                    <td style={{ fontSize: "13px", color: "#64748b" }}>{r.createdByUsername || "—"}</td>
+                                    <td style={{ fontSize: "13px", color: "var(--slate-500)" }}>{r.createdByUsername || "—"}</td>
                                     <td>{r.productName}</td>
-                                    <td style={{ fontWeight: 700, color: "#0f766e" }}>${Number(r.orderAmount || 0).toLocaleString()}</td>
+                                    <td style={{ fontWeight: 700, color: "var(--teal-700)" }}>${Number(r.orderAmount || 0).toLocaleString()}</td>
                                     <td>{badge(r.requestStatus, REQUEST_STATUS_STYLE)}</td>
                                     <td>{r.orderStage}</td>
                                     <td>{badge(r.paymentStatus, PAYMENT_STATUS_STYLE)}</td>
-                                    <td style={{ fontSize: "13px", color: "#64748b" }}>{r.invoiceStatus || "—"}</td>
+                                    <td style={{ fontSize: "13px", color: "var(--slate-500)" }}>{r.invoiceStatus || "—"}</td>
                                     <td>{badge(r.shipmentStatus, SHIPMENT_STATUS_STYLE)}</td>
-                                    <td style={{ fontSize: "13px", color: "#64748b" }}>{r.shipmentEstimatedArrival || "—"}</td>
+                                    <td style={{ fontSize: "13px", color: "var(--slate-500)" }}>{r.shipmentEstimatedArrival || "—"}</td>
                                 </tr>
                             ))
                         )}

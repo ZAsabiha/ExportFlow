@@ -8,9 +8,9 @@ import { ApiError } from "../../api/client";
 import { DOC_TYPES, docTypeLabels, toggleDocType } from "../../utils/documentTypes";
 
 const STATUS_STYLE = {
-    OPEN: { background: "#fef3c7", color: "#92400e" },
-    RESOLVED: { background: "#dcfce7", color: "#15803d" },
-    REJECTED: { background: "#fee2e2", color: "#991b1b" }
+    OPEN: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    RESOLVED: { background: "var(--green-100)", color: "var(--green-700)" },
+    REJECTED: { background: "var(--red-100)", color: "var(--red-800)" }
 };
 
 function errorMessage(err, fallback) {
@@ -162,12 +162,12 @@ export default function Claims() {
                         ) : (
                             claims.map((c) => (
                                 <tr key={c.id}>
-                                    <td style={{ fontWeight: 700, color: "#1e293b" }}>{c.orderCode}</td>
+                                    <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{c.orderCode}</td>
                                     <td>{c.submittedByName || c.submittedByEmail}</td>
-                                    <td style={{ maxWidth: "280px", color: "#475569" }}>
+                                    <td style={{ maxWidth: "280px", color: "var(--slate-600)" }}>
                                         {c.message}
                                         {docTypeLabels(c.requestedDocuments).length > 0 && (
-                                            <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
+                                            <div style={{ fontSize: "12px", color: "var(--slate-500)", marginTop: "4px" }}>
                                                 Documents: {docTypeLabels(c.requestedDocuments).join(", ")}
                                             </div>
                                         )}
@@ -180,7 +180,7 @@ export default function Claims() {
                                             {c.status}
                                         </span>
                                     </td>
-                                    <td style={{ color: "#64748b" }}>{c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td>
                                     <td className="col-action">
                                         <button className="status-toggle activate" onClick={() => openReview(c)}>
                                             Review
@@ -207,16 +207,16 @@ export default function Claims() {
                 }}>
                     <div className="panel" style={{ width: "520px", maxWidth: "90%" }}>
                         <h2>Review claim · {reviewing.orderCode}</h2>
-                        <p style={{ color: "#475569", marginTop: "8px" }}>{reviewing.message}</p>
+                        <p style={{ color: "var(--slate-600)", marginTop: "8px" }}>{reviewing.message}</p>
                         {docTypeLabels(reviewing.requestedDocuments).length > 0 && (
-                            <p style={{ color: "#475569", marginTop: "6px", fontSize: "13px" }}>
+                            <p style={{ color: "var(--slate-600)", marginTop: "6px", fontSize: "13px" }}>
                                 <strong>Client needs:</strong> {docTypeLabels(reviewing.requestedDocuments).join(", ")}
                             </p>
                         )}
                         {reviewing.hasProofAttachment && (
                             <button
                                 onClick={() => handleViewProof(reviewing)}
-                                style={{ background: "none", border: "none", color: "#2563eb", cursor: "pointer", padding: 0, fontSize: "13px", marginTop: "6px" }}
+                                style={{ background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", padding: 0, fontSize: "13px", marginTop: "6px" }}
                             >
                                 View proof: {reviewing.proofOriginalFileName}
                             </button>
@@ -230,49 +230,49 @@ export default function Claims() {
                         )}
 
                         {reviewing.status !== "OPEN" ? (
-                            <p style={{ marginTop: "16px", color: "#64748b" }}>
+                            <p style={{ marginTop: "16px", color: "var(--slate-500)" }}>
                                 This claim was already {reviewing.status.toLowerCase()}: {reviewing.adminResponse}
                             </p>
                         ) : (
                             <form onSubmit={handleResolve} style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
                                 <div>
-                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Response to Client</label>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Response to Client</label>
                                     <textarea
                                         rows={3}
                                         required
                                         value={adminResponse}
                                         onChange={(e) => setAdminResponse(e.target.value)}
                                         placeholder="e.g. Checked with customs - documents are verified, deadline set for the export manager."
-                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                     />
                                 </div>
 
-                                <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", fontWeight: 600, color: "#475569" }}>
+                                <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>
                                     <input type="checkbox" checked={markVerified} onChange={(e) => setMarkVerified(e.target.checked)} />
                                     Mark order's documents as government-verified
                                 </label>
 
                                 <div style={{ display: "flex", gap: "10px" }}>
                                     <div style={{ flex: 1 }}>
-                                        <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Document Upload Deadline (optional)</label>
+                                        <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Document Upload Deadline (optional)</label>
                                         <input
                                             type="datetime-local"
                                             value={deadline}
                                             onChange={(e) => setDeadline(e.target.value)}
                                             disabled={!markVerified}
-                                            style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                            style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                         />
                                     </div>
                                 </div>
                                 {deadline && (
                                     <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
-                                        <legend style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Documents Required by Deadline</legend>
-                                        <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 6px" }}>
+                                        <legend style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Documents Required by Deadline</legend>
+                                        <p style={{ fontSize: "12px", color: "var(--slate-500)", margin: "2px 0 6px" }}>
                                             Pre-filled from the client's claim. These are listed in the Export Manager's deadline notification and reminder.
                                         </p>
                                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "6px" }}>
                                             {DOC_TYPES.map((t) => (
-                                                <label key={t.value} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#334155" }}>
+                                                <label key={t.value} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--slate-700)" }}>
                                                     <input
                                                         type="checkbox"
                                                         checked={requiredDocuments.includes(t.value)}
@@ -286,13 +286,13 @@ export default function Claims() {
                                 )}
                                 {deadline && (
                                     <div>
-                                        <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Deadline Note (optional)</label>
+                                        <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Deadline Note (optional)</label>
                                         <input
                                             type="text"
                                             value={deadlineNote}
                                             onChange={(e) => setDeadlineNote(e.target.value)}
                                             placeholder="e.g. Confirmed with customs, please prioritize this order"
-                                            style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                            style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                         />
                                     </div>
                                 )}

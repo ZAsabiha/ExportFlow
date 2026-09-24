@@ -163,5 +163,101 @@ export function buildQuery(params = {}) {
     return `?${new URLSearchParams(entries.map(([k, v]) => [k, String(v)]))}`;
 }
 
+export function openEventStream(path, { onEvent, onOpen } = {}) {
+    let controller = null;
+    let retryTimer = null;
+    let closed = false;
+    let attempt = 0;
+    let refreshedSinceOpen = false;
+
+    const scheduleReconnect = () => {
+        if (closed) return;
+        const delay = Math.min(30000, 1000 * 2 ** attempt);
+        attempt += 1;
+        retryTimer = setTimeout(connect, delay);
+    };
+
+    const dispatch = (block) => {
+        let event = "message";
+        const data = [];
+        for (const line of block.split(/\r?\n/)) {
+            if (!line || line.startsWith(":")) continue;
+            const idx = line.indexOf(":");
+            const field = idx === -1 ? line : line.slice(0, idx);
+            const value = idx === -1 ? "" : line.slice(idx + 1).replace(/^ /, "");
+            if (field === "event") event = value;
+            else if (field === "data") data.push(value);
+        }
+        if (data.length === 0) return;
+        const raw = data.join("\n");
+        let parsed;
+        try {
+            parsed = JSON.parse(raw);
+        } catch {
+            parsed = raw;
+        }
+        onEvent?.(event, parsed);
+    };
+
+    async function connect() {
+        if (closed) return;
+        controller = new AbortController();
+        try {
+            const headers = { Accept: "text/event-stream" };
+            const token = getAccessToken();
+            if (token) headers.Authorization = `Bearer ${token}`;
+
+            const response = await fetch(`${API_BASE_URL}${path}`, {
+                headers,
+                credentials: "include",
+                signal: controller.signal,
+            });
+
+            if (response.status === 401) {
+                if (refreshedSinceOpen) return;
+                refreshedSinceOpen = true;
+                refreshPromise = refreshPromise || doRefresh();
+                try {
+                    await refreshPromise;
+                } finally {
+                    refreshPromise = null;
+                }
+                attempt = 0;
+                connect();
+                return;
+            }
+            if (!response.ok || !response.body) throw new ApiError("Stream failed", response.status);
+
+            attempt = 0;
+            refreshedSinceOpen = false;
+            onOpen?.();
+
+            const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
+            let buffer = "";
+            for (;;) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += value;
+                const blocks = buffer.split(/\r?\n\r?\n/);
+                buffer = blocks.pop();
+                blocks.forEach(dispatch);
+            }
+            scheduleReconnect();
+        } catch (err) {
+            if (closed || err?.name === "AbortError") return;
+            if (err instanceof ApiError && err.status === 401) return;
+            scheduleReconnect();
+        }
+    }
+
+    connect();
+
+    return () => {
+        closed = true;
+        clearTimeout(retryTimer);
+        controller?.abort();
+    };
+}
+
 export { ApiError, API_BASE_URL };
 

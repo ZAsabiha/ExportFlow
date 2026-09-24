@@ -12,6 +12,7 @@ import com.example.exportsystem.dto.order.OrderResponse;
 import com.example.exportsystem.dto.shipment.ShipmentResponse;
 import com.example.exportsystem.entity.TradeDocument;
 import com.example.exportsystem.entity.User;
+import com.example.exportsystem.notification.NotificationStreamService;
 import com.example.exportsystem.repository.UserRepository;
 import com.example.exportsystem.service.ClientService;
 import jakarta.validation.Valid;
@@ -21,24 +22,26 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/api/client")
-@PreAuthorize("hasRole('CLIENT')")
 public class ClientController {
 
     private final ClientService clientService;
     private final UserRepository userRepository;
+    private final NotificationStreamService notificationStreamService;
 
-    public ClientController(ClientService clientService, UserRepository userRepository) {
+    public ClientController(ClientService clientService, UserRepository userRepository,
+                            NotificationStreamService notificationStreamService) {
         this.clientService = clientService;
         this.userRepository = userRepository;
+        this.notificationStreamService = notificationStreamService;
     }
 
     @GetMapping("/dashboard")
@@ -89,6 +92,11 @@ public class ClientController {
         return ResponseEntity.ok(PageResponse.of(clientService.listMyNotifications(currentUser(authentication), pageable)));
     }
 
+    @GetMapping(value = "/notifications/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter notificationStream(Authentication authentication) {
+        return notificationStreamService.subscribeClient(currentUser(authentication).getEmail());
+    }
+
     @PostMapping("/notifications/{id}/read")
     public ResponseEntity<NotificationResponse> markNotificationRead(Authentication authentication, @PathVariable Long id) {
         return ResponseEntity.ok(clientService.markNotificationRead(currentUser(authentication), id));
@@ -96,10 +104,6 @@ public class ClientController {
 
     // ---------- Shipments ----------
 
-    // NOTE: a method-level @PreAuthorize replaces the class-level one rather than adding to
-    // it (Spring Security only evaluates the closest annotation), so the role check has to be
-    // repeated here alongside the permission check.
-    @PreAuthorize("hasRole('CLIENT') and hasAuthority('VIEW_SHIPMENTS')")
     @GetMapping("/shipments")
     public ResponseEntity<PageResponse<ShipmentResponse>> myShipments(Authentication authentication,
                                                                          @RequestParam(defaultValue = "0") int page,
@@ -109,7 +113,6 @@ public class ClientController {
         return ResponseEntity.ok(PageResponse.of(clientService.listMyShipments(currentUser(authentication), pageable)));
     }
 
-    @PreAuthorize("hasRole('CLIENT') and hasAuthority('VIEW_SHIPMENTS')")
     @GetMapping("/shipments/order/{orderId}")
     public ResponseEntity<List<ShipmentResponse>> myShipmentsForOrder(Authentication authentication, @PathVariable Long orderId) {
         return ResponseEntity.ok(clientService.listMyShipmentsForOrder(currentUser(authentication), orderId));
@@ -152,8 +155,7 @@ public class ClientController {
         return ResponseEntity.ok(clientService.unlockDocuments(currentUser(authentication), request.getToken()));
     }
 
-    // The token must be re-supplied here too: knowing a document id alone (e.g. from a
-    // previous unlock response) isn't enough to download it.
+   
     @GetMapping("/documents/{id}/download")
     public ResponseEntity<Resource> downloadDocument(Authentication authentication,
                                                        @PathVariable Long id,
@@ -173,8 +175,7 @@ public class ClientController {
                 .body(resource);
     }
 
-    // The JWT subject is the user's email (see CustomUserDetailsService); resolve the full
-    // User so services have both username and email available for ownership checks.
+
     private User currentUser(Authentication authentication) {
         return userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new IllegalStateException("Authenticated user not found: " + authentication.getName()));

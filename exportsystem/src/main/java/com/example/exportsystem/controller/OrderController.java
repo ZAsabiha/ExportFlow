@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 // The Export Manager's order-processing API. Orders always originate as a client request
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 // requests the client has already accepted. See OrderService for the workflow rules.
 @RestController
 @RequestMapping("/api/export-manager/orders")
-@PreAuthorize("hasRole('EXPORT_MANAGER')")
 public class OrderController {
 
     private final OrderService orderService;

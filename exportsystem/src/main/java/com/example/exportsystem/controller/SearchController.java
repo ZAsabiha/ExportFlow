@@ -5,7 +5,6 @@ import com.example.exportsystem.entity.User;
 import com.example.exportsystem.repository.UserRepository;
 import com.example.exportsystem.service.SearchService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,20 +24,17 @@ public class SearchController {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/api/client/search")
     public ResponseEntity<List<SearchResultResponse>> searchClient(Authentication authentication,
                                                                       @RequestParam String q) {
         return ResponseEntity.ok(searchService.searchForClient(currentUser(authentication), q));
     }
 
-    @PreAuthorize("hasRole('EXPORT_MANAGER')")
     @GetMapping("/api/export-manager/search")
     public ResponseEntity<List<SearchResultResponse>> searchManager(@RequestParam String q) {
         return ResponseEntity.ok(searchService.searchForManager(q));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/admin/search")
     public ResponseEntity<List<SearchResultResponse>> searchAdmin(@RequestParam String q) {
         return ResponseEntity.ok(searchService.searchForAdmin(q));

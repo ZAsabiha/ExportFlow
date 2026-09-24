@@ -1,4 +1,4 @@
-import { apiRequest, buildQuery } from "./client";
+import { apiRequest, buildQuery, openEventStream } from "./client";
 
 // Orders API
 // Returns a page: { content, page, size, totalElements, totalPages }.
@@ -192,4 +192,8 @@ export function getNotifications({ page = 0, size } = {}) {
 
 export function markNotificationRead(id) {
     return apiRequest(`/export-manager/notifications/${id}/read`, { method: "POST" });
+}
+
+export function streamNotifications(handlers) {
+    return openEventStream("/export-manager/notifications/stream", handlers);
 }

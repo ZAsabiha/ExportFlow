@@ -4,8 +4,10 @@ import com.example.exportsystem.dto.notification.NotificationResponse;
 import com.example.exportsystem.entity.Notification;
 import com.example.exportsystem.entity.NotificationType;
 import com.example.exportsystem.entity.User;
+import com.example.exportsystem.event.NotificationCreatedEvent;
 import com.example.exportsystem.repository.NotificationRepository;
 import com.example.exportsystem.service.NotificationService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,12 @@ public class NotificationServiceImpl implements NotificationService {
     private static final String MANAGER_ROLE = "EXPORT_MANAGER";
 
     private final NotificationRepository notificationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository,
+                                   ApplicationEventPublisher eventPublisher) {
         this.notificationRepository = notificationRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -67,7 +72,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setOrderCode(orderCode);
         notification.setMessage(message);
         notification.setType(type);
-        notificationRepository.save(notification);
+        publish(notificationRepository.save(notification));
     }
 
     @Override
@@ -78,7 +83,12 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setOrderCode(orderCode);
         notification.setMessage(message);
         notification.setType(type);
-        notificationRepository.save(notification);
+        publish(notificationRepository.save(notification));
+    }
+
+    private void publish(Notification saved) {
+        eventPublisher.publishEvent(new NotificationCreatedEvent(this, saved.getRecipientEmail(),
+                saved.getRecipientRole(), toResponse(saved)));
     }
 
     private Notification findOrThrow(Long id) {

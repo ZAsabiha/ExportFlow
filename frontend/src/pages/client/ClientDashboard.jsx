@@ -8,9 +8,9 @@ import { getDashboard } from "../../api/clientApi";
 const STAGES = ["CREATED", "APPROVED", "DOCUMENTS", "PAID", "SHIPMENT", "COMPLETED"];
 const STAGE_LABELS = { CREATED: "Created", APPROVED: "Approved", DOCUMENTS: "Documents", PAID: "Paid", SHIPMENT: "Shipment", COMPLETED: "Completed" };
 const REQUEST_STATUS_BADGE = {
-    PENDING: { background: "#fef3c7", color: "#92400e" },
-    QUOTED: { background: "#dbeafe", color: "#1e40af" },
-    REJECTED: { background: "#fee2e2", color: "#991b1b" }
+    PENDING: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    QUOTED: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    REJECTED: { background: "var(--red-100)", color: "var(--red-800)" }
 };
 
 export default function ClientDashboard() {
@@ -55,15 +55,15 @@ export default function ClientDashboard() {
                     Enter Download Token
                 </button>
             </div>
-            {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
+            {error && <p role="alert" style={{ color: "var(--red-700)" }}>{error}</p>}
 
             <div className="stats-grid">
                 {stats.map((item, idx) => (
                     <div className="stat-card" key={idx}>
                         {item.icon}
                         <h3>{item.value}</h3>
-                        <p style={{ fontWeight: 600, color: "#1e293b", margin: 0 }}>{item.title}</p>
-                        <small style={{ color: "#64748b" }}>{item.subtitle}</small>
+                        <p style={{ fontWeight: 600, color: "var(--slate-800)", margin: 0 }}>{item.title}</p>
+                        <small style={{ color: "var(--slate-500)" }}>{item.subtitle}</small>
                     </div>
                 ))}
             </div>
@@ -71,15 +71,15 @@ export default function ClientDashboard() {
             <div className="dashboard-grid">
                 <div className="panel">
                     <h2>Active Order Progress</h2>
-                    <div style={{ marginTop: "20px", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "16px", background: "#f8fafc" }}>
+                    <div style={{ marginTop: "20px", border: "1px solid var(--slate-200)", borderRadius: "10px", padding: "16px", background: "var(--slate-50)" }}>
                         {!activeOrder ? (
-                            <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>No orders yet - request one to see its progress here.</p>
+                            <p style={{ margin: 0, fontSize: "13px", color: "var(--slate-500)" }}>No orders yet - request one to see its progress here.</p>
                         ) : (
                             <>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                                     <div>
-                                        <span style={{ fontWeight: 700, color: "#1e293b" }}>{activeOrder.orderCode}</span>
-                                        <small style={{ display: "block", color: "#64748b" }}>
+                                        <span style={{ fontWeight: 700, color: "var(--slate-800)" }}>{activeOrder.orderCode}</span>
+                                        <small style={{ display: "block", color: "var(--slate-500)" }}>
                                             {activeOrder.productName}{activeOrder.quantity ? ` (${activeOrder.quantity})` : ""}
                                             {activeOrder.requestStatus === "ACCEPTED" && ` • ${money(activeOrder.amount)}`}
                                         </small>
@@ -87,7 +87,7 @@ export default function ClientDashboard() {
                                     <span style={{
                                         padding: "4px 10px", borderRadius: "12px", fontWeight: 700, fontSize: "12px",
                                         ...(activeOrder.requestStatus === "ACCEPTED"
-                                            ? { background: activeOrder.stage === "COMPLETED" ? "#dcfce7" : "#dbeafe", color: activeOrder.stage === "COMPLETED" ? "#15803d" : "#1e40af" }
+                                            ? { background: activeOrder.stage === "COMPLETED" ? "var(--green-100)" : "var(--blue-100)", color: activeOrder.stage === "COMPLETED" ? "var(--green-700)" : "var(--blue-800)" }
                                             : REQUEST_STATUS_BADGE[activeOrder.requestStatus] || REQUEST_STATUS_BADGE.PENDING)
                                     }}>
                                         {activeOrder.requestStatus === "ACCEPTED" ? (STAGE_LABELS[activeOrder.stage] || activeOrder.stage) : activeOrder.requestStatus}
@@ -98,19 +98,19 @@ export default function ClientDashboard() {
                                     {STAGES.map((stage, idx) => {
                                         let style;
                                         if (activeStageIdx === -1) {
-                                            style = { background: "#e2e8f0", color: "#64748b" };
+                                            style = { background: "var(--slate-200)", color: "var(--slate-500)" };
                                         } else if (idx < activeStageIdx) {
-                                            style = { background: "#dcfce7", color: "#15803d", fontWeight: 700 };
+                                            style = { background: "var(--green-100)", color: "var(--green-700)", fontWeight: 700 };
                                         } else if (idx === activeStageIdx) {
-                                            style = { background: "#3b82f6", color: "white", fontWeight: 700 };
+                                            style = { background: "var(--blue-500)", color: "white", fontWeight: 700 };
                                         } else {
-                                            style = { background: "#e2e8f0", color: "#64748b" };
+                                            style = { background: "var(--slate-200)", color: "var(--slate-500)" };
                                         }
                                         return <span key={stage} style={style}>{idx + 1}. {STAGE_LABELS[stage]}</span>;
                                     })}
                                 </div>
                                 {activeOrder.requestStatus !== "ACCEPTED" && (
-                                    <p style={{ margin: "10px 0 0", fontSize: "12px", color: "#94a3b8" }}>
+                                    <p style={{ margin: "10px 0 0", fontSize: "12px", color: "var(--slate-400)" }}>
                                         Processing starts once this request is accepted.
                                     </p>
                                 )}
@@ -119,9 +119,9 @@ export default function ClientDashboard() {
                     </div>
                 </div>
 
-                <div className="panel" style={{ borderLeft: "4px solid #3b82f6" }}>
+                <div className="panel" style={{ borderLeft: "4px solid var(--blue-500)" }}>
                     <h2>Trade Documents</h2>
-                    <p style={{ fontSize: "13px", color: "#64748b", margin: "12px 0", lineHeight: 1.5 }}>
+                    <p style={{ fontSize: "13px", color: "var(--slate-500)", margin: "12px 0", lineHeight: 1.5 }}>
                         Received a Download Token from Export Manager? Use your token to unlock and download official Commercial Invoice, Bill of Lading, Certificate of Origin, and Packing List.
                     </p>
                     <button className="secondary-action" onClick={() => navigate("/client/documents")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -151,10 +151,10 @@ export default function ClientDashboard() {
                             <tr key={order.id}>
                                 <td style={{ fontWeight: 700 }}>{order.orderCode}</td>
                                 <td>{order.productName} {order.quantity ? `(${order.quantity})` : ""}</td>
-                                <td><span style={{ fontWeight: 600, color: "#475569" }}>{order.requestStatus}</span></td>
-                                <td style={{ fontWeight: 700, color: "#0f766e" }}>{order.requestStatus === "ACCEPTED" ? money(order.amount) : "Quote pending"}</td>
-                                <td><span style={{ fontWeight: 600, color: "#2563eb" }}>{order.requestStatus === "ACCEPTED" ? order.stage : "-"}</span></td>
-                                <td><span style={{ color: order.paymentStatus === "PAID" ? "#16a34a" : "#64748b", fontWeight: 700, fontSize: "13px" }}>{order.paymentStatus}</span></td>
+                                <td><span style={{ fontWeight: 600, color: "var(--slate-600)" }}>{order.requestStatus}</span></td>
+                                <td style={{ fontWeight: 700, color: "var(--teal-700)" }}>{order.requestStatus === "ACCEPTED" ? money(order.amount) : "Quote pending"}</td>
+                                <td><span style={{ fontWeight: 600, color: "var(--blue-600)" }}>{order.requestStatus === "ACCEPTED" ? order.stage : "-"}</span></td>
+                                <td><span style={{ color: order.paymentStatus === "PAID" ? "var(--green-600)" : "var(--slate-500)", fontWeight: 700, fontSize: "13px" }}>{order.paymentStatus}</span></td>
                             </tr>
                         ))}
                     </tbody>

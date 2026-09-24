@@ -13,8 +13,8 @@ body,
 
 body {
     font-family: var(--sans);
-    background-color: #ffffff;
-    color: #0f172a;
+    background-color: var(--surface);
+    color: var(--slate-900);
     font-size: 14px;
     line-height: 1.5;
 }
@@ -169,7 +169,7 @@ body {
 .form-section {
     width: 55%;
     height: 100%;
-    background: #ffffff;
+    background: var(--surface);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,19 +186,19 @@ body {
     font-size: 26px;
     font-weight: 700;
     letter-spacing: -0.03em;
-    color: #0b1220;
+    color: var(--ink);
     margin-bottom: 6px;
 }
 
 .form-subheading {
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 14px;
     margin-bottom: 28px;
 }
 
 .welcome-text {
     text-align: center;
-    color: #0f172a;
+    color: var(--slate-900);
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 24px;
@@ -206,7 +206,7 @@ body {
 
 h4 {
     text-align: left;
-    color: #64748b;
+    color: var(--slate-500);
     letter-spacing: 0.08em;
     font-size: 11px;
     font-weight: 600;
@@ -223,8 +223,8 @@ h4 {
 .role-card {
     flex: 1;
     height: 76px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: var(--surface);
+    border: 1px solid var(--slate-200);
     border-radius: 10px;
     padding: 10px;
     cursor: pointer;
@@ -237,14 +237,14 @@ h4 {
 }
 
 .role-card:hover {
-    border-color: #2563eb;
-    background: #f8fafc;
+    border-color: var(--blue-600);
+    background: var(--slate-50);
 }
 
 .role-card.active {
-    border-color: #2563eb;
-    background: #eff6ff;
-    box-shadow: 0 0 0 1px #2563eb;
+    border-color: var(--blue-600);
+    background: var(--blue-50);
+    box-shadow: 0 0 0 1px var(--blue-600);
 }
 
 .role-icon {
@@ -252,23 +252,23 @@ h4 {
 }
 
 .role-card:not(.active) .role-icon {
-    color: #64748b;
+    color: var(--slate-500);
 }
 
 .role-icon {
-    color: #2563eb;
+    color: var(--blue-600);
 }
 
 .role-card span {
     font-size: 12.5px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--slate-900);
 }
 
 .access-text {
     text-align: left;
     margin: 12px 0 8px;
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 13px;
     font-weight: 400;
     line-height: 1.4;
@@ -284,20 +284,20 @@ h4 {
     font-size: 13px;
     font-weight: 500;
     line-height: 1.4;
-    background: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
+    background: var(--red-50);
+    color: var(--red-800);
+    border: 1px solid var(--red-200);
 }
 
 .login-alert-success {
-    background: #eff6ff;
-    color: #1e40af;
-    border: 1px solid #bfdbfe;
+    background: var(--blue-50);
+    color: var(--blue-800);
+    border: 1px solid var(--blue-200);
 }
 
 label {
     display: block;
-    color: #0f172a;
+    color: var(--slate-900);
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 6px;
@@ -307,23 +307,23 @@ label {
 input {
     width: 100%;
     height: 42px;
-    background: #ffffff;
-    border: 1px solid #d1d5db;
+    background: var(--surface);
+    border: 1px solid var(--gray-300);
     border-radius: 8px;
     padding: 0 14px;
     font-size: 13.5px;
-    color: #0f172a;
+    color: var(--slate-900);
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input::placeholder {
-    color: #94a3b8;
+    color: var(--slate-400);
 }
 
 input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    border-color: var(--blue-600);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .password-box {
@@ -340,7 +340,7 @@ input:focus {
     top: 12px;
     border: none;
     background: none;
-    color: #64748b;
+    color: var(--slate-500);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -349,7 +349,7 @@ input:focus {
 }
 
 .password-box button:hover {
-    color: #0f172a;
+    color: var(--slate-900);
 }
 
 .options {
@@ -358,7 +358,7 @@ input:focus {
     align-items: center;
     margin-top: 16px;
     font-size: 13px;
-    color: #0f172a;
+    color: var(--slate-900);
 }
 
 .options label {
@@ -373,14 +373,14 @@ input:focus {
 .options input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: #2563eb;
+    accent-color: var(--blue-600);
     cursor: pointer;
 }
 
 .options button {
     border: none;
     background: none;
-    color: #2563eb;
+    color: var(--blue-600);
     font-weight: 600;
     cursor: pointer;
     font-size: 13px;
@@ -395,8 +395,8 @@ input:focus {
     width: 100%;
     height: 44px;
     margin-top: 24px;
-    background: #2563eb;
-    border: 1px solid #1d4ed8;
+    background: var(--accent);
+    border: 1px solid var(--accent-hover);
     border-radius: 8px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 1px 2px rgba(15, 23, 42, 0.12);
     color: #ffffff;
@@ -407,27 +407,27 @@ input:focus {
 }
 
 .signin:hover {
-    background: #1d4ed8;
+    background: var(--accent-hover);
 }
 
 .signin:disabled {
-    background: #93c5fd;
+    background: var(--blue-300);
     cursor: not-allowed;
 }
 
 .footer {
     margin-top: 28px;
     padding-top: 16px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--slate-200);
     text-align: center;
-    color: #64748b;
+    color: var(--slate-500);
     font-size: 13px;
     font-weight: 500;
     line-height: 1.5;
 }
 
 .footer a {
-    color: #2563eb;
+    color: var(--blue-600);
     font-weight: 600;
     text-decoration: none;
 }

@@ -7,9 +7,9 @@ import { getOrders, fileClaim, getMyClaims, downloadMyClaimProofBlob } from "../
 import { DOC_TYPES, docTypeLabels, toggleDocType } from "../../utils/documentTypes";
 
 const STATUS_STYLE = {
-    OPEN: { background: "#fef3c7", color: "#92400e" },
-    RESOLVED: { background: "#dcfce7", color: "#15803d" },
-    REJECTED: { background: "#fee2e2", color: "#991b1b" }
+    OPEN: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    RESOLVED: { background: "var(--green-100)", color: "var(--green-700)" },
+    REJECTED: { background: "var(--red-100)", color: "var(--red-800)" }
 };
 
 const EMPTY_FORM = { orderId: "", message: "", requestedDocuments: [] };
@@ -97,7 +97,7 @@ export default function ClientClaims() {
             </div>
 
             <div className="panel table-panel" style={{ marginTop: "25px", overflowX: "auto" }}>
-                {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
+                {error && <p role="alert" style={{ color: "var(--red-700)" }}>{error}</p>}
                 <table>
                     <thead>
                         <tr>
@@ -115,11 +115,11 @@ export default function ClientClaims() {
                             const statusStyle = STATUS_STYLE[c.status] || STATUS_STYLE.OPEN;
                             return (
                                 <tr key={c.id}>
-                                    <td style={{ fontWeight: 700, color: "#1e293b" }}>{c.orderCode}</td>
-                                    <td style={{ color: "#475569", maxWidth: "280px" }}>
+                                    <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{c.orderCode}</td>
+                                    <td style={{ color: "var(--slate-600)", maxWidth: "280px" }}>
                                         {c.message}
                                         {docTypeLabels(c.requestedDocuments).length > 0 && (
-                                            <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
+                                            <div style={{ fontSize: "12px", color: "var(--slate-500)", marginTop: "4px" }}>
                                                 Documents: {docTypeLabels(c.requestedDocuments).join(", ")}
                                             </div>
                                         )}
@@ -128,7 +128,7 @@ export default function ClientClaims() {
                                                 <button
                                                     className="link-button"
                                                     onClick={() => handleViewProof(c)}
-                                                    style={{ background: "none", border: "none", color: "#2563eb", cursor: "pointer", padding: 0, fontSize: "12px" }}
+                                                    style={{ background: "none", border: "none", color: "var(--blue-600)", cursor: "pointer", padding: 0, fontSize: "12px" }}
                                                 >
                                                     View proof: {c.proofOriginalFileName}
                                                 </button>
@@ -143,10 +143,10 @@ export default function ClientClaims() {
                                             {c.status}
                                         </span>
                                     </td>
-                                    <td style={{ color: "#64748b", maxWidth: "280px" }}>
+                                    <td style={{ color: "var(--slate-500)", maxWidth: "280px" }}>
                                         {c.adminResponse || (c.status === "OPEN" ? "Awaiting review" : "-")}
                                     </td>
-                                    <td style={{ color: "#64748b" }}>{c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}</td>
                                 </tr>
                             );
                         })}
@@ -170,12 +170,12 @@ export default function ClientClaims() {
                         <h2>File a claim</h2>
                         <form onSubmit={handleFileClaim} style={{ marginTop: "15px", display: "flex", flexDirection: "column", gap: "12px" }}>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Order</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Order</label>
                                 <select
                                     required
                                     value={form.orderId}
                                     onChange={(e) => setForm({ ...form, orderId: e.target.value })}
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 >
                                     <option value="" disabled>Select an order...</option>
                                     {orders.map((o) => (
@@ -184,24 +184,24 @@ export default function ClientClaims() {
                                 </select>
                             </div>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Your Complaint</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Your Complaint</label>
                                 <textarea
                                     rows={4}
                                     required
                                     value={form.message}
                                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                                     placeholder="e.g. I requested this order weeks ago and it still hasn't been processed..."
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
-                                <legend style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Documents Needed (optional)</legend>
-                                <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 6px" }}>
+                                <legend style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Documents Needed (optional)</legend>
+                                <p style={{ fontSize: "12px", color: "var(--slate-500)", margin: "2px 0 6px" }}>
                                     Tick the documents you still need for this order - they'll be listed in the upload deadline sent to the Export Manager.
                                 </p>
                                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: "6px" }}>
                                     {DOC_TYPES.map((t) => (
-                                        <label key={t.value} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#334155" }}>
+                                        <label key={t.value} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "var(--slate-700)" }}>
                                             <input
                                                 type="checkbox"
                                                 checked={form.requestedDocuments.includes(t.value)}
@@ -213,7 +213,7 @@ export default function ClientClaims() {
                                 </div>
                             </fieldset>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Proof Attachment (optional)</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Proof Attachment (optional)</label>
                                 <input
                                     type="file"
                                     onChange={(e) => setProofFile(e.target.files?.[0] || null)}

@@ -1,4 +1,4 @@
-import { apiRequest, API_BASE_URL, buildQuery } from "./client";
+import { apiRequest, API_BASE_URL, buildQuery, openEventStream } from "./client";
 
 export function getDashboard() {
     return apiRequest("/client/dashboard");
@@ -35,6 +35,10 @@ export function getNotifications({ page = 0, size } = {}) {
 
 export function markNotificationRead(id) {
     return apiRequest(`/client/notifications/${id}/read`, { method: "POST" });
+}
+
+export function streamNotifications(handlers) {
+    return openEventStream("/client/notifications/stream", handlers);
 }
 
 export function getShipments({ page = 0, size } = {}) {

@@ -58,14 +58,14 @@ export default function Invoices() {
             </div>
 
             {error && (
-                <div style={{ background: "#fee2e2", color: "#991b1b", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
+                <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
                     {error}
                 </div>
             )}
 
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
                 <div className="search-box" style={{ width: "100%" }}>
-                    <Search size={18} color="#64748b" />
+                    <Search size={18} color="var(--slate-500)" />
                     <input
                         type="text"
                         placeholder="Search invoices by Invoice No. or Order Code..."
@@ -96,27 +96,27 @@ export default function Invoices() {
                             </tr>
                         ) : filteredInvoices.length === 0 ? (
                             <tr>
-                                <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>No commercial invoices found.</td>
+                                <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "var(--slate-500)" }}>No commercial invoices found.</td>
                             </tr>
                         ) : (
                             filteredInvoices.map((inv) => (
                                 <tr key={inv.id}>
-                                    <td style={{ fontWeight: 700, color: "#1e293b" }}>{inv.invoiceNumber || `INV-${inv.id}`}</td>
-                                    <td><span style={{ fontWeight: 600, color: "#2563eb" }}>{inv.orderCode}</span></td>
-                                    <td style={{ fontWeight: 700, color: "#0f766e" }}>
+                                    <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{inv.invoiceNumber || `INV-${inv.id}`}</td>
+                                    <td><span style={{ fontWeight: 600, color: "var(--blue-600)" }}>{inv.orderCode}</span></td>
+                                    <td style={{ fontWeight: 700, color: "var(--teal-700)" }}>
                                         ${Number(inv.amount || 0).toLocaleString()}
                                     </td>
                                     <td style={{ fontWeight: 600 }}>{inv.currency || "USD"}</td>
-                                    <td style={{ color: "#64748b" }}>{inv.issueDate || "N/A"}</td>
-                                    <td style={{ color: "#64748b" }}>{inv.dueDate || "N/A"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{inv.issueDate || "N/A"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{inv.dueDate || "N/A"}</td>
                                     <td>
                                         <span style={{
                                             padding: "4px 10px",
                                             borderRadius: "12px",
                                             fontSize: "12px",
                                             fontWeight: 700,
-                                            background: inv.status === "PAID" ? "#dcfce7" : "#fef3c7",
-                                            color: inv.status === "PAID" ? "#15803d" : "#92400e"
+                                            background: inv.status === "PAID" ? "var(--green-100)" : "var(--amber-100)",
+                                            color: inv.status === "PAID" ? "var(--green-700)" : "var(--amber-800)"
                                         }}>
                                             {inv.status || "PENDING"}
                                         </span>
@@ -126,7 +126,7 @@ export default function Invoices() {
                                             onClick={() => alert(`Viewing Commercial Invoice ${inv.invoiceNumber || inv.id}`)}
                                             style={{
                                                 padding: "5px 10px", borderRadius: "6px", border: "none",
-                                                background: "#e0e7ff", color: "#3730a3", cursor: "pointer", fontSize: "12px", fontWeight: 600,
+                                                background: "var(--indigo-100)", color: "var(--indigo-800)", cursor: "pointer", fontSize: "12px", fontWeight: 600,
                                                 display: "inline-flex", alignItems: "center", gap: "4px"
                                             }}
                                         >

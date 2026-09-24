@@ -158,15 +158,15 @@ export default function TokenCenter() {
     const statusColors = (status) => {
         switch (status) {
             case "COMPLETED":
-                return { bg: "#dcfce7", text: "#15803d" };
+                return { bg: "var(--green-100)", text: "var(--green-700)" };
             case "FAILED":
             case "ABANDONED":
-                return { bg: "#fee2e2", text: "#991b1b" };
+                return { bg: "var(--red-100)", text: "var(--red-800)" };
             case "STARTING":
             case "STARTED":
-                return { bg: "#dbeafe", text: "#1d4ed8" };
+                return { bg: "var(--blue-100)", text: "var(--blue-700)" };
             default:
-                return { bg: "#f1f5f9", text: "#475569" };
+                return { bg: "var(--slate-100)", text: "var(--slate-600)" };
         }
     };
 
@@ -232,7 +232,7 @@ export default function TokenCenter() {
             </div>
 
             {error && (
-                <div style={{ background: "#fee2e2", color: "#991b1b", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
+                <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
                     {error}
                 </div>
             )}
@@ -240,18 +240,18 @@ export default function TokenCenter() {
             <div className="dashboard-grid" style={{ marginTop: "25px" }}>
                 <div className="panel">
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "15px" }}>
-                        <KeyRound size={22} color="#2563eb" />
+                        <KeyRound size={22} color="var(--blue-600)" />
                         <h2 style={{ margin: 0 }}>Generate New Token</h2>
                     </div>
 
                     <form onSubmit={handleGenerateToken} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                         <div>
-                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Select Purchase Order</label>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Select Purchase Order</label>
                             <select
                                 required
                                 value={selectedOrder}
                                 onChange={(e) => setSelectedOrder(e.target.value)}
-                                style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                                style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid var(--slate-300)" }}
                             >
                                 <option value="">Select an Order</option>
                                 {orders.map(o => (
@@ -263,22 +263,22 @@ export default function TokenCenter() {
                         </div>
 
                         <div>
-                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Buyer Email (Optional Notification)</label>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Buyer Email (Optional Notification)</label>
                             <input
                                 type="email"
                                 value={buyerEmail}
                                 onChange={(e) => setBuyerEmail(e.target.value)}
                                 placeholder="e.g. buyer@clientcompany.com"
-                                style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                                style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid var(--slate-300)" }}
                             />
                         </div>
 
                         <div>
-                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Token Validity (Days)</label>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Token Validity (Days)</label>
                             <select
                                 value={expiryDays}
                                 onChange={(e) => setExpiryDays(e.target.value)}
-                                style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                                style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid var(--slate-300)" }}
                             >
                                 <option value="3">3 Days (Express Release)</option>
                                 <option value="7">7 Days (Standard Release)</option>
@@ -294,19 +294,19 @@ export default function TokenCenter() {
                     </form>
                 </div>
 
-                <div className="panel" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                <div className="panel" style={{ background: "var(--slate-50)", border: "1px solid var(--slate-200)" }}>
                     <h2>How Tokens Work</h2>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "15px", fontSize: "13px", color: "#475569" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "15px", fontSize: "13px", color: "var(--slate-600)" }}>
                         <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                            <ShieldCheck size={18} color="#059669" style={{ flexShrink: 0, marginTop: "2px" }} />
+                            <ShieldCheck size={18} color="var(--emerald-600)" style={{ flexShrink: 0, marginTop: "2px" }} />
                             <div><strong>Cryptographic Security:</strong> Each token is uniquely generated and stored against the purchase order.</div>
                         </div>
                         <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                            <Clock size={18} color="#3b82f6" style={{ flexShrink: 0, marginTop: "2px" }} />
+                            <Clock size={18} color="var(--blue-500)" style={{ flexShrink: 0, marginTop: "2px" }} />
                             <div><strong>Time-Bound Access:</strong> Tokens automatically expire once the designated validity window passes.</div>
                         </div>
                         <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
-                            <CheckCircle2 size={18} color="#8b5cf6" style={{ flexShrink: 0, marginTop: "2px" }} />
+                            <CheckCircle2 size={18} color="var(--violet-500)" style={{ flexShrink: 0, marginTop: "2px" }} />
                             <div><strong>Client Portal Integration:</strong> Buyers enter token in <code>/client/documents</code> to download trade documents.</div>
                         </div>
                     </div>
@@ -315,14 +315,14 @@ export default function TokenCenter() {
 
             <div className="panel" style={{ marginTop: "25px" }}>
                 <h2>Bulk Generate · Excel Manifest</h2>
-                <p style={{ fontSize: "13px", color: "#64748b", marginTop: "6px" }}>
+                <p style={{ fontSize: "13px", color: "var(--slate-500)", marginTop: "6px" }}>
                     Issue a download token for many orders in one submission: an Excel manifest listing
                     <code style={{ margin: "0 4px" }}>orderCode / buyerEmail / expiryDays</code>
                     per row (buyerEmail and expiryDays are optional; expiryDays defaults to 7).
                 </p>
                 <form onSubmit={handleBulkLaunch}>
                     <div style={{ maxWidth: "360px", margin: "15px 0" }}>
-                        <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Manifest (.xlsx)</label>
+                        <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Manifest (.xlsx)</label>
                         <div className="upload-box" style={{ padding: "20px", marginTop: "4px" }}>
                             <input
                                 type="file"
@@ -331,7 +331,7 @@ export default function TokenCenter() {
                                 onChange={handleManifestChange}
                             />
                             <label htmlFor="tokenManifestUpload" style={{ cursor: "pointer" }}>
-                                <FileSpreadsheet size={28} color="#3b82f6" />
+                                <FileSpreadsheet size={28} color="var(--blue-500)" />
                                 <p style={{ marginTop: "8px", fontSize: "13px", fontWeight: 600 }}>
                                     {manifestFile ? manifestFile.name : "Select manifest spreadsheet"}
                                 </p>
@@ -340,7 +340,7 @@ export default function TokenCenter() {
                     </div>
 
                     {bulkError && (
-                        <div style={{ background: "#fee2e2", color: "#991b1b", padding: "10px 14px", borderRadius: "8px", marginBottom: "15px", fontSize: "13px" }}>
+                        <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "10px 14px", borderRadius: "8px", marginBottom: "15px", fontSize: "13px" }}>
                             {bulkError}
                         </div>
                     )}
@@ -355,10 +355,10 @@ export default function TokenCenter() {
                 </form>
 
                 {bulkJob && (
-                    <div style={{ marginTop: "20px", padding: "16px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                    <div style={{ marginTop: "20px", padding: "16px", borderRadius: "8px", background: "var(--slate-50)", border: "1px solid var(--slate-200)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <span style={{ fontWeight: 700, color: "#1e293b" }}>Job #{bulkJob.jobExecutionId}</span>
+                                <span style={{ fontWeight: 700, color: "var(--slate-800)" }}>Job #{bulkJob.jobExecutionId}</span>
                                 <span style={{
                                     padding: "3px 10px", borderRadius: "6px", fontSize: "12px", fontWeight: 700,
                                     background: statusColors(bulkJob.status).bg, color: statusColors(bulkJob.status).text
@@ -394,21 +394,21 @@ export default function TokenCenter() {
 
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginTop: "14px" }}>
                             <div>
-                                <div style={{ fontSize: "12px", color: "#64748b" }}>Rows Read</div>
-                                <div style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>{bulkJob.readCount}</div>
+                                <div style={{ fontSize: "12px", color: "var(--slate-500)" }}>Rows Read</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--slate-800)" }}>{bulkJob.readCount}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: "12px", color: "#64748b" }}>Tokens Generated</div>
-                                <div style={{ fontSize: "18px", fontWeight: 700, color: "#15803d" }}>{bulkJob.successCount}</div>
+                                <div style={{ fontSize: "12px", color: "var(--slate-500)" }}>Tokens Generated</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--green-700)" }}>{bulkJob.successCount}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: "12px", color: "#64748b" }}>Skipped / Failed Rows</div>
-                                <div style={{ fontSize: "18px", fontWeight: 700, color: bulkJob.skippedCount > 0 ? "#b91c1c" : "#1e293b" }}>{bulkJob.skippedCount}</div>
+                                <div style={{ fontSize: "12px", color: "var(--slate-500)" }}>Skipped / Failed Rows</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: bulkJob.skippedCount > 0 ? "var(--red-700)" : "var(--slate-800)" }}>{bulkJob.skippedCount}</div>
                             </div>
                         </div>
 
                         {bulkJob.exitDescription && (
-                            <p style={{ fontSize: "12px", color: "#64748b", marginTop: "10px", whiteSpace: "pre-wrap" }}>
+                            <p style={{ fontSize: "12px", color: "var(--slate-500)", marginTop: "10px", whiteSpace: "pre-wrap" }}>
                                 {bulkJob.exitDescription}
                             </p>
                         )}
@@ -426,14 +426,14 @@ export default function TokenCenter() {
                                     <tbody>
                                         {bulkErrors.length === 0 ? (
                                             <tr>
-                                                <td colSpan="3" style={{ textAlign: "center", padding: "16px", color: "#64748b" }}>No error rows found.</td>
+                                                <td colSpan="3" style={{ textAlign: "center", padding: "16px", color: "var(--slate-500)" }}>No error rows found.</td>
                                             </tr>
                                         ) : (
                                             bulkErrors.map((err, idx) => (
                                                 <tr key={`${err.rowNumber}-${idx}`}>
                                                     <td>{err.rowNumber}</td>
                                                     <td>{err.orderCode}</td>
-                                                    <td style={{ color: "#b91c1c" }}>{err.message}</td>
+                                                    <td style={{ color: "var(--red-700)" }}>{err.message}</td>
                                                 </tr>
                                             ))
                                         )}
@@ -454,7 +454,7 @@ export default function TokenCenter() {
 
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
                 <div className="search-box" style={{ width: "100%" }}>
-                    <Search size={18} color="#64748b" />
+                    <Search size={18} color="var(--slate-500)" />
                     <input
                         type="text"
                         placeholder="Search tokens on this page by Token Key, Order Code, or Buyer Email..."
@@ -485,28 +485,28 @@ export default function TokenCenter() {
                             </tr>
                         ) : filteredTokens.length === 0 ? (
                             <tr>
-                                <td colSpan="7" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
+                                <td colSpan="7" style={{ textAlign: "center", padding: "20px", color: "var(--slate-500)" }}>
                                     {tokens.length === 0 ? "No download tokens generated yet." : "No matching tokens found."}
                                 </td>
                             </tr>
                         ) : (
                             filteredTokens.map((tokenObj) => (
                                 <tr key={tokenObj.token}>
-                                    <td style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#2563eb", fontSize: "14px" }}>
+                                    <td style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "var(--blue-600)", fontSize: "14px" }}>
                                         {tokenObj.token}
                                     </td>
-                                    <td><span style={{ fontWeight: 600, color: "#1e293b" }}>{tokenObj.orderCode}</span></td>
+                                    <td><span style={{ fontWeight: 600, color: "var(--slate-800)" }}>{tokenObj.orderCode}</span></td>
                                     <td>{tokenObj.buyerEmail || "Not specified"}</td>
-                                    <td style={{ color: "#64748b" }}>{tokenObj.issuedAt ? new Date(tokenObj.issuedAt).toLocaleString() : "N/A"}</td>
-                                    <td style={{ color: "#64748b" }}>{tokenObj.expiresAt ? new Date(tokenObj.expiresAt).toLocaleString() : "N/A"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{tokenObj.issuedAt ? new Date(tokenObj.issuedAt).toLocaleString() : "N/A"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{tokenObj.expiresAt ? new Date(tokenObj.expiresAt).toLocaleString() : "N/A"}</td>
                                     <td>
                                         <span style={{
                                             padding: "4px 10px",
                                             borderRadius: "12px",
                                             fontSize: "12px",
                                             fontWeight: 700,
-                                            background: tokenObj.status === "ACTIVE" ? "#dcfce7" : "#fee2e2",
-                                            color: tokenObj.status === "ACTIVE" ? "#15803d" : "#991b1b"
+                                            background: tokenObj.status === "ACTIVE" ? "var(--green-100)" : "var(--red-100)",
+                                            color: tokenObj.status === "ACTIVE" ? "var(--green-700)" : "var(--red-800)"
                                         }}>
                                             {tokenObj.status}
                                         </span>
@@ -518,9 +518,9 @@ export default function TokenCenter() {
                                                 style={{
                                                     padding: "6px 12px",
                                                     borderRadius: "6px",
-                                                    border: "1px solid #cbd5e1",
-                                                    background: copiedToken === tokenObj.token ? "#dcfce7" : "white",
-                                                    color: copiedToken === tokenObj.token ? "#15803d" : "#1e293b",
+                                                    border: "1px solid var(--slate-300)",
+                                                    background: copiedToken === tokenObj.token ? "var(--green-100)" : "var(--surface)",
+                                                    color: copiedToken === tokenObj.token ? "var(--green-700)" : "var(--slate-800)",
                                                     cursor: "pointer",
                                                     fontSize: "12px",
                                                     fontWeight: 600,
@@ -538,9 +538,9 @@ export default function TokenCenter() {
                                                     style={{
                                                         padding: "6px 12px",
                                                         borderRadius: "6px",
-                                                        border: "1px solid #fca5a5",
-                                                        background: "#fff5f5",
-                                                        color: "#dc2626",
+                                                        border: "1px solid var(--red-300)",
+                                                        background: "var(--red-25)",
+                                                        color: "var(--red-600)",
                                                         cursor: "pointer",
                                                         fontSize: "12px",
                                                         fontWeight: 600,

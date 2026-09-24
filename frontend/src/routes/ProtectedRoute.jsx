@@ -16,7 +16,7 @@ export default function ProtectedRoute({ portal, permission, children }) {
 
     if (loading) {
         return (
-            <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", color: "#53698f" }}>
+            <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", color: "var(--slate-500)" }}>
                 Loading your session…
             </div>
         );

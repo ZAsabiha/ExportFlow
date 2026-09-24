@@ -46,23 +46,23 @@ export default function Pagination({
             flexWrap: "wrap", gap: "12px", padding: "14px 4px 4px"
         }}>
             <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
-                <span style={{ fontSize: "13px", color: "#64748b" }}>
-                    Showing <strong style={{ color: "#334155" }}>{from}–{to}</strong> of <strong style={{ color: "#334155" }}>{totalElements}</strong>
+                <span style={{ fontSize: "13px", color: "var(--slate-500)" }}>
+                    Showing <strong style={{ color: "var(--slate-700)" }}>{from}–{to}</strong> of <strong style={{ color: "var(--slate-700)" }}>{totalElements}</strong>
                 </span>
 
                 {pageSizeOptions && onPageSizeChange && (
                     <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <span style={{ fontSize: "13px", color: "#64748b" }}>Per page:</span>
+                        <span style={{ fontSize: "13px", color: "var(--slate-500)" }}>Per page:</span>
                         <select
                             value={size}
                             onChange={(e) => onPageSizeChange(Number(e.target.value))}
                             style={{
                                 padding: "4px 8px",
                                 borderRadius: "6px",
-                                border: "1px solid #cbd5e1",
-                                background: "white",
+                                border: "1px solid var(--slate-300)",
+                                background: "var(--surface)",
                                 fontSize: "13px",
-                                color: "#334155",
+                                color: "var(--slate-700)",
                                 cursor: "pointer",
                                 outline: "none"
                             }}
@@ -91,7 +91,7 @@ export default function Pagination({
                     {getPageNumbers().map((p, idx) => {
                         if (p === "...") {
                             return (
-                                <span key={`ellipsis-${idx}`} style={{ padding: "0 4px", color: "#94a3b8", fontSize: "13px" }}>
+                                <span key={`ellipsis-${idx}`} style={{ padding: "0 4px", color: "var(--slate-400)", fontSize: "13px" }}>
                                     ...
                                 </span>
                             );
@@ -123,7 +123,7 @@ export default function Pagination({
                     </button>
                 </div>
             ) : (
-                <span style={{ fontSize: "12px", color: "#94a3b8", fontWeight: 500 }}>
+                <span style={{ fontSize: "12px", color: "var(--slate-400)", fontWeight: 500 }}>
                     Page 1 of 1
                 </span>
             )}
@@ -135,9 +135,9 @@ function navButtonStyle(enabled) {
     return {
         padding: "6px 10px",
         borderRadius: "6px",
-        border: "1px solid #cbd5e1",
-        background: enabled ? "white" : "#f1f5f9",
-        color: enabled ? "#334155" : "#94a3b8",
+        border: "1px solid var(--slate-300)",
+        background: enabled ? "var(--surface)" : "var(--slate-100)",
+        color: enabled ? "var(--slate-700)" : "var(--slate-400)",
         cursor: enabled ? "pointer" : "not-allowed",
         display: "flex",
         alignItems: "center",
@@ -151,9 +151,9 @@ function pageNumberButtonStyle(isCurrent) {
         height: "32px",
         padding: "0 6px",
         borderRadius: "6px",
-        border: isCurrent ? "1px solid #2563eb" : "1px solid #cbd5e1",
-        background: isCurrent ? "#2563eb" : "white",
-        color: isCurrent ? "#ffffff" : "#334155",
+        border: isCurrent ? "1px solid var(--blue-600)" : "1px solid var(--slate-300)",
+        background: isCurrent ? "var(--blue-600)" : "var(--surface)",
+        color: isCurrent ? "#ffffff" : "var(--slate-700)",
         cursor: isCurrent ? "default" : "pointer",
         fontSize: "13px",
         fontWeight: isCurrent ? 700 : 500,

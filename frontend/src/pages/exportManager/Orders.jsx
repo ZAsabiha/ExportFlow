@@ -11,10 +11,10 @@ import "../../components/dashboard.css";
 const STAGES = ["CREATED", "APPROVED", "DOCUMENTS", "PAID", "SHIPMENT", "COMPLETED"];
 
 const REQUEST_STATUS_STYLE = {
-    PENDING: { background: "#fef3c7", color: "#92400e" },
-    QUOTED: { background: "#dbeafe", color: "#1e40af" },
-    ACCEPTED: { background: "#dcfce7", color: "#15803d" },
-    REJECTED: { background: "#fee2e2", color: "#991b1b" }
+    PENDING: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    QUOTED: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    ACCEPTED: { background: "var(--green-100)", color: "var(--green-700)" },
+    REJECTED: { background: "var(--red-100)", color: "var(--red-800)" }
 };
 
 export default function Orders() {
@@ -145,7 +145,7 @@ export default function Orders() {
             </div>
 
             {error && (
-                <div style={{ background: "#fee2e2", color: "#991b1b", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
+                <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
                     {error}
                 </div>
             )}
@@ -153,7 +153,7 @@ export default function Orders() {
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
                 <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center" }}>
                     <div className="search-box" style={{ flex: 1, minWidth: "280px" }}>
-                        <Search size={18} color="#64748b" />
+                        <Search size={18} color="var(--slate-500)" />
                         <input
                             type="text"
                             placeholder="Search orders on this page by Order Code or Buyer..."
@@ -163,11 +163,11 @@ export default function Orders() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <Filter size={18} color="#64748b" />
+                        <Filter size={18} color="var(--slate-500)" />
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none" }}
+                            style={{ padding: "10px 14px", borderRadius: "8px", border: "1px solid var(--slate-300)", outline: "none" }}
                         >
                             <option value="ALL">All Requests</option>
                             <option value="PENDING">Pending Review</option>
@@ -202,7 +202,7 @@ export default function Orders() {
                             </tr>
                         ) : filteredOrders.length === 0 ? (
                             <tr>
-                                <td colSpan="10" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>No matching orders found.</td>
+                                <td colSpan="10" style={{ textAlign: "center", padding: "20px", color: "var(--slate-500)" }}>No matching orders found.</td>
                             </tr>
                         ) : (
                             filteredOrders.map((order) => {
@@ -212,12 +212,12 @@ export default function Orders() {
                                 const canProcessPipeline = order.requestStatus === "ACCEPTED";
                                 return (
                                     <tr key={order.id}>
-                                        <td style={{ fontWeight: 700, color: "#1e293b" }}>{order.orderCode || `EXP-${order.id}`}</td>
+                                        <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{order.orderCode || `EXP-${order.id}`}</td>
                                         <td style={{ fontWeight: 600 }}>{order.buyerName}</td>
-                                        <td style={{ color: "#475569" }}>{order.productName} {order.quantity ? `(${order.quantity})` : ""}</td>
-                                        <td style={{ color: "#475569" }}>{order.destination}</td>
-                                        <td style={{ fontWeight: 700, color: "#0f766e" }}>{order.targetPrice != null ? `$${Number(order.targetPrice).toLocaleString()}` : "-"}</td>
-                                        <td style={{ color: "#475569" }}>{order.neededByDate}</td>
+                                        <td style={{ color: "var(--slate-600)" }}>{order.productName} {order.quantity ? `(${order.quantity})` : ""}</td>
+                                        <td style={{ color: "var(--slate-600)" }}>{order.destination}</td>
+                                        <td style={{ fontWeight: 700, color: "var(--teal-700)" }}>{order.targetPrice != null ? `$${Number(order.targetPrice).toLocaleString()}` : "-"}</td>
+                                        <td style={{ color: "var(--slate-600)" }}>{order.neededByDate}</td>
                                         <td>
                                             <span style={{ padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700, ...statusStyle }}>
                                                 {order.requestStatus}
@@ -227,13 +227,13 @@ export default function Orders() {
                                             {canProcessPipeline ? (
                                                 <span style={{
                                                     padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
-                                                    background: order.stage === "COMPLETED" ? "#dcfce7" : "#dbeafe",
-                                                    color: order.stage === "COMPLETED" ? "#15803d" : "#1e40af"
+                                                    background: order.stage === "COMPLETED" ? "var(--green-100)" : "var(--blue-100)",
+                                                    color: order.stage === "COMPLETED" ? "var(--green-700)" : "var(--blue-800)"
                                                 }}>
                                                     {order.stage}
                                                 </span>
                                             ) : (
-                                                <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>
+                                                <span style={{ fontSize: "12px", color: "var(--slate-400)" }}>-</span>
                                             )}
                                         </td>
                                         <td>
@@ -246,10 +246,10 @@ export default function Orders() {
                                                     {formatDeadline(order.documentDeadline)}
                                                 </span>
                                             ) : (
-                                                <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>
+                                                <span style={{ fontSize: "12px", color: "var(--slate-400)" }}>-</span>
                                             )}
                                             {order.documentDeadline && docTypeLabels(order.requiredDocuments).length > 0 && (
-                                                <div style={{ fontSize: "11px", color: "#64748b", marginTop: "6px", maxWidth: "200px" }}>
+                                                <div style={{ fontSize: "11px", color: "var(--slate-500)", marginTop: "6px", maxWidth: "200px" }}>
                                                     Due: {docTypeLabels(order.requiredDocuments).join(", ")}
                                                 </div>
                                             )}
@@ -259,25 +259,25 @@ export default function Orders() {
                                                 <div style={{ display: "flex", gap: "8px" }}>
                                                     <button
                                                         onClick={() => openQuoteModal(order)}
-                                                        style={{ padding: "6px 12px", borderRadius: "6px", border: "none", background: "#3b82f6", color: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
+                                                        style={{ padding: "6px 12px", borderRadius: "6px", border: "none", background: "var(--blue-500)", color: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
                                                     >
                                                         Respond
                                                     </button>
                                                     <button
                                                         onClick={() => setDeclineTarget(order)}
-                                                        style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
+                                                        style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid var(--slate-300)", background: "var(--surface)", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
                                                     >
                                                         Decline
                                                     </button>
                                                 </div>
                                             )}
                                             {order.requestStatus === "QUOTED" && (
-                                                <span style={{ fontSize: "12px", color: "#64748b" }}>Waiting on client</span>
+                                                <span style={{ fontSize: "12px", color: "var(--slate-500)" }}>Waiting on client</span>
                                             )}
                                             {order.requestStatus === "ACCEPTED" && order.stage === "CREATED" && (
                                                 <button
                                                     onClick={() => handleStartProcessing(order.id)}
-                                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "none", background: "#16a34a", color: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
+                                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "none", background: "var(--green-600)", color: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
                                                 >
                                                     Start Processing
                                                 </button>
@@ -286,7 +286,7 @@ export default function Orders() {
                                                 <button
                                                     onClick={() => handleAdvanceStage(order.id, order.stage)}
                                                     style={{
-                                                        padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white",
+                                                        padding: "6px 12px", borderRadius: "6px", border: "1px solid var(--slate-300)", background: "var(--surface)",
                                                         cursor: "pointer", fontSize: "12px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px"
                                                     }}
                                                 >
@@ -294,10 +294,10 @@ export default function Orders() {
                                                 </button>
                                             )}
                                             {canProcessPipeline && isLastStage && (
-                                                <span style={{ fontSize: "12px", color: "#16a34a", fontWeight: 600 }}>Completed</span>
+                                                <span style={{ fontSize: "12px", color: "var(--green-600)", fontWeight: 600 }}>Completed</span>
                                             )}
                                             {order.requestStatus === "REJECTED" && (
-                                                <span style={{ fontSize: "12px", color: "#94a3b8" }}>Closed</span>
+                                                <span style={{ fontSize: "12px", color: "var(--slate-400)" }}>Closed</span>
                                             )}
                                         </td>
                                     </tr>
@@ -323,39 +323,39 @@ export default function Orders() {
                 }}>
                     <div className="panel" style={{ width: "450px", maxWidth: "90%" }}>
                         <h2>Respond to {quoteTarget.orderCode}</h2>
-                        <p style={{ fontSize: "13px", color: "#64748b", marginTop: "6px" }}>
+                        <p style={{ fontSize: "13px", color: "var(--slate-500)", marginTop: "6px" }}>
                             {quoteTarget.productName} ({quoteTarget.quantity}) to {quoteTarget.destination} &bull; client target ${Number(quoteTarget.targetPrice).toLocaleString()} by {quoteTarget.neededByDate}
                         </p>
                         <form onSubmit={handleSubmitQuote} style={{ marginTop: "15px", display: "flex", flexDirection: "column", gap: "12px" }}>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Quoted Price ($ USD)</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Quoted Price ($ USD)</label>
                                 <input
                                     type="number"
                                     step="0.01"
                                     required
                                     value={quoteForm.quotedPrice}
                                     onChange={(e) => setQuoteForm({ ...quoteForm, quotedPrice: e.target.value })}
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Delivery Date</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Delivery Date</label>
                                 <input
                                     type="date"
                                     required
                                     value={quoteForm.quotedDeliveryDate}
                                     onChange={(e) => setQuoteForm({ ...quoteForm, quotedDeliveryDate: e.target.value })}
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Note to Client (optional)</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Note to Client (optional)</label>
                                 <textarea
                                     rows={3}
                                     value={quoteForm.managerNote}
                                     onChange={(e) => setQuoteForm({ ...quoteForm, managerNote: e.target.value })}
                                     placeholder="e.g. Confirmed with supplier, can meet this timeline."
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
@@ -377,14 +377,14 @@ export default function Orders() {
                         <h2>Decline {declineTarget.orderCode}</h2>
                         <form onSubmit={handleSubmitDecline} style={{ marginTop: "15px", display: "flex", flexDirection: "column", gap: "12px" }}>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Reason</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Reason</label>
                                 <textarea
                                     required
                                     rows={3}
                                     value={declineReason}
                                     onChange={(e) => setDeclineReason(e.target.value)}
                                     placeholder="e.g. No supplier available for this quantity within the timeline."
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>

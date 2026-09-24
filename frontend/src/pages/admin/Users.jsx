@@ -19,9 +19,9 @@ const ROLE_LABELS = {
 };
 
 const ROLE_BADGE_STYLES = {
-  ADMIN: { background: "#fee2e2", color: "#991b1b" },
-  EXPORT_MANAGER: { background: "#dbeafe", color: "#1e40af" },
-  CLIENT: { background: "#fef3c7", color: "#92400e" },
+  ADMIN: { background: "var(--red-100)", color: "var(--red-800)" },
+  EXPORT_MANAGER: { background: "var(--blue-100)", color: "var(--blue-800)" },
+  CLIENT: { background: "var(--amber-100)", color: "var(--amber-800)" },
 };
 
 function initials(username = "") {
@@ -298,9 +298,9 @@ export default function Users() {
           font-size: 13px;
         }
         .inline-banner.error {
-          background: #fef2f2;
-          color: #b91c1c;
-          border: 1px solid #fecaca;
+          background: var(--red-50);
+          color: var(--red-700);
+          border: 1px solid var(--red-200);
         }
 
         .user-cell {
@@ -315,8 +315,8 @@ export default function Users() {
           width: 28px;
           height: 28px;
           border-radius: 999px;
-          background: #eef0f3;
-          color: #4b5563;
+          background: var(--gray-100);
+          color: var(--gray-600);
           font-size: 11px;
           font-weight: 600;
           flex-shrink: 0;
@@ -338,8 +338,8 @@ export default function Users() {
           font-size: 13px;
           font-weight: 500;
         }
-        .status-pill.is-active { color: #15803d; }
-        .status-pill.is-inactive { color: #b91c1c; }
+        .status-pill.is-active { color: var(--green-700); }
+        .status-pill.is-inactive { color: var(--red-700); }
 
         .col-action { text-align: right; }
 
@@ -355,27 +355,27 @@ export default function Users() {
         .status-toggle:hover:not(:disabled) { opacity: 0.85; }
         .status-toggle:disabled { cursor: not-allowed; opacity: 0.5; }
         .status-toggle.deactivate {
-          background: #fef2f2;
-          color: #b91c1c;
-          border-color: #fecaca;
+          background: var(--red-50);
+          color: var(--red-700);
+          border-color: var(--red-200);
         }
         .status-toggle.activate {
-          background: #f0fdf4;
-          color: #15803d;
-          border-color: #bbf7d0;
+          background: var(--green-50);
+          color: var(--green-700);
+          border-color: var(--green-200);
         }
 
         .empty-state {
           text-align: center;
           padding: 40px 20px;
-          color: #6b7280;
+          color: var(--gray-500);
           font-size: 14px;
         }
         .link-button {
           margin-top: 8px;
           background: none;
           border: none;
-          color: #2563eb;
+          color: var(--blue-600);
           cursor: pointer;
           font-size: 13px;
           padding: 0;

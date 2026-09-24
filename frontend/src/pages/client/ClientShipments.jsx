@@ -34,7 +34,7 @@ export default function ClientShipments() {
             <p className="page-subtitle">Carrier details, routes and estimated arrival dates for your cargo.</p>
 
             <div className="panel table-panel" style={{ marginTop: "25px" }}>
-                {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
+                {error && <p role="alert" style={{ color: "var(--red-700)" }}>{error}</p>}
                 <table>
                     <thead>
                         <tr>
@@ -52,17 +52,17 @@ export default function ClientShipments() {
                         {!loading && shipments.length === 0 && <tr><td colSpan="7">No shipments found.</td></tr>}
                         {!loading && shipments.map((s) => (
                             <tr key={s.id}>
-                                <td style={{ fontWeight: 700, color: "#1e293b" }}>{s.id}</td>
-                                <td><span style={{ fontWeight: 600, color: "#2563eb" }}>{s.orderCode}</span></td>
+                                <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{s.id}</td>
+                                <td><span style={{ fontWeight: 600, color: "var(--blue-600)" }}>{s.orderCode}</span></td>
                                 <td>
                                     <div style={{ fontWeight: 600 }}>{s.carrier}</div>
-                                    <small style={{ color: "#64748b" }}>{s.trackingNumber || "Tracking pending"}</small>
+                                    <small style={{ color: "var(--slate-500)" }}>{s.trackingNumber || "Tracking pending"}</small>
                                 </td>
                                 <td style={{ fontSize: "13px", fontWeight: 600 }}>{s.originPort} → {s.destinationPort}</td>
                                 <td style={{ fontFamily: "var(--mono)", fontWeight: 700 }}>{s.trackingNumber || "-"}</td>
-                                <td style={{ fontWeight: 600, color: "#0f766e" }}>{s.estimatedArrival || "-"}</td>
+                                <td style={{ fontWeight: 600, color: "var(--teal-700)" }}>{s.estimatedArrival || "-"}</td>
                                 <td>
-                                    <span style={{ padding: "4px 10px", borderRadius: "12px", background: "#dbeafe", color: "#1e40af", fontWeight: 700, fontSize: "12px" }}>
+                                    <span style={{ padding: "4px 10px", borderRadius: "12px", background: "var(--blue-100)", color: "var(--blue-800)", fontWeight: 700, fontSize: "12px" }}>
                                         {s.status?.replace("_", " ")}
                                     </span>
                                 </td>

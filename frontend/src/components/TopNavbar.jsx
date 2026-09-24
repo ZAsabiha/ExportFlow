@@ -168,9 +168,18 @@ export default function TopNavbar() {
 
     useEffect(() => {
         loadNotifications();
-        if (!notificationApi) return undefined;
-        const interval = setInterval(loadNotifications, 45000);
-        return () => clearInterval(interval);
+        if (!notificationApi?.streamNotifications) return undefined;
+        let opened = false;
+        return notificationApi.streamNotifications({
+            onOpen: () => {
+                if (opened) loadNotifications();
+                opened = true;
+            },
+            onEvent: (event, data) => {
+                if (event !== "notification" || !data?.id) return;
+                setNotifications((current) => [data, ...current.filter((item) => item.id !== data.id)]);
+            },
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [portal]);
 

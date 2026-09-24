@@ -6,10 +6,10 @@ import "../../components/dashboard.css";
 import { getOrders, requestOrder, acceptQuote, rejectQuote } from "../../api/clientApi";
 
 const REQUEST_STATUS_STYLE = {
-    PENDING: { background: "#fef3c7", color: "#92400e" },
-    QUOTED: { background: "#dbeafe", color: "#1e40af" },
-    ACCEPTED: { background: "#dcfce7", color: "#15803d" },
-    REJECTED: { background: "#fee2e2", color: "#991b1b" }
+    PENDING: { background: "var(--amber-100)", color: "var(--amber-800)" },
+    QUOTED: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    ACCEPTED: { background: "var(--green-100)", color: "var(--green-700)" },
+    REJECTED: { background: "var(--red-100)", color: "var(--red-800)" }
 };
 
 const EMPTY_FORM = { productName: "", quantity: "", destination: "", targetPrice: "", neededByDate: "", itemsDescription: "" };
@@ -107,7 +107,7 @@ export default function ClientOrders() {
             </div>
 
             <div className="panel table-panel" style={{ marginTop: "25px", overflowX: "auto" }}>
-                {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
+                {error && <p role="alert" style={{ color: "var(--red-700)" }}>{error}</p>}
                 <table>
                     <thead>
                         <tr>
@@ -128,11 +128,11 @@ export default function ClientOrders() {
                             const statusStyle = REQUEST_STATUS_STYLE[o.requestStatus] || REQUEST_STATUS_STYLE.PENDING;
                             return (
                                 <tr key={o.id}>
-                                    <td style={{ fontWeight: 700, color: "#1e293b" }}>{o.orderCode}</td>
+                                    <td style={{ fontWeight: 700, color: "var(--slate-800)" }}>{o.orderCode}</td>
                                     <td style={{ fontWeight: 600 }}>{o.productName} {o.quantity ? `(${o.quantity})` : ""}</td>
-                                    <td style={{ color: "#64748b" }}>{o.destination}</td>
-                                    <td style={{ color: "#64748b" }}>{o.targetPrice != null ? `$${Number(o.targetPrice).toLocaleString()}` : "-"}</td>
-                                    <td style={{ color: "#64748b" }}>{o.neededByDate}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{o.destination}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{o.targetPrice != null ? `$${Number(o.targetPrice).toLocaleString()}` : "-"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{o.neededByDate}</td>
                                     <td>
                                         <span style={{
                                             padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
@@ -144,22 +144,22 @@ export default function ClientOrders() {
                                     <td>
                                         {o.requestStatus === "QUOTED" && (
                                             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                                <span style={{ fontWeight: 700, color: "#0f766e" }}>
+                                                <span style={{ fontWeight: 700, color: "var(--teal-700)" }}>
                                                     ${Number(o.managerQuotedPrice).toLocaleString()} by {o.managerQuotedDeliveryDate}
                                                 </span>
-                                                {o.managerNote && <small style={{ color: "#64748b" }}>{o.managerNote}</small>}
+                                                {o.managerNote && <small style={{ color: "var(--slate-500)" }}>{o.managerNote}</small>}
                                                 <div style={{ display: "flex", gap: "8px" }}>
                                                     <button
                                                         onClick={() => handleAccept(o.id)}
                                                         disabled={decidingId === o.id}
-                                                        style={{ padding: "4px 10px", borderRadius: "6px", border: "none", background: "#16a34a", color: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
+                                                        style={{ padding: "4px 10px", borderRadius: "6px", border: "none", background: "var(--green-600)", color: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
                                                     >
                                                         Accept
                                                     </button>
                                                     <button
                                                         onClick={() => handleReject(o.id)}
                                                         disabled={decidingId === o.id}
-                                                        style={{ padding: "4px 10px", borderRadius: "6px", border: "1px solid #cbd5e1", background: "white", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
+                                                        style={{ padding: "4px 10px", borderRadius: "6px", border: "1px solid var(--slate-300)", background: "var(--surface)", fontSize: "12px", fontWeight: 600, cursor: "pointer" }}
                                                     >
                                                         Reject
                                                     </button>
@@ -167,18 +167,18 @@ export default function ClientOrders() {
                                             </div>
                                         )}
                                         {o.requestStatus === "REJECTED" && o.managerNote && (
-                                            <small style={{ color: "#991b1b" }}>{o.managerNote}</small>
+                                            <small style={{ color: "var(--red-800)" }}>{o.managerNote}</small>
                                         )}
                                         {o.requestStatus === "ACCEPTED" && (
-                                            <span style={{ fontWeight: 700, color: "#0f766e" }}>${Number(o.amount).toLocaleString()} agreed</span>
+                                            <span style={{ fontWeight: 700, color: "var(--teal-700)" }}>${Number(o.amount).toLocaleString()} agreed</span>
                                         )}
-                                        {o.requestStatus === "PENDING" && <small style={{ color: "#64748b" }}>Awaiting review</small>}
+                                        {o.requestStatus === "PENDING" && <small style={{ color: "var(--slate-500)" }}>Awaiting review</small>}
                                     </td>
                                     <td>
                                         <span style={{
                                             padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
-                                            background: o.stage === "COMPLETED" ? "#dcfce7" : "#dbeafe",
-                                            color: o.stage === "COMPLETED" ? "#15803d" : "#1e40af"
+                                            background: o.stage === "COMPLETED" ? "var(--green-100)" : "var(--blue-100)",
+                                            color: o.stage === "COMPLETED" ? "var(--green-700)" : "var(--blue-800)"
                                         }}>
                                             {o.requestStatus === "ACCEPTED" || o.requestStatus === "REJECTED" ? o.stage : "-"}
                                         </span>
@@ -207,19 +207,19 @@ export default function ClientOrders() {
                         <h2>Request a Purchase Order</h2>
                         <form onSubmit={handleRequestOrder} style={{ marginTop: "15px", display: "flex", flexDirection: "column", gap: "12px" }}>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Product Name</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Product Name</label>
                                 <input
                                     type="text"
                                     required
                                     value={requestForm.productName}
                                     onChange={(e) => setRequestForm({ ...requestForm, productName: e.target.value })}
                                     placeholder="e.g. Raw Jute"
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <div style={{ display: "flex", gap: "10px" }}>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Quantity</label>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Quantity</label>
                                     <input
                                         type="number"
                                         min="1"
@@ -227,24 +227,24 @@ export default function ClientOrders() {
                                         value={requestForm.quantity}
                                         onChange={(e) => setRequestForm({ ...requestForm, quantity: e.target.value })}
                                         placeholder="e.g. 500"
-                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                     />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Destination</label>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Destination</label>
                                     <input
                                         type="text"
                                         required
                                         value={requestForm.destination}
                                         onChange={(e) => setRequestForm({ ...requestForm, destination: e.target.value })}
                                         placeholder="e.g. Rotterdam, NL"
-                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                     />
                                 </div>
                             </div>
                             <div style={{ display: "flex", gap: "10px" }}>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Target Price ($ USD)</label>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Target Price ($ USD)</label>
                                     <input
                                         type="number"
                                         step="0.01"
@@ -253,28 +253,28 @@ export default function ClientOrders() {
                                         value={requestForm.targetPrice}
                                         onChange={(e) => setRequestForm({ ...requestForm, targetPrice: e.target.value })}
                                         placeholder="e.g. 95000"
-                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                     />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Needed By</label>
+                                    <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Needed By</label>
                                     <input
                                         type="date"
                                         required
                                         value={requestForm.neededByDate}
                                         onChange={(e) => setRequestForm({ ...requestForm, neededByDate: e.target.value })}
-                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                        style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                     />
                                 </div>
                             </div>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Additional Notes (optional)</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Additional Notes (optional)</label>
                                 <textarea
                                     rows={3}
                                     value={requestForm.itemsDescription}
                                     onChange={(e) => setRequestForm({ ...requestForm, itemsDescription: e.target.value })}
                                     placeholder="Packaging, HS codes, special handling..."
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid var(--slate-300)" }}
                                 />
                             </div>
                             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>

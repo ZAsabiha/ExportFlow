@@ -7,17 +7,17 @@ import { getAdminDashboardSummary, getAuditLogs } from "../../api/adminApi";
 import { ApiError } from "../../api/client";
 
 const ROLE_META = {
-    ADMIN: { label: "Admin", color: "#2563eb", description: "Manages users and roles, reviews claims and audits system activity." },
-    EXPORT_MANAGER: { label: "Export Manager", color: "#059669", description: "Processes orders and shipments, uploads documents and issues download tokens." },
-    CLIENT: { label: "Client (Buyer)", color: "#d97706", description: "Tracks their own orders and invoices and unlocks documents with tokens." },
+    ADMIN: { label: "Admin", color: "var(--blue-600)", description: "Manages users and roles, reviews claims and audits system activity." },
+    EXPORT_MANAGER: { label: "Export Manager", color: "var(--emerald-600)", description: "Processes orders and shipments, uploads documents and issues download tokens." },
+    CLIENT: { label: "Client (Buyer)", color: "var(--amber-600)", description: "Tracks their own orders and invoices and unlocks documents with tokens." },
 };
 
 const ROLE_LABEL = { ADMIN: "Admin", EXPORT_MANAGER: "Export Manager", CLIENT: "Client" };
 
 const ROLE_BADGE_STYLE = {
-    ADMIN: { background: "#fee2e2", color: "#991b1b" },
-    EXPORT_MANAGER: { background: "#dbeafe", color: "#1e40af" },
-    CLIENT: { background: "#fef3c7", color: "#92400e" },
+    ADMIN: { background: "var(--red-100)", color: "var(--red-800)" },
+    EXPORT_MANAGER: { background: "var(--blue-100)", color: "var(--blue-800)" },
+    CLIENT: { background: "var(--amber-100)", color: "var(--amber-800)" },
 };
 
 function errorMessage(err, fallback) {
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             </div>
 
             {summaryError && (
-                <p style={{ color: "#dc2626", fontSize: "13px", marginTop: "10px" }}>{summaryError}</p>
+                <p style={{ color: "var(--red-600)", fontSize: "13px", marginTop: "10px" }}>{summaryError}</p>
             )}
 
             <div className="stats-grid">
@@ -109,11 +109,11 @@ export default function AdminDashboard() {
                     <div className="stat-card" key={idx}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             {item.icon}
-                            <Activity size={16} style={{ color: "#10b981" }} />
+                            <Activity size={16} style={{ color: "var(--emerald-500)" }} />
                         </div>
                         <h3>{item.value}</h3>
-                        <p style={{ fontWeight: 600, color: "#1e293b", margin: 0 }}>{item.title}</p>
-                        <small style={{ color: "#64748b" }}>{item.subtitle}</small>
+                        <p style={{ fontWeight: 600, color: "var(--slate-800)", margin: 0 }}>{item.title}</p>
+                        <small style={{ color: "var(--slate-500)" }}>{item.subtitle}</small>
                     </div>
                 ))}
             </div>
@@ -122,18 +122,18 @@ export default function AdminDashboard() {
                 <div className="panel">
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
                         <h2>Role Access Summary</h2>
-                        <span style={{ fontSize: "12px", background: "#e0e7ff", color: "#3730a3", padding: "4px 10px", borderRadius: "12px", fontWeight: 600 }}>
+                        <span style={{ fontSize: "12px", background: "var(--indigo-100)", color: "var(--indigo-800)", padding: "4px 10px", borderRadius: "12px", fontWeight: 600 }}>
                             RBAC Active
                         </span>
                     </div>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "15px" }}>
                         {Object.entries(ROLE_META).map(([roleKey, meta]) => (
-                            <div key={roleKey} style={{ border: "1px solid #e2e8f0", padding: "16px", borderRadius: "10px", background: "#f8fafc" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "#1e293b" }}>
+                            <div key={roleKey} style={{ border: "1px solid var(--slate-200)", padding: "16px", borderRadius: "10px", background: "var(--slate-50)" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "var(--slate-800)" }}>
                                     {roleKey === "ADMIN" ? <ShieldCheck size={18} color={meta.color} /> : <Users size={18} color={meta.color} />} {meta.label}
                                 </div>
-                                <p style={{ fontSize: "13px", color: "#64748b", margin: "8px 0" }}>{meta.description}</p>
+                                <p style={{ fontSize: "13px", color: "var(--slate-500)", margin: "8px 0" }}>{meta.description}</p>
                                 <span style={{ fontSize: "12px", fontWeight: 600, color: meta.color }}>
                                     {Number(activeAccountsByRole[roleKey] ?? 0).toLocaleString()} active accounts
                                 </span>
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
             <div className="panel table-panel" style={{ marginTop: "30px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
                     <h2>Recent Audit Logs</h2>
-                    <button onClick={() => navigate("/admin/audit-logs")} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>
+                    <button onClick={() => navigate("/admin/audit-logs")} style={{ background: "none", border: "none", color: "var(--blue-600)", fontWeight: 600, cursor: "pointer" }}>
                         View all logs &rarr;
                     </button>
                 </div>
@@ -182,19 +182,19 @@ export default function AdminDashboard() {
                     <tbody>
                         {logsLoading ? (
                             <tr>
-                                <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={5} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     Loading recent logs…
                                 </td>
                             </tr>
                         ) : logsError ? (
                             <tr>
-                                <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={5} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     {logsError}
                                 </td>
                             </tr>
                         ) : recentLogs.length === 0 ? (
                             <tr>
-                                <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
+                                <td colSpan={5} style={{ textAlign: "center", color: "var(--slate-400)", padding: "20px" }}>
                                     No audit logs yet.
                                 </td>
                             </tr>
@@ -209,13 +209,13 @@ export default function AdminDashboard() {
                                             borderRadius: "6px",
                                             fontSize: "12px",
                                             fontWeight: 600,
-                                            ...(ROLE_BADGE_STYLE[log.role] || { background: "#f1f5f9", color: "#475569" })
+                                            ...(ROLE_BADGE_STYLE[log.role] || { background: "var(--slate-100)", color: "var(--slate-600)" })
                                         }}>
                                             {ROLE_LABEL[log.role] || log.role || "—"}
                                         </span>
                                     </td>
                                     <td>{log.action}</td>
-                                    <td style={{ color: "#64748b" }}>{new Date(log.timestamp).toLocaleString()}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{new Date(log.timestamp).toLocaleString()}</td>
                                 </tr>
                             ))
                         )}

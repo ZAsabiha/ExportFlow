@@ -211,15 +211,15 @@ export default function DocumentUpload() {
     const statusColors = (status) => {
         switch (status) {
             case "COMPLETED":
-                return { bg: "#dcfce7", text: "#15803d" };
+                return { bg: "var(--green-100)", text: "var(--green-700)" };
             case "FAILED":
             case "ABANDONED":
-                return { bg: "#fee2e2", text: "#991b1b" };
+                return { bg: "var(--red-100)", text: "var(--red-800)" };
             case "STARTING":
             case "STARTED":
-                return { bg: "#dbeafe", text: "#1d4ed8" };
+                return { bg: "var(--blue-100)", text: "var(--blue-700)" };
             default:
-                return { bg: "#f1f5f9", text: "#475569" };
+                return { bg: "var(--slate-100)", text: "var(--slate-600)" };
         }
     };
 
@@ -270,13 +270,13 @@ export default function DocumentUpload() {
             </div>
 
             {error && (
-                <div style={{ background: "#fee2e2", color: "#991b1b", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
+                <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "12px 16px", borderRadius: "8px", marginTop: "15px" }}>
                     {error}
                 </div>
             )}
 
             {successMsg && (
-                <div style={{ background: "#dcfce7", color: "#15803d", padding: "12px 16px", borderRadius: "8px", marginTop: "15px", fontWeight: 600 }}>
+                <div style={{ background: "var(--green-100)", color: "var(--green-700)", padding: "12px 16px", borderRadius: "8px", marginTop: "15px", fontWeight: 600 }}>
                     {successMsg}
                 </div>
             )}
@@ -287,12 +287,12 @@ export default function DocumentUpload() {
                     <form onSubmit={handleUpload}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", margin: "15px 0" }}>
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Select Purchase Order</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Select Purchase Order</label>
                                 <select
                                     required
                                     value={selectedOrder}
                                     onChange={(e) => setSelectedOrder(e.target.value)}
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid var(--slate-300)" }}
                                 >
                                     <option value="">Select an Order</option>
                                     {orders.map(o => (
@@ -304,11 +304,11 @@ export default function DocumentUpload() {
                             </div>
 
                             <div>
-                                <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Document Type</label>
+                                <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Document Type</label>
                                 <select
                                     value={docType}
                                     onChange={(e) => setDocType(e.target.value)}
-                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                                    style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "8px", border: "1px solid var(--slate-300)" }}
                                 >
                                     {DOC_TYPES.map(dt => (
                                         <option key={dt.value} value={dt.value}>{dt.label}</option>
@@ -325,7 +325,7 @@ export default function DocumentUpload() {
                                 onChange={handleFileChange}
                             />
                             <label htmlFor="fileUpload" style={{ cursor: "pointer" }}>
-                                <UploadCloud size={40} color="#3b82f6" />
+                                <UploadCloud size={40} color="var(--blue-500)" />
                                 <h3>{selectedFiles.length > 0
                                     ? `${selectedFiles.length} file(s) selected`
                                     : "Select Document Files (Batch)"}</h3>
@@ -335,14 +335,14 @@ export default function DocumentUpload() {
                             {selectedFiles.length > 0 && (
                                 <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "15px" }}>
                                     {selectedFiles.map((file, idx) => (
-                                        <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#f1f5f9", padding: "10px 15px", borderRadius: "6px" }}>
+                                        <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "var(--slate-100)", padding: "10px 15px", borderRadius: "6px" }}>
                                             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                <FileText size={18} color="#2563eb" />
+                                                <FileText size={18} color="var(--blue-600)" />
                                                 <span style={{ fontSize: "13px", fontWeight: 600 }}>{file.name}</span>
-                                                <span style={{ fontSize: "12px", color: "#64748b" }}>({formatBytes(file.size)})</span>
+                                                <span style={{ fontSize: "12px", color: "var(--slate-500)" }}>({formatBytes(file.size)})</span>
                                             </div>
                                             <button type="button" onClick={() => removeFile(idx)} style={{ background: "none", border: "none", cursor: "pointer" }}>
-                                                <X size={16} color="#64748b" />
+                                                <X size={16} color="var(--slate-500)" />
                                             </button>
                                         </div>
                                     ))}
@@ -362,12 +362,12 @@ export default function DocumentUpload() {
                 </div>
 
 
-                <div className="panel" style={{ borderLeft: "4px solid #3b82f6" }}>
+                <div className="panel" style={{ borderLeft: "4px solid var(--blue-500)" }}>
                     <h2>Document Compliance Note</h2>
-                    <p style={{ fontSize: "13px", color: "#64748b", lineHeight: 1.6, marginTop: "10px" }}>
+                    <p style={{ fontSize: "13px", color: "var(--slate-500)", lineHeight: 1.6, marginTop: "10px" }}>
                         Export Managers can upload and view trade documents linked to purchase orders. Once uploaded, documents are safely stored in the backend repository.
                     </p>
-                    <p style={{ fontSize: "13px", color: "#64748b", lineHeight: 1.6, marginTop: "10px" }}>
+                    <p style={{ fontSize: "13px", color: "var(--slate-500)", lineHeight: 1.6, marginTop: "10px" }}>
                         <strong> Download Tokens</strong> must be generated under <em>Token Center</em> to allow buyers (clients) to securely view and download these trade documents.
                     </p>
                 </div>
@@ -375,7 +375,7 @@ export default function DocumentUpload() {
 
             <div className="panel" style={{ marginTop: "25px" }}>
                 <h2>Bulk Import · Manifest and ZIP</h2>
-                <p style={{ fontSize: "13px", color: "#64748b", marginTop: "6px" }}>
+                <p style={{ fontSize: "13px", color: "var(--slate-500)", marginTop: "6px" }}>
                     Attach documents to many orders in one submission: an Excel manifest listing
                     <code style={{ margin: "0 4px" }}>orderCode / documentType / fileName</code>
                     per row, plus a single ZIP containing those files.
@@ -383,7 +383,7 @@ export default function DocumentUpload() {
                 <form onSubmit={handleBulkLaunch}>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", margin: "15px 0" }}>
                         <div>
-                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Manifest (.xlsx)</label>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Manifest (.xlsx)</label>
                             <div className="upload-box" style={{ padding: "20px", marginTop: "4px" }}>
                                 <input
                                     type="file"
@@ -392,7 +392,7 @@ export default function DocumentUpload() {
                                     onChange={handleManifestChange}
                                 />
                                 <label htmlFor="manifestUpload" style={{ cursor: "pointer" }}>
-                                    <FileSpreadsheet size={28} color="#3b82f6" />
+                                    <FileSpreadsheet size={28} color="var(--blue-500)" />
                                     <p style={{ marginTop: "8px", fontSize: "13px", fontWeight: 600 }}>
                                         {manifestFile ? manifestFile.name : "Select manifest spreadsheet"}
                                     </p>
@@ -401,7 +401,7 @@ export default function DocumentUpload() {
                         </div>
 
                         <div>
-                            <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Documents (.zip)</label>
+                            <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--slate-600)" }}>Documents (.zip)</label>
                             <div className="upload-box" style={{ padding: "20px", marginTop: "4px" }}>
                                 <input
                                     type="file"
@@ -410,7 +410,7 @@ export default function DocumentUpload() {
                                     onChange={handleDocumentsZipChange}
                                 />
                                 <label htmlFor="documentsZipUpload" style={{ cursor: "pointer" }}>
-                                    <Archive size={28} color="#3b82f6" />
+                                    <Archive size={28} color="var(--blue-500)" />
                                     <p style={{ marginTop: "8px", fontSize: "13px", fontWeight: 600 }}>
                                         {documentsZipFile ? documentsZipFile.name : "Select documents ZIP"}
                                     </p>
@@ -420,7 +420,7 @@ export default function DocumentUpload() {
                     </div>
 
                     {bulkError && (
-                        <div style={{ background: "#fee2e2", color: "#991b1b", padding: "10px 14px", borderRadius: "8px", marginBottom: "15px", fontSize: "13px" }}>
+                        <div style={{ background: "var(--red-100)", color: "var(--red-800)", padding: "10px 14px", borderRadius: "8px", marginBottom: "15px", fontSize: "13px" }}>
                             {bulkError}
                         </div>
                     )}
@@ -435,10 +435,10 @@ export default function DocumentUpload() {
                 </form>
 
                 {bulkJob && (
-                    <div style={{ marginTop: "20px", padding: "16px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+                    <div style={{ marginTop: "20px", padding: "16px", borderRadius: "8px", background: "var(--slate-50)", border: "1px solid var(--slate-200)" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                <span style={{ fontWeight: 700, color: "#1e293b" }}>Job #{bulkJob.jobExecutionId}</span>
+                                <span style={{ fontWeight: 700, color: "var(--slate-800)" }}>Job #{bulkJob.jobExecutionId}</span>
                                 <span style={{
                                     padding: "3px 10px", borderRadius: "6px", fontSize: "12px", fontWeight: 700,
                                     background: statusColors(bulkJob.status).bg, color: statusColors(bulkJob.status).text
@@ -474,21 +474,21 @@ export default function DocumentUpload() {
 
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginTop: "14px" }}>
                             <div>
-                                <div style={{ fontSize: "12px", color: "#64748b" }}>Rows Read</div>
-                                <div style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b" }}>{bulkJob.readCount}</div>
+                                <div style={{ fontSize: "12px", color: "var(--slate-500)" }}>Rows Read</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--slate-800)" }}>{bulkJob.readCount}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: "12px", color: "#64748b" }}>Documents Imported</div>
-                                <div style={{ fontSize: "18px", fontWeight: 700, color: "#15803d" }}>{bulkJob.successCount}</div>
+                                <div style={{ fontSize: "12px", color: "var(--slate-500)" }}>Documents Imported</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: "var(--green-700)" }}>{bulkJob.successCount}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: "12px", color: "#64748b" }}>Skipped / Failed Rows</div>
-                                <div style={{ fontSize: "18px", fontWeight: 700, color: bulkJob.skippedCount > 0 ? "#b91c1c" : "#1e293b" }}>{bulkJob.skippedCount}</div>
+                                <div style={{ fontSize: "12px", color: "var(--slate-500)" }}>Skipped / Failed Rows</div>
+                                <div style={{ fontSize: "18px", fontWeight: 700, color: bulkJob.skippedCount > 0 ? "var(--red-700)" : "var(--slate-800)" }}>{bulkJob.skippedCount}</div>
                             </div>
                         </div>
 
                         {bulkJob.exitDescription && (
-                            <p style={{ fontSize: "12px", color: "#64748b", marginTop: "10px", whiteSpace: "pre-wrap" }}>
+                            <p style={{ fontSize: "12px", color: "var(--slate-500)", marginTop: "10px", whiteSpace: "pre-wrap" }}>
                                 {bulkJob.exitDescription}
                             </p>
                         )}
@@ -507,7 +507,7 @@ export default function DocumentUpload() {
                                     <tbody>
                                         {bulkErrors.length === 0 ? (
                                             <tr>
-                                                <td colSpan="4" style={{ textAlign: "center", padding: "16px", color: "#64748b" }}>No error rows found.</td>
+                                                <td colSpan="4" style={{ textAlign: "center", padding: "16px", color: "var(--slate-500)" }}>No error rows found.</td>
                                             </tr>
                                         ) : (
                                             bulkErrors.map((err, idx) => (
@@ -515,7 +515,7 @@ export default function DocumentUpload() {
                                                     <td>{err.rowNumber}</td>
                                                     <td>{err.orderCode}</td>
                                                     <td>{err.fileName}</td>
-                                                    <td style={{ color: "#b91c1c" }}>{err.message}</td>
+                                                    <td style={{ color: "var(--red-700)" }}>{err.message}</td>
                                                 </tr>
                                             ))
                                         )}
@@ -536,7 +536,7 @@ export default function DocumentUpload() {
 
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
                 <div className="search-box" style={{ width: "100%" }}>
-                    <Search size={18} color="#64748b" />
+                    <Search size={18} color="var(--slate-500)" />
                     <input
                         type="text"
                         placeholder="Search documents on this page by Doc ID, File Name, or Order Code..."
@@ -568,7 +568,7 @@ export default function DocumentUpload() {
                             </tr>
                         ) : filteredDocs.length === 0 ? (
                             <tr>
-                                <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
+                                <td colSpan="8" style={{ textAlign: "center", padding: "20px", color: "var(--slate-500)" }}>
                                     {uploadedDocs.length === 0 ? "No uploaded trade documents found." : "No matching documents found."}
                                 </td>
                             </tr>
@@ -579,16 +579,16 @@ export default function DocumentUpload() {
                                 return (
                                 <tr key={doc.id}>
                                     <td style={{ fontWeight: 600 }}>DOC-{doc.id}</td>
-                                    <td style={{ fontWeight: 600, color: "#1e293b" }}>{doc.fileName}</td>
+                                    <td style={{ fontWeight: 600, color: "var(--slate-800)" }}>{doc.fileName}</td>
                                     <td>
                                         <span style={{
                                             padding: "3px 8px", borderRadius: "6px", fontSize: "12px", fontWeight: 600,
-                                            background: "#e0e7ff", color: "#3730a3"
+                                            background: "var(--indigo-100)", color: "var(--indigo-800)"
                                         }}>
                                             {doc.documentType}
                                         </span>
                                     </td>
-                                    <td><span style={{ fontWeight: 600, color: "#2563eb" }}>{doc.orderCode}</span></td>
+                                    <td><span style={{ fontWeight: 600, color: "var(--blue-600)" }}>{doc.orderCode}</span></td>
                                     <td>
                                         {deadline ? (
                                             <span style={{
@@ -598,16 +598,16 @@ export default function DocumentUpload() {
                                                 {formatDeadline(deadline)}
                                             </span>
                                         ) : (
-                                            <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>
+                                            <span style={{ fontSize: "12px", color: "var(--slate-400)" }}>-</span>
                                         )}
                                     </td>
-                                    <td style={{ color: "#64748b" }}>{doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : "N/A"}</td>
-                                    <td style={{ color: "#64748b" }}>{formatBytes(doc.fileSizeBytes)}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{doc.uploadedAt ? new Date(doc.uploadedAt).toLocaleDateString() : "N/A"}</td>
+                                    <td style={{ color: "var(--slate-500)" }}>{formatBytes(doc.fileSizeBytes)}</td>
                                     <td>
                                         <div style={{ display: "flex", gap: "10px" }}>
                                             <button
                                                 onClick={() => handlePreview(doc)}
-                                                style={{ background: "none", border: "none", color: "#3b82f6", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
+                                                style={{ background: "none", border: "none", color: "var(--blue-500)", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontWeight: 600 }}
                                             >
                                                 <Eye size={14} /> Preview
                                             </button>
