@@ -1,2 +1,8 @@
 .idea/
 uploads/
+# Local secrets & certificates (see *.example templates)
+exportsystem/src/main/resources/application.properties
+exportsystem/src/main/resources/*.p12
+exportsystem/src/main/resources/*.crt
+frontend/.env
+frontend/cert/

@@ -4,7 +4,7 @@ spring.application.name=exportsystem
 # PostgreSQL Connection
 spring.datasource.url=jdbc:postgresql://localhost:5432/export_management
 spring.datasource.username=postgres
-spring.datasource.password=Zaniha239
+spring.datasource.password=YOUR_DB_PASSWORD
 
 
 # JPA / Hibernate
@@ -32,17 +32,17 @@ server.port=8443
 
 server.ssl.enabled=true
 server.ssl.key-store=classpath:application.p12
-server.ssl.key-store-password=Zaniha239
+server.ssl.key-store-password=YOUR_KEYSTORE_PASSWORD
 server.ssl.key-store-type=PKCS12
 server.ssl.key-alias=application
 
 
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=zannatuladonsabiha@gmail.com
-spring.mail.password=vioffkwljhjlgbtx
+spring.mail.username=your-email@gmail.com
+spring.mail.password=YOUR_GMAIL_APP_PASSWORD
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
-app.mail.from=export_system <zannatuladonsabiha@gmail.com>
+app.mail.from=export_system <your-email@gmail.com>
 # Inbox that receives submissions from the public Contact Us page.
-app.mail.contact-to=zannatuladonsabiha@gmail.com
+app.mail.contact-to=your-email@gmail.com
