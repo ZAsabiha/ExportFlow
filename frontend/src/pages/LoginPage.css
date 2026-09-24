@@ -12,16 +12,12 @@ body,
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--sans);
     background-color: #ffffff;
     color: #0f172a;
     font-size: 14px;
     line-height: 1.5;
 }
-
-/* =========================
-   PAGE WRAPPER
-========================= */
 
 .page-wrapper {
     width: 100vw;
@@ -30,56 +26,6 @@ body {
     flex-direction: column;
 }
 
-/* =========================
-   NAVBAR
-========================= */
-
-.top-navbar {
-    height: 60px;
-    width: 100%;
-    background: #0f172a;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 40px;
-    border-bottom: 1px solid #1e293b;
-}
-
-.nav-logo {
-    color: #ffffff;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    text-decoration: none;
-}
-
-.nav-links {
-    display: flex;
-    gap: 32px;
-}
-
-.nav-links a,
-.nav-links button {
-    background: none;
-    border: none;
-    color: #e2e8f0;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.15s ease;
-}
-
-.nav-links a:hover,
-.nav-links button:hover,
-.nav-links a.active {
-    color: #60a5fa;
-}
-
-/* =========================
-   LOGIN CONTAINER
-========================= */
-
 .login-page {
     width: 100%;
     height: calc(100vh - 60px);
@@ -87,14 +33,12 @@ body {
     overflow: hidden;
 }
 
-/* =========================
-   LEFT SIDE (BRAND)
-========================= */
-
 .brand-section {
     width: 45%;
     height: 100%;
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(59, 130, 246, 0.28), transparent 60%),
+        linear-gradient(160deg, #0b1220 0%, #0f1f45 55%, #1e3a8a 100%);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -108,50 +52,119 @@ body {
     background-image:
         linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 60px 60px;
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
 }
 
 .brand-content {
     position: relative;
-    text-align: center;
+    max-width: 520px;
+    padding: 0 48px;
+    text-align: left;
 }
 
 .logo-circle {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    border: 2px solid #60a5fa;
-    background: rgba(30, 58, 138, 0.4);
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    border: 1px solid rgba(147, 197, 253, 0.35);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 12px 32px rgba(29, 78, 216, 0.45);
 }
 
-.diamond {
-    width: 0;
-    height: 0;
-    border-left: 14px solid transparent;
-    border-right: 14px solid transparent;
-    border-bottom: 32px solid #ffffff;
+.brand-headline {
+    margin: 32px 0 16px;
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    color: #ffffff;
+    background: linear-gradient(180deg, #ffffff 30%, #bfdbfe 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.route-line {
-    margin-top: 40px;
+.brand-tagline {
+    color: #c7d2e8;
+    font-size: 17.5px;
+    font-weight: 400;
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+}
+
+.brand-features {
+    list-style: none;
+    padding: 0;
+    margin: 36px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.brand-features li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    backdrop-filter: blur(6px);
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.brand-features li:hover {
+    transform: translateX(4px);
+    border-color: rgba(147, 197, 253, 0.45);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.16) 0%, rgba(255, 255, 255, 0.03) 100%);
+}
+
+.feature-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: rgba(59, 130, 246, 0.18);
+    border: 1px solid rgba(147, 197, 253, 0.3);
+    color: #93c5fd;
 }
 
 .brand-title {
-    margin-top: 20px;
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 36px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.45);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    color: #cbd5e1;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
 }
 
-/* =========================
-   RIGHT SIDE (FORM)
-========================= */
+.brand-title::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.18), 0 0 12px rgba(52, 211, 153, 0.7);
+}
 
 .form-section {
     width: 55%;
@@ -165,8 +178,22 @@ body {
 }
 
 .form-box {
-    width: 440px;
+    width: 420px;
     max-width: 100%;
+}
+
+.form-heading {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #0b1220;
+    margin-bottom: 6px;
+}
+
+.form-subheading {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 28px;
 }
 
 .welcome-text {
@@ -178,18 +205,14 @@ body {
 }
 
 h4 {
-    text-align: center;
-    color: #0f172a;
-    letter-spacing: 1px;
-    font-size: 13px;
-    font-weight: 700;
+    text-align: left;
+    color: #64748b;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
-
-/* =========================
-   ROLES SELECTOR
-========================= */
 
 .role-container {
     width: 100%;
@@ -199,10 +222,10 @@ h4 {
 
 .role-card {
     flex: 1;
-    height: 72px;
+    height: 76px;
     background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     padding: 10px;
     cursor: pointer;
     display: flex;
@@ -219,8 +242,17 @@ h4 {
 }
 
 .role-card.active {
-    border: 2px solid #2563eb;
+    border-color: #2563eb;
     background: #eff6ff;
+    box-shadow: 0 0 0 1px #2563eb;
+}
+
+.role-icon {
+    display: flex;
+}
+
+.role-card:not(.active) .role-icon {
+    color: #64748b;
 }
 
 .role-icon {
@@ -233,22 +265,14 @@ h4 {
     color: #0f172a;
 }
 
-/* =========================
-   DESCRIPTION / ACCESS TEXT
-========================= */
-
 .access-text {
-    text-align: center;
-    margin: 16px 0 24px;
-    color: #0f172a;
+    text-align: left;
+    margin: 12px 0 8px;
+    color: #64748b;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.4;
 }
-
-/* =========================
-   LOGIN ALERT
-========================= */
 
 .login-alert {
     display: flex;
@@ -271,10 +295,6 @@ h4 {
     border: 1px solid #bfdbfe;
 }
 
-/* =========================
-   FORM INPUTS
-========================= */
-
 label {
     display: block;
     color: #0f172a;
@@ -288,8 +308,8 @@ input {
     width: 100%;
     height: 42px;
     background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
     padding: 0 14px;
     font-size: 13.5px;
     color: #0f172a;
@@ -298,7 +318,7 @@ input {
 }
 
 input::placeholder {
-    color: #64748b;
+    color: #94a3b8;
 }
 
 input:focus {
@@ -331,10 +351,6 @@ input:focus {
 .password-box button:hover {
     color: #0f172a;
 }
-
-/* =========================
-   OPTIONS (REMEMBER / FORGOT)
-========================= */
 
 .options {
     display: flex;
@@ -375,17 +391,14 @@ input:focus {
     text-decoration: underline;
 }
 
-/* =========================
-   SUBMIT BUTTON
-========================= */
-
 .signin {
     width: 100%;
     height: 44px;
     margin-top: 24px;
     background: #2563eb;
-    border: none;
-    border-radius: 6px;
+    border: 1px solid #1d4ed8;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 1px 2px rgba(15, 23, 42, 0.12);
     color: #ffffff;
     font-size: 14px;
     font-weight: 600;
@@ -402,16 +415,12 @@ input:focus {
     cursor: not-allowed;
 }
 
-/* =========================
-   FOOTER
-========================= */
-
 .footer {
     margin-top: 28px;
     padding-top: 16px;
     border-top: 1px solid #e2e8f0;
     text-align: center;
-    color: #0f172a;
+    color: #64748b;
     font-size: 13px;
     font-weight: 500;
     line-height: 1.5;
@@ -442,5 +451,29 @@ input:focus {
     }
     .top-navbar {
         padding: 0 20px;
+    }
+}
+@media (max-height: 760px) and (min-width: 851px) {
+    .brand-headline {
+        margin: 22px 0 12px;
+        font-size: 32px;
+    }
+    .brand-tagline {
+        font-size: 16px;
+    }
+    .brand-features {
+        margin-top: 24px;
+        gap: 10px;
+    }
+    .brand-features li {
+        padding: 10px 16px;
+        font-size: 15px;
+    }
+    .feature-icon {
+        width: 34px;
+        height: 34px;
+    }
+    .brand-title {
+        margin-top: 24px;
     }
 }

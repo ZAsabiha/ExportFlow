@@ -50,8 +50,8 @@ export default function ClientInvoices() {
 
     return (
         <DashboardLayout>
-            <h1 className="page-title">My Invoices</h1>
-            <p className="page-subtitle">View billing details, payment confirmations, and download commercial invoice PDFs</p>
+            <h1 className="page-title">Invoices</h1>
+            <p className="page-subtitle">Billing details, payment status and downloadable commercial invoices.</p>
 
             <div className="panel table-panel" style={{ marginTop: "25px" }}>
                 {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}

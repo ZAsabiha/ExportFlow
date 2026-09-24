@@ -4,7 +4,8 @@ import Pagination from "../../components/Pagination";
 import { Search, Filter, ArrowRight, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getOrders, quoteOrder, declineOrder, advanceOrderStage } from "../../api/exportManagerApi";
-import { deadlineColors, formatDeadline } from "../../utils/deadline";
+import { deadlineColors, deadlineTooltip, formatDeadline } from "../../utils/deadline";
+import { docTypeLabels } from "../../utils/documentTypes";
 import "../../components/dashboard.css";
 
 const STAGES = ["CREATED", "APPROVED", "DOCUMENTS", "PAID", "SHIPMENT", "COMPLETED"];
@@ -132,7 +133,7 @@ export default function Orders() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 className="page-title">Export Orders</h1>
-                    <p className="page-subtitle">Review client requests, respond with a quote, and process accepted orders through the pipeline</p>
+                    <p className="page-subtitle">Review client requests, respond with quotes and move accepted orders through the pipeline.</p>
                 </div>
                 <button
                     className="secondary-action"
@@ -241,11 +242,16 @@ export default function Orders() {
                                                     padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
                                                     background: deadlineColors(order.documentDeadline).bg,
                                                     color: deadlineColors(order.documentDeadline).text
-                                                }} title={order.deadlineNote || ""}>
+                                                }} title={deadlineTooltip(order)}>
                                                     {formatDeadline(order.documentDeadline)}
                                                 </span>
                                             ) : (
                                                 <span style={{ fontSize: "12px", color: "#94a3b8" }}>-</span>
+                                            )}
+                                            {order.documentDeadline && docTypeLabels(order.requiredDocuments).length > 0 && (
+                                                <div style={{ fontSize: "11px", color: "#64748b", marginTop: "6px", maxWidth: "200px" }}>
+                                                    Due: {docTypeLabels(order.requiredDocuments).join(", ")}
+                                                </div>
                                             )}
                                         </td>
                                         <td>

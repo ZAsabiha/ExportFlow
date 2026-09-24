@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Shield, BriefcaseBusiness, Package, Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, BriefcaseBusiness, Package, Eye, EyeOff, AlertCircle, CheckCircle2, Ship, FileLock2, Route } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import { ApiError } from "../api/client";
@@ -20,12 +20,11 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState(
-        location.state?.registered ? "Account created! Sign in with your new credentials below." : ""
+        location.state?.registered ? "Your account has been created. Sign in with your new credentials." : ""
     );
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        // Clear the router state so refreshing the page doesn't keep showing the banner.
         if (location.state?.registered) {
             navigate(location.pathname, { replace: true, state: {} });
         }
@@ -35,7 +34,7 @@ export default function LoginPage() {
     const roles = [
         { name: "Client", icon: <BriefcaseBusiness size={20} /> },
         { name: "Export Manager", icon: <Package size={20} /> },
-        { name: "Admin", icon: <Shield size={20} /> },
+        { name: "Admin", icon: <ShieldCheck size={20} /> },
     ];
 
     const portalForSelectedRole = roleToPortal(role);
@@ -80,43 +79,35 @@ export default function LoginPage() {
             <PublicNavbar />
 
             <div className="login-page">
-                {/* LEFT SIDE */}
                 <div className="brand-section">
                     <div className="grid-bg"></div>
 
                     <div className="brand-content">
                         <div className="logo-circle">
-                            <div className="diamond"></div>
+                            <Ship size={30} />
                         </div>
 
-                        <svg className="route-line" width="450" height="140">
-                            <path
-                                d="
-              M20 100
-              C120 20,
-              210 110,
-              320 50
-              C370 25,
-              420 50,
-              440 25
-              "
-                                fill="none"
-                                stroke="#9ab5ef"
-                                strokeWidth="2"
-                                strokeDasharray="5 8"
-                            />
-                            <circle cx="20" cy="100" r="5" fill="white" />
-                            <circle cx="440" cy="25" r="5" fill="white" />
-                        </svg>
+                        <h1 className="brand-headline">Export operations, from order to delivery.</h1>
+                        <p className="brand-tagline">
+                            One workspace for purchase orders, shipments, invoices and secure trade documents.
+                        </p>
 
-                        <div className="brand-title">EXPORT & SHIPPING MANAGEMENT</div>
+                        <ul className="brand-features">
+                            <li><span className="feature-icon"><Route size={19} /></span>Real-time order and shipment tracking</li>
+                            <li><span className="feature-icon"><FileLock2 size={19} /></span>Token-secured document delivery</li>
+                            <li><span className="feature-icon"><ShieldCheck size={19} /></span>Role-based access with full audit trail</li>
+                        </ul>
+
+                        <div className="brand-title">Export & Shipping Management</div>
                     </div>
                 </div>
 
-                {/* RIGHT SIDE */}
                 <div className="form-section">
                     <div className="form-box">
-                        <h4>SIGN IN AS</h4>
+                        <h2 className="form-heading">Welcome back</h2>
+                        <p className="form-subheading">Sign in to your ExportFlow workspace.</p>
+
+                        <h4>Sign in as</h4>
 
                         <div className="role-container">
                             {roles.map((item) => (
@@ -134,10 +125,10 @@ export default function LoginPage() {
 
                         <p className="access-text">
                             {role === "Admin"
-                                ? "Full system access — users, workflows, and audit trail."
+                                ? "Full system access: users, workflows and audit trail."
                                 : role === "Export Manager"
                                     ? "Manage orders, shipments, invoices and documents."
-                                    : "View your orders and shipment information."}
+                                    : "Track your orders, shipments and trade documents."}
                         </p>
 
                         <form onSubmit={handleSubmit}>
@@ -193,7 +184,7 @@ export default function LoginPage() {
                         </form>
 
                         <div className="footer">
-                            Need an account? <Link to="/register">Create an account (Client / Manager / Admin)</Link>
+                            Don’t have an account? <Link to="/register">Create one</Link>
                         </div>
                     </div>
                 </div>

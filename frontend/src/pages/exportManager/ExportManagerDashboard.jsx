@@ -80,8 +80,8 @@ export default function ExportManagerDashboard() {
         <DashboardLayout>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1 className="page-title">Export Manager Dashboard</h1>
-                    <p className="page-subtitle">Manage purchase orders, shipments, commercial invoices, and trade documents</p>
+                    <h1 className="page-title">Overview</h1>
+                    <p className="page-subtitle">Purchase orders, shipments, invoices and trade documents at a glance.</p>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                     <button
@@ -120,7 +120,7 @@ export default function ExportManagerDashboard() {
 
             <div className="dashboard-grid">
                 <div className="panel">
-                    <h2>Order Pipeline Stages</h2>
+                    <h2>Order Pipeline</h2>
                     <div className="pipeline">
                         <span>CREATED</span>
                         <span>APPROVED</span>

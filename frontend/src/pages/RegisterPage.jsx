@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserPlus, AlertCircle, BriefcaseBusiness, Package, Shield } from "lucide-react";
+import { UserPlus, AlertCircle, BriefcaseBusiness, Package, ShieldCheck, Route, FileLock2 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import { ApiError } from "../api/client";
@@ -18,9 +18,9 @@ export default function RegisterPage() {
     const [submitting, setSubmitting] = useState(false);
 
     const roles = [
-        { name: "Client", key: "CLIENT", icon: <BriefcaseBusiness size={20} />, text: "Access client portal to view orders, invoices & shipment tracking." },
-        { name: "Export Manager", key: "EXPORT_MANAGER", icon: <Package size={20} />, text: "Manage export operations, shipments, documentation & invoices." },
-        { name: "Admin", key: "ADMIN", icon: <Shield size={20} />, text: "Full administrative access for system configuration & user management." },
+        { name: "Client", key: "CLIENT", icon: <BriefcaseBusiness size={20} />, text: "Access the client portal to view orders, invoices and shipment tracking." },
+        { name: "Export Manager", key: "EXPORT_MANAGER", icon: <Package size={20} />, text: "Manage export operations, shipments, documentation and invoices." },
+        { name: "Admin", key: "ADMIN", icon: <ShieldCheck size={20} />, text: "Full administrative access for system configuration and user management." },
     ];
 
     const currentRoleObj = roles.find((r) => r.name === selectedRole) || roles[0];
@@ -64,15 +64,30 @@ export default function RegisterPage() {
                     <div className="grid-bg"></div>
                     <div className="brand-content">
                         <div className="logo-circle">
-                            <UserPlus size={40} color="white" />
+                            <UserPlus size={28} />
                         </div>
-                        <div className="brand-title">JOIN THE EXPORT FLOW PLATFORM</div>
+
+                        <h1 className="brand-headline">Create your ExportFlow account.</h1>
+                        <p className="brand-tagline">
+                            Get a dedicated workspace for your role in the export process, set up in under a minute.
+                        </p>
+
+                        <ul className="brand-features">
+                            <li><span className="feature-icon"><Route size={19} /></span>Follow every order from quote to delivery</li>
+                            <li><span className="feature-icon"><FileLock2 size={19} /></span>Secure, token-based document access</li>
+                            <li><span className="feature-icon"><ShieldCheck size={19} /></span>Permissions tailored to your role</li>
+                        </ul>
+
+                        <div className="brand-title">Export & Shipping Management</div>
                     </div>
                 </div>
 
                 <div className="form-section">
                     <div className="form-box">
-                        <h4>REGISTER AS</h4>
+                        <h2 className="form-heading">Create an account</h2>
+                        <p className="form-subheading">Choose your role and enter your details to get started.</p>
+
+                        <h4>Register as</h4>
 
                         <div className="role-container">
                             {roles.map((item) => (

@@ -1,5 +1,6 @@
 package com.example.exportsystem.dto.order;
 
+import com.example.exportsystem.entity.DocumentType;
 import com.example.exportsystem.entity.OrderStage;
 import com.example.exportsystem.entity.PaymentStatus;
 import com.example.exportsystem.entity.RequestStatus;
@@ -7,6 +8,7 @@ import com.example.exportsystem.entity.RequestStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class OrderResponse {
 
@@ -33,6 +35,7 @@ public class OrderResponse {
 
     private LocalDateTime documentDeadline;
     private String deadlineNote;
+    private Set<DocumentType> requiredDocuments;
     private boolean governmentVerified;
     private LocalDateTime governmentVerifiedAt;
 
@@ -92,6 +95,9 @@ public class OrderResponse {
 
     public String getDeadlineNote() { return deadlineNote; }
     public void setDeadlineNote(String deadlineNote) { this.deadlineNote = deadlineNote; }
+
+    public Set<DocumentType> getRequiredDocuments() { return requiredDocuments; }
+    public void setRequiredDocuments(Set<DocumentType> requiredDocuments) { this.requiredDocuments = requiredDocuments; }
 
     public boolean isGovernmentVerified() { return governmentVerified; }
     public void setGovernmentVerified(boolean governmentVerified) { this.governmentVerified = governmentVerified; }

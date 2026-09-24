@@ -3,6 +3,7 @@ package com.example.exportsystem.service.impl;
 import com.example.exportsystem.dto.admin.ResolveClaimRequest;
 import com.example.exportsystem.dto.claim.ClaimResponse;
 import com.example.exportsystem.entity.ClaimStatus;
+import com.example.exportsystem.entity.DocumentType;
 import com.example.exportsystem.entity.Order;
 import com.example.exportsystem.entity.OrderStage;
 import com.example.exportsystem.entity.RequestStatus;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.EnumSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,13 +52,18 @@ class ClaimServiceImplTest {
         order.setStage(OrderStage.APPROVED);
         order = orderRepository.save(order);
 
-        ClaimResponse claim = claimService.fileClaim(client, order.getId(), "Still waiting on this order", null);
+        ClaimResponse claim = claimService.fileClaim(client, order.getId(), "Still waiting on this order",
+                EnumSet.of(DocumentType.BILL_OF_LADING, DocumentType.CERTIFICATE_OF_ORIGIN), null);
         assertThat(claim.getStatus()).isEqualTo(ClaimStatus.OPEN);
+        assertThat(claim.getRequestedDocuments())
+                .containsExactlyInAnyOrder(DocumentType.BILL_OF_LADING, DocumentType.CERTIFICATE_OF_ORIGIN);
 
         ResolveClaimRequest request = new ResolveClaimRequest();
         request.setAdminResponse("Verified with customs, setting a deadline now.");
         request.setMarkGovernmentVerified(true);
         request.setDocumentDeadline(LocalDateTime.now().plusHours(20));
+        // Admin narrows the client's list down to the one document that's actually missing.
+        request.setRequiredDocuments(EnumSet.of(DocumentType.BILL_OF_LADING));
 
         ClaimResponse resolved = claimService.resolveClaim(admin, claim.getId(), request);
         assertThat(resolved.getStatus()).isEqualTo(ClaimStatus.RESOLVED);
@@ -65,9 +72,11 @@ class ClaimServiceImplTest {
         assertThat(saved.isGovernmentVerified()).isTrue();
         assertThat(saved.getDocumentDeadline()).isNotNull();
         assertThat(saved.isDeadlineReminderSent()).isFalse();
+        assertThat(saved.getRequiredDocuments()).containsExactly(DocumentType.BILL_OF_LADING);
 
         assertThat(notificationRepository.findByRecipientRole("EXPORT_MANAGER", PageRequest.of(0, 50)).getContent())
-                .anyMatch(n -> n.getOrderCode().equals(saved.getOrderCode()));
+                .anyMatch(n -> n.getOrderCode().equals(saved.getOrderCode())
+                        && n.getMessage().contains("Required documents: Bill of Lading (B/L)."));
     }
 
     @Test
@@ -84,7 +93,7 @@ class ClaimServiceImplTest {
         order.setStage(OrderStage.CREATED);
         order = orderRepository.save(order);
 
-        ClaimResponse claim = claimService.fileClaim(client, order.getId(), "Why so slow", null);
+        ClaimResponse claim = claimService.fileClaim(client, order.getId(), "Why so slow", null, null);
 
         ResolveClaimRequest request = new ResolveClaimRequest();
         request.setAdminResponse("Checked in.");

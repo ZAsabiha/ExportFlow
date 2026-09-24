@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -52,13 +54,15 @@ public class ClaimServiceImpl implements ClaimService {
 
     @Override
     @Transactional
-    public ClaimResponse fileClaim(User client, Long orderId, String message, MultipartFile proofFile) {
+    public ClaimResponse fileClaim(User client, Long orderId, String message, Set<DocumentType> requestedDocuments,
+                                   MultipartFile proofFile) {
         Order order = findOwnedOrder(client, orderId);
 
         Claim claim = new Claim();
         claim.setOrder(order);
         claim.setSubmittedBy(client);
         claim.setMessage(message);
+        claim.setRequestedDocuments(copyOf(requestedDocuments));
         claim.setStatus(ClaimStatus.OPEN);
 
         if (proofFile != null && !proofFile.isEmpty()) {
@@ -130,6 +134,8 @@ public class ClaimServiceImpl implements ClaimService {
             }
             order.setDocumentDeadline(request.getDocumentDeadline());
             order.setDeadlineNote(request.getDeadlineNote());
+            order.setRequiredDocuments(copyOf(request.getRequiredDocuments() != null
+                    ? request.getRequiredDocuments() : claim.getRequestedDocuments()));
             order.setDeadlineReminderSent(false);
         }
 
@@ -141,7 +147,8 @@ public class ClaimServiceImpl implements ClaimService {
             String message = "Order " + order.getOrderCode() + " has a document upload deadline of "
                     + order.getDocumentDeadline()
                     + (order.getDeadlineNote() != null && !order.getDeadlineNote().isBlank()
-                            ? " (" + order.getDeadlineNote() + ")" : "") + ".";
+                            ? " (" + order.getDeadlineNote() + ")" : "") + "."
+                    + OrderDeadlineNotifier.describeRequiredDocuments(order);
             deadlineNotifier.notifyExportManagers(order, message);
         }
 
@@ -180,6 +187,12 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     // ---------- helpers ----------
+
+    // Mutable EnumSet copy - Hibernate needs to own the collection instance it persists.
+    private static Set<DocumentType> copyOf(Set<DocumentType> documents) {
+        return documents == null || documents.isEmpty()
+                ? EnumSet.noneOf(DocumentType.class) : EnumSet.copyOf(documents);
+    }
 
     private void requireOpen(Claim claim) {
         if (claim.getStatus() != ClaimStatus.OPEN) {
@@ -266,6 +279,7 @@ public class ClaimServiceImpl implements ClaimService {
         r.setHasProofAttachment(claim.getProofFilePath() != null);
         r.setProofOriginalFileName(claim.getProofOriginalFileName());
         r.setProofFileSizeBytes(claim.getProofFileSizeBytes());
+        r.setRequestedDocuments(claim.getRequestedDocuments());
         r.setStatus(claim.getStatus());
         r.setAdminResponse(claim.getAdminResponse());
         r.setResolvedByEmail(claim.getResolvedBy() != null ? claim.getResolvedBy().getEmail() : null);

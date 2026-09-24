@@ -1,11 +1,14 @@
 package com.example.exportsystem.service.impl;
 
+import com.example.exportsystem.entity.DocumentType;
 import com.example.exportsystem.entity.NotificationType;
 import com.example.exportsystem.entity.Order;
 import com.example.exportsystem.notification.EmailService;
 import com.example.exportsystem.repository.UserRepository;
 import com.example.exportsystem.service.NotificationService;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 
 @Component
@@ -22,6 +25,18 @@ public class OrderDeadlineNotifier {
         this.notificationService = notificationService;
         this.userRepository = userRepository;
         this.emailService = emailService;
+    }
+
+    // " Required documents: Commercial Invoice, Packing List." - or "" when none were specified,
+    // so callers can append it to a deadline message unconditionally.
+    public static String describeRequiredDocuments(Order order) {
+        if (order.getRequiredDocuments() == null || order.getRequiredDocuments().isEmpty()) {
+            return "";
+        }
+        return " Required documents: " + order.getRequiredDocuments().stream()
+                .sorted()
+                .map(DocumentType::getLabel)
+                .collect(Collectors.joining(", ")) + ".";
     }
 
     public void notifyExportManagers(Order order, String message) {

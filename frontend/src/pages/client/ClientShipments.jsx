@@ -30,8 +30,8 @@ export default function ClientShipments() {
 
     return (
         <DashboardLayout>
-            <h1 className="page-title">My Shipments</h1>
-            <p className="page-subtitle">Track live vessel positions, ocean carrier details, and estimated delivery dates for your cargo</p>
+            <h1 className="page-title">Shipments</h1>
+            <p className="page-subtitle">Carrier details, routes and estimated arrival dates for your cargo.</p>
 
             <div className="panel table-panel" style={{ marginTop: "25px" }}>
                 {error && <p role="alert" style={{ color: "#b91c1c" }}>{error}</p>}
@@ -59,7 +59,7 @@ export default function ClientShipments() {
                                     <small style={{ color: "#64748b" }}>{s.trackingNumber || "Tracking pending"}</small>
                                 </td>
                                 <td style={{ fontSize: "13px", fontWeight: 600 }}>{s.originPort} → {s.destinationPort}</td>
-                                <td style={{ fontFamily: "monospace", fontWeight: 700 }}>{s.trackingNumber || "-"}</td>
+                                <td style={{ fontFamily: "var(--mono)", fontWeight: 700 }}>{s.trackingNumber || "-"}</td>
                                 <td style={{ fontWeight: 600, color: "#0f766e" }}>{s.estimatedArrival || "-"}</td>
                                 <td>
                                     <span style={{ padding: "4px 10px", borderRadius: "12px", background: "#dbeafe", color: "#1e40af", fontWeight: 700, fontSize: "12px" }}>

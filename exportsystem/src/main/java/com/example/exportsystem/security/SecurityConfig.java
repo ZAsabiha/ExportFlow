@@ -17,8 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-// @EnableMethodSecurity turns on @PreAuthorize (used on ClientController) so the Client
-// Portal's endpoints reject anyone without ROLE_CLIENT, on top of just being authenticated.
+
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -50,9 +49,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Allows the Vite dev server (and any other configured origin) to call this API from the browser.
-    // Without this, the frontend's fetch/XHR requests are blocked by the browser's CORS policy even
-    // though the backend itself would happily respond.
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

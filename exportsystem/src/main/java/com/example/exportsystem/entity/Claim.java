@@ -3,6 +3,8 @@ package com.example.exportsystem.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.EnumSet;
+import java.util.Set;
 
 // A client's complaint against one of their own orders (e.g. "requested weeks ago, still
 // not processing"), with an optional proof file attachment. Strictly a Client <-> Admin
@@ -38,6 +40,14 @@ public class Claim {
     private String proofFilePath;
     private Long proofFileSizeBytes;
     private String proofContentType;
+
+    // Documents the client says are still outstanding on this order. Admin uses this to
+    // pre-fill the order's required-documents list when setting the upload deadline.
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "claim_requested_documents", joinColumns = @JoinColumn(name = "claim_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "document_type", nullable = false)
+    private Set<DocumentType> requestedDocuments = EnumSet.noneOf(DocumentType.class);
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -96,6 +106,9 @@ public class Claim {
 
     public String getProofContentType() { return proofContentType; }
     public void setProofContentType(String proofContentType) { this.proofContentType = proofContentType; }
+
+    public Set<DocumentType> getRequestedDocuments() { return requestedDocuments; }
+    public void setRequestedDocuments(Set<DocumentType> requestedDocuments) { this.requestedDocuments = requestedDocuments; }
 
     public ClaimStatus getStatus() { return status; }
     public void setStatus(ClaimStatus status) { this.status = status; }

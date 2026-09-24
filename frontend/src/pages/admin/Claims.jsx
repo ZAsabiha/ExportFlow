@@ -5,6 +5,7 @@ import { AlertCircle } from "lucide-react";
 import "../../components/dashboard.css";
 import { getClaims, downloadClaimProofBlob, resolveClaim, rejectClaim } from "../../api/adminApi";
 import { ApiError } from "../../api/client";
+import { DOC_TYPES, docTypeLabels, toggleDocType } from "../../utils/documentTypes";
 
 const STATUS_STYLE = {
     OPEN: { background: "#fef3c7", color: "#92400e" },
@@ -32,6 +33,7 @@ export default function Claims() {
     const [markVerified, setMarkVerified] = useState(true);
     const [deadline, setDeadline] = useState("");
     const [deadlineNote, setDeadlineNote] = useState("");
+    const [requiredDocuments, setRequiredDocuments] = useState([]);
 
     const fetchClaims = useCallback(async () => {
         setLoading(true);
@@ -59,6 +61,7 @@ export default function Claims() {
         setMarkVerified(true);
         setDeadline("");
         setDeadlineNote("");
+        setRequiredDocuments(claim.requestedDocuments || []);
     };
 
     const handleViewProof = async (claim) => {
@@ -80,7 +83,8 @@ export default function Claims() {
                 adminResponse,
                 markGovernmentVerified: markVerified,
                 documentDeadline: deadline || null,
-                deadlineNote: deadlineNote || null
+                deadlineNote: deadlineNote || null,
+                requiredDocuments: deadline ? requiredDocuments : null
             });
             setReviewing(null);
             fetchClaims();
@@ -112,8 +116,8 @@ export default function Claims() {
     return (
         <DashboardLayout>
             <div>
-                <h1 className="page-title">Client Claims</h1>
-                <p className="page-subtitle">Review complaints filed by clients about stalled orders. Resolving a claim can also verify the order's documents and set the Export Manager's upload deadline.</p>
+                <h1 className="page-title">Claims</h1>
+                <p className="page-subtitle">Review client complaints about stalled orders. Resolving a claim can verify the order’s documents and set the export manager’s upload deadline.</p>
             </div>
 
             <div className="panel users-toolbar" style={{ marginTop: "25px" }}>
@@ -160,7 +164,14 @@ export default function Claims() {
                                 <tr key={c.id}>
                                     <td style={{ fontWeight: 700, color: "#1e293b" }}>{c.orderCode}</td>
                                     <td>{c.submittedByName || c.submittedByEmail}</td>
-                                    <td style={{ maxWidth: "280px", color: "#475569" }}>{c.message}</td>
+                                    <td style={{ maxWidth: "280px", color: "#475569" }}>
+                                        {c.message}
+                                        {docTypeLabels(c.requestedDocuments).length > 0 && (
+                                            <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
+                                                Documents: {docTypeLabels(c.requestedDocuments).join(", ")}
+                                            </div>
+                                        )}
+                                    </td>
                                     <td>
                                         <span style={{
                                             padding: "4px 10px", borderRadius: "12px", fontSize: "12px", fontWeight: 700,
@@ -195,8 +206,13 @@ export default function Claims() {
                     background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
                 }}>
                     <div className="panel" style={{ width: "520px", maxWidth: "90%" }}>
-                        <h2>Review Claim - {reviewing.orderCode}</h2>
+                        <h2>Review claim · {reviewing.orderCode}</h2>
                         <p style={{ color: "#475569", marginTop: "8px" }}>{reviewing.message}</p>
+                        {docTypeLabels(reviewing.requestedDocuments).length > 0 && (
+                            <p style={{ color: "#475569", marginTop: "6px", fontSize: "13px" }}>
+                                <strong>Client needs:</strong> {docTypeLabels(reviewing.requestedDocuments).join(", ")}
+                            </p>
+                        )}
                         {reviewing.hasProofAttachment && (
                             <button
                                 onClick={() => handleViewProof(reviewing)}
@@ -248,6 +264,26 @@ export default function Claims() {
                                         />
                                     </div>
                                 </div>
+                                {deadline && (
+                                    <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                                        <legend style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Documents Required by Deadline</legend>
+                                        <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 6px" }}>
+                                            Pre-filled from the client's claim. These are listed in the Export Manager's deadline notification and reminder.
+                                        </p>
+                                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "6px" }}>
+                                            {DOC_TYPES.map((t) => (
+                                                <label key={t.value} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#334155" }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={requiredDocuments.includes(t.value)}
+                                                        onChange={() => setRequiredDocuments((current) => toggleDocType(current, t.value))}
+                                                    />
+                                                    {t.label}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </fieldset>
+                                )}
                                 {deadline && (
                                     <div>
                                         <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Deadline Note (optional)</label>

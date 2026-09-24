@@ -113,6 +113,7 @@ public class OrderServiceImpl implements OrderService {
         r.setCreatedAt(order.getCreatedAt());
         r.setDocumentDeadline(order.getDocumentDeadline());
         r.setDeadlineNote(order.getDeadlineNote());
+        r.setRequiredDocuments(order.getRequiredDocuments());
         r.setGovernmentVerified(order.isGovernmentVerified());
         r.setGovernmentVerifiedAt(order.getGovernmentVerifiedAt());
         return r;

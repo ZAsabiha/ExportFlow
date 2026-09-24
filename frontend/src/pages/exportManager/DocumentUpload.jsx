@@ -12,7 +12,8 @@ import {
     getBulkImportErrors,
     retryBulkImport
 } from "../../api/exportManagerApi";
-import { deadlineColors, formatDeadline } from "../../utils/deadline";
+import { deadlineColors, deadlineTooltip, formatDeadline } from "../../utils/deadline";
+import { DOC_TYPES } from "../../utils/documentTypes";
 import "../../components/dashboard.css";
 
 // Bulk import job statuses that mean the batch job is still running, so status polling
@@ -23,15 +24,6 @@ const BULK_IMPORT_POLL_MS = 3000;
 // Orders are only fetched here to populate the "purchase order" dropdown, so this pulls
 // a generous bounded batch rather than the paginated order-history page size.
 const ORDER_OPTIONS_SIZE = 500;
-
-const DOC_TYPES = [
-    { label: "Commercial Invoice", value: "COMMERCIAL_INVOICE" },
-    { label: "Packing List", value: "PACKING_LIST" },
-    { label: "Bill of Lading (B/L)", value: "BILL_OF_LADING" },
-    { label: "Certificate of Origin (COO)", value: "CERTIFICATE_OF_ORIGIN" },
-    { label: "Letter of Credit (L/C)", value: "LETTER_OF_CREDIT" },
-    { label: "Other Document", value: "OTHER" }
-];
 
 export default function DocumentUpload() {
     const [selectedOrder, setSelectedOrder] = useState("");
@@ -265,8 +257,8 @@ export default function DocumentUpload() {
         <DashboardLayout>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1 className="page-title">Trade Document Center</h1>
-                    <p className="page-subtitle">Upload and attach required trade documentation (Commercial Invoice, Packing List, B/L, COO, L/C) against export orders</p>
+                    <h1 className="page-title">Trade Documents</h1>
+                    <p className="page-subtitle">Upload the required trade documents (commercial invoice, packing list, B/L, COO, L/C) against export orders.</p>
                 </div>
                 <button
                     className="secondary-action"
@@ -291,7 +283,7 @@ export default function DocumentUpload() {
 
             <div className="dashboard-grid" style={{ marginTop: "25px" }}>
                 <div className="panel">
-                    <h2>Upload Document to Purchase Order</h2>
+                    <h2>Upload Documents</h2>
                     <form onSubmit={handleUpload}>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px", margin: "15px 0" }}>
                             <div>
@@ -382,7 +374,7 @@ export default function DocumentUpload() {
             </div>
 
             <div className="panel" style={{ marginTop: "25px" }}>
-                <h2>Bulk Import (Manifest + ZIP)</h2>
+                <h2>Bulk Import · Manifest and ZIP</h2>
                 <p style={{ fontSize: "13px", color: "#64748b", marginTop: "6px" }}>
                     Attach documents to many orders in one submission: an Excel manifest listing
                     <code style={{ margin: "0 4px" }}>orderCode / documentType / fileName</code>
@@ -555,7 +547,7 @@ export default function DocumentUpload() {
             </div>
 
             <div className="panel table-panel" style={{ marginTop: "20px" }}>
-                <h2>Uploaded Document Repository</h2>
+                <h2>Document Repository</h2>
                 <table style={{ marginTop: "15px" }}>
                     <thead>
                         <tr>
@@ -602,7 +594,7 @@ export default function DocumentUpload() {
                                             <span style={{
                                                 padding: "3px 8px", borderRadius: "6px", fontSize: "12px", fontWeight: 600,
                                                 background: deadlineColors(deadline).bg, color: deadlineColors(deadline).text
-                                            }} title={relatedOrder?.deadlineNote || ""}>
+                                            }} title={deadlineTooltip(relatedOrder)}>
                                                 {formatDeadline(deadline)}
                                             </span>
                                         ) : (

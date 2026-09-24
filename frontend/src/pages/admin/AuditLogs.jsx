@@ -82,7 +82,7 @@ export default function AuditLogs() {
         <DashboardLayout>
             <div>
                 <h1 className="page-title">Audit Logs</h1>
-                <p className="page-subtitle">Track logins, admin actions, and order/document/token activity across the system</p>
+                <p className="page-subtitle">Sign-ins, administrative actions and order, document and token activity across the platform.</p>
             </div>
 
             <div className="panel" style={{ marginTop: "25px", padding: "20px" }}>
@@ -183,7 +183,7 @@ export default function AuditLogs() {
                                     </td>
                                     <td><span style={{ fontWeight: 600, color: "#334155" }}>{log.action}</span></td>
                                     <td style={{ fontSize: "13px", color: "#475569" }}>{log.details}</td>
-                                    <td style={{ fontSize: "12px", fontFamily: "monospace", color: "#64748b" }}>{log.ip || "—"}</td>
+                                    <td style={{ fontSize: "12px", fontFamily: "var(--mono)", color: "#64748b" }}>{log.ip || "—"}</td>
                                 </tr>
                             ))
                         )}

@@ -43,8 +43,8 @@ export default function ClientDashboard() {
         <DashboardLayout>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1 className="page-title">Client Buyer Portal</h1>
-                    <p className="page-subtitle">Track your export orders, vessel shipments, commercial invoices, and download trade documents using your secure tokens</p>
+                    <h1 className="page-title">Overview</h1>
+                    <p className="page-subtitle">Track your orders, shipments and invoices, and unlock trade documents with your secure tokens.</p>
                 </div>
                 <button 
                     className="primary-action" 
@@ -70,7 +70,7 @@ export default function ClientDashboard() {
 
             <div className="dashboard-grid">
                 <div className="panel">
-                    <h2>Active Order Stage Tracking</h2>
+                    <h2>Active Order Progress</h2>
                     <div style={{ marginTop: "20px", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "16px", background: "#f8fafc" }}>
                         {!activeOrder ? (
                             <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>No orders yet - request one to see its progress here.</p>
@@ -120,7 +120,7 @@ export default function ClientDashboard() {
                 </div>
 
                 <div className="panel" style={{ borderLeft: "4px solid #3b82f6" }}>
-                    <h2>Document Download Center</h2>
+                    <h2>Trade Documents</h2>
                     <p style={{ fontSize: "13px", color: "#64748b", margin: "12px 0", lineHeight: 1.5 }}>
                         Received a Download Token from Export Manager? Use your token to unlock and download official Commercial Invoice, Bill of Lading, Certificate of Origin, and Packing List.
                     </p>
@@ -132,7 +132,7 @@ export default function ClientDashboard() {
             </div>
 
             <div className="panel table-panel" style={{ marginTop: "30px" }}>
-                <h2>My Orders Overview</h2>
+                <h2>Recent Orders</h2>
                 <table style={{ marginTop: "15px" }}>
                     <thead>
                         <tr>

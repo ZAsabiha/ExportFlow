@@ -55,14 +55,14 @@ export default function ClientDocuments() {
 
     return (
         <DashboardLayout>
-            <h1 className="page-title">Client Trade Documents & Download Tokens</h1>
-            <p className="page-subtitle">Enter your secure Download Token issued by the Export Manager to unlock and download trade documents</p>
+            <h1 className="page-title">Trade Documents</h1>
+            <p className="page-subtitle">Enter the download token issued by your export manager to unlock and download trade documents.</p>
 
             <div className="dashboard-grid" style={{ marginTop: "25px" }}>
                 <div className="panel" style={{ border: "2px solid #3b82f6", background: "#f8fafc" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "15px" }}>
                         <KeyRound size={24} color="#2563eb" />
-                        <h2 style={{ margin: 0 }}>Unlock Documents via Token</h2>
+                        <h2 style={{ margin: 0 }}>Unlock Documents</h2>
                     </div>
 
                     <form onSubmit={handleVerifyToken} style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
@@ -71,7 +71,7 @@ export default function ClientDocuments() {
                             placeholder="Enter Download Token (e.g. TOK-EXP-9921)" 
                             value={tokenInput}
                             onChange={(e) => setTokenInput(e.target.value)}
-                            style={{ flex: 1, padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", fontFamily: "monospace", fontWeight: 700 }}
+                            style={{ flex: 1, padding: "12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", fontFamily: "var(--mono)", fontWeight: 700 }}
                         />
                         <button type="submit" className="primary-action" disabled={loading} style={{ marginTop: 0, width: "auto", padding: "12px 20px" }}>
                             {loading ? "Checking..." : "Unlock Docs"}

@@ -7,9 +7,9 @@ import { getAdminDashboardSummary, getAuditLogs } from "../../api/adminApi";
 import { ApiError } from "../../api/client";
 
 const ROLE_META = {
-    ADMIN: { label: "Admin", color: "#2563eb", description: "Full CRUD control, user & role management, audit log access, data override." },
-    EXPORT_MANAGER: { label: "Export Manager", color: "#059669", description: "Create/update orders & shipments, generate download tokens, upload docs." },
-    CLIENT: { label: "Client (Buyer)", color: "#d97706", description: "Read-only access to own orders/invoices, unlock docs using tokens." },
+    ADMIN: { label: "Admin", color: "#2563eb", description: "Manages users and roles, reviews claims and audits system activity." },
+    EXPORT_MANAGER: { label: "Export Manager", color: "#059669", description: "Processes orders and shipments, uploads documents and issues download tokens." },
+    CLIENT: { label: "Client (Buyer)", color: "#d97706", description: "Tracks their own orders and invoices and unlocks documents with tokens." },
 };
 
 const ROLE_LABEL = { ADMIN: "Admin", EXPORT_MANAGER: "Export Manager", CLIENT: "Client" };
@@ -77,10 +77,10 @@ export default function AdminDashboard() {
     const rolesActive = Object.keys(activeAccountsByRole).length;
 
     const stats = [
-        { title: "Total Users", value: Number(summary?.totalUsers ?? 0).toLocaleString(), subtitle: `${rolesActive} Roles Active`, icon: <Users size={24} /> },
-        { title: "Active Tokens", value: Number(summary?.activeTokens ?? 0).toLocaleString(), subtitle: `${(summary?.activeTokenRate ?? 0).toFixed(1)}% Active`, icon: <KeyRound size={24} /> },
-        { title: "System Audit Logs", value: Number(summary?.totalAuditLogs ?? 0).toLocaleString(), subtitle: timeAgo(summary?.lastAuditLogAt), icon: <FileText size={24} /> },
-        { title: "Role Security Score", value: "100%", subtitle: "Spring Security Active", icon: <ShieldCheck size={24} /> }
+        { title: "Total Users", value: Number(summary?.totalUsers ?? 0).toLocaleString(), subtitle: `${rolesActive} roles active`, icon: <Users size={24} /> },
+        { title: "Active Tokens", value: Number(summary?.activeTokens ?? 0).toLocaleString(), subtitle: `${(summary?.activeTokenRate ?? 0).toFixed(1)}% of all tokens`, icon: <KeyRound size={24} /> },
+        { title: "Audit Log Entries", value: Number(summary?.totalAuditLogs ?? 0).toLocaleString(), subtitle: timeAgo(summary?.lastAuditLogAt), icon: <FileText size={24} /> },
+        { title: "Access Control", value: "100%", subtitle: "Role-based access enforced", icon: <ShieldCheck size={24} /> }
     ];
 
     return (
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 className="page-title">Admin Dashboard</h1>
-                    <p className="page-subtitle">System-wide oversight, user management, audit logs, and reports</p>
+                    <p className="page-subtitle">Oversee users, security activity and platform-wide reporting.</p>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                     <button className="primary-action" onClick={() => navigate("/admin/users")} style={{ marginTop: 0, width: "auto" }}>
@@ -135,7 +135,7 @@ export default function AdminDashboard() {
                                 </div>
                                 <p style={{ fontSize: "13px", color: "#64748b", margin: "8px 0" }}>{meta.description}</p>
                                 <span style={{ fontSize: "12px", fontWeight: 600, color: meta.color }}>
-                                    {Number(activeAccountsByRole[roleKey] ?? 0).toLocaleString()} Active Accounts
+                                    {Number(activeAccountsByRole[roleKey] ?? 0).toLocaleString()} active accounts
                                 </span>
                             </div>
                         ))}
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
                     <h2>Recent Audit Logs</h2>
                     <button onClick={() => navigate("/admin/audit-logs")} style={{ background: "none", border: "none", color: "#2563eb", fontWeight: 600, cursor: "pointer" }}>
-                        View All Logs &rarr;
+                        View all logs &rarr;
                     </button>
                 </div>
 
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
                             <th>Log ID</th>
                             <th>User</th>
                             <th>Role</th>
-                            <th>Action Performed</th>
+                            <th>Action</th>
                             <th>Timestamp</th>
                         </tr>
                     </thead>
@@ -183,7 +183,7 @@ export default function AdminDashboard() {
                         {logsLoading ? (
                             <tr>
                                 <td colSpan={5} style={{ textAlign: "center", color: "#94a3b8", padding: "20px" }}>
-                                    Loading recent logs...
+                                    Loading recent logs…
                                 </td>
                             </tr>
                         ) : logsError ? (

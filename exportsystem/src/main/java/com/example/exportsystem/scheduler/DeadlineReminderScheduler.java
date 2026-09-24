@@ -35,7 +35,8 @@ public class DeadlineReminderScheduler {
 
         for (Order order : dueSoon) {
             String message = "Reminder: order " + order.getOrderCode() + " has a document upload deadline of "
-                    + order.getDocumentDeadline() + " - less than 24 hours remain.";
+                    + order.getDocumentDeadline() + " - less than 24 hours remain."
+                    + OrderDeadlineNotifier.describeRequiredDocuments(order);
             deadlineNotifier.notifyExportManagers(order, message);
             order.setDeadlineReminderSent(true);
             orderRepository.save(order);

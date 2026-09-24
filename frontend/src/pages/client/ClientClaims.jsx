@@ -4,6 +4,7 @@ import Pagination from "../../components/Pagination";
 import { Plus } from "lucide-react";
 import "../../components/dashboard.css";
 import { getOrders, fileClaim, getMyClaims, downloadMyClaimProofBlob } from "../../api/clientApi";
+import { DOC_TYPES, docTypeLabels, toggleDocType } from "../../utils/documentTypes";
 
 const STATUS_STYLE = {
     OPEN: { background: "#fef3c7", color: "#92400e" },
@@ -11,7 +12,7 @@ const STATUS_STYLE = {
     REJECTED: { background: "#fee2e2", color: "#991b1b" }
 };
 
-const EMPTY_FORM = { orderId: "", message: "" };
+const EMPTY_FORM = { orderId: "", message: "", requestedDocuments: [] };
 
 export default function ClientClaims() {
     const [showModal, setShowModal] = useState(false);
@@ -51,7 +52,12 @@ export default function ClientClaims() {
         setSubmitting(true);
         setError("");
         try {
-            const created = await fileClaim({ orderId: form.orderId, message: form.message, proofFile });
+            const created = await fileClaim({
+                orderId: form.orderId,
+                message: form.message,
+                requestedDocuments: form.requestedDocuments,
+                proofFile
+            });
             setClaims((current) => [created, ...current]);
             setForm(EMPTY_FORM);
             setProofFile(null);
@@ -78,7 +84,7 @@ export default function ClientClaims() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 className="page-title">My Claims</h1>
-                    <p className="page-subtitle">Raise a complaint about an order that hasn't moved, with optional proof, and track Admin's response here.</p>
+                    <p className="page-subtitle">Raise a complaint about an order that hasn’t progressed, attach supporting proof and follow the admin’s response.</p>
                 </div>
                 <button
                     className="primary-action"
@@ -112,6 +118,11 @@ export default function ClientClaims() {
                                     <td style={{ fontWeight: 700, color: "#1e293b" }}>{c.orderCode}</td>
                                     <td style={{ color: "#475569", maxWidth: "280px" }}>
                                         {c.message}
+                                        {docTypeLabels(c.requestedDocuments).length > 0 && (
+                                            <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
+                                                Documents: {docTypeLabels(c.requestedDocuments).join(", ")}
+                                            </div>
+                                        )}
                                         {c.hasProofAttachment && (
                                             <div>
                                                 <button
@@ -156,7 +167,7 @@ export default function ClientClaims() {
                     background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
                 }}>
                     <div className="panel" style={{ width: "480px", maxWidth: "90%" }}>
-                        <h2>File a Claim</h2>
+                        <h2>File a claim</h2>
                         <form onSubmit={handleFileClaim} style={{ marginTop: "15px", display: "flex", flexDirection: "column", gap: "12px" }}>
                             <div>
                                 <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Order</label>
@@ -183,6 +194,24 @@ export default function ClientClaims() {
                                     style={{ width: "100%", padding: "10px", marginTop: "4px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
                                 />
                             </div>
+                            <fieldset style={{ border: "none", padding: 0, margin: 0 }}>
+                                <legend style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Documents Needed (optional)</legend>
+                                <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 6px" }}>
+                                    Tick the documents you still need for this order - they'll be listed in the upload deadline sent to the Export Manager.
+                                </p>
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: "6px" }}>
+                                    {DOC_TYPES.map((t) => (
+                                        <label key={t.value} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#334155" }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={form.requestedDocuments.includes(t.value)}
+                                                onChange={() => setForm({ ...form, requestedDocuments: toggleDocType(form.requestedDocuments, t.value) })}
+                                            />
+                                            {t.label}
+                                        </label>
+                                    ))}
+                                </div>
+                            </fieldset>
                             <div>
                                 <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Proof Attachment (optional)</label>
                                 <input

@@ -219,8 +219,8 @@ export default function TokenCenter() {
         <DashboardLayout>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1 className="page-title">Download Token Center</h1>
-                    <p className="page-subtitle">Generate and manage secure download tokens connecting Export Operations with Client Document Downloads</p>
+                    <h1 className="page-title">Download Tokens</h1>
+                    <p className="page-subtitle">Issue and manage the secure tokens clients use to download their trade documents.</p>
                 </div>
                 <button
                     className="secondary-action"
@@ -295,7 +295,7 @@ export default function TokenCenter() {
                 </div>
 
                 <div className="panel" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-                    <h2>Token Security & Workflow</h2>
+                    <h2>How Tokens Work</h2>
                     <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "15px", fontSize: "13px", color: "#475569" }}>
                         <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
                             <ShieldCheck size={18} color="#059669" style={{ flexShrink: 0, marginTop: "2px" }} />
@@ -314,7 +314,7 @@ export default function TokenCenter() {
             </div>
 
             <div className="panel" style={{ marginTop: "25px" }}>
-                <h2>Bulk Generate Tokens (Excel Manifest)</h2>
+                <h2>Bulk Generate · Excel Manifest</h2>
                 <p style={{ fontSize: "13px", color: "#64748b", marginTop: "6px" }}>
                     Issue a download token for many orders in one submission: an Excel manifest listing
                     <code style={{ margin: "0 4px" }}>orderCode / buyerEmail / expiryDays</code>
@@ -465,7 +465,7 @@ export default function TokenCenter() {
             </div>
 
             <div className="panel table-panel" style={{ marginTop: "20px" }}>
-                <h2>Active & History Download Tokens</h2>
+                <h2>Token History</h2>
                 <table style={{ marginTop: "15px" }}>
                     <thead>
                         <tr>
@@ -492,7 +492,7 @@ export default function TokenCenter() {
                         ) : (
                             filteredTokens.map((tokenObj) => (
                                 <tr key={tokenObj.token}>
-                                    <td style={{ fontFamily: "monospace", fontWeight: 700, color: "#2563eb", fontSize: "14px" }}>
+                                    <td style={{ fontFamily: "var(--mono)", fontWeight: 700, color: "#2563eb", fontSize: "14px" }}>
                                         {tokenObj.token}
                                     </td>
                                     <td><span style={{ fontWeight: 600, color: "#1e293b" }}>{tokenObj.orderCode}</span></td>

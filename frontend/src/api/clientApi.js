@@ -68,10 +68,11 @@ export function getDocumentDownloadUrl(id, token) {
 
 // Claims: a client's complaint against one of their own orders, optionally with a proof
 // attachment. Admin-only to review/resolve - see adminApi.js's claim functions.
-export function fileClaim({ orderId, message, proofFile }) {
+export function fileClaim({ orderId, message, requestedDocuments = [], proofFile }) {
     const formData = new FormData();
     formData.append("orderId", orderId);
     formData.append("message", message);
+    requestedDocuments.forEach((doc) => formData.append("requestedDocuments", doc));
     if (proofFile) {
         formData.append("proofFile", proofFile);
     }

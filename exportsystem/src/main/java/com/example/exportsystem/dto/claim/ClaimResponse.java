@@ -1,8 +1,10 @@
 package com.example.exportsystem.dto.claim;
 
 import com.example.exportsystem.entity.ClaimStatus;
+import com.example.exportsystem.entity.DocumentType;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public class ClaimResponse {
 
@@ -15,6 +17,7 @@ public class ClaimResponse {
     private boolean hasProofAttachment;
     private String proofOriginalFileName;
     private Long proofFileSizeBytes;
+    private Set<DocumentType> requestedDocuments;
     private ClaimStatus status;
     private String adminResponse;
     private String resolvedByEmail;
@@ -47,6 +50,9 @@ public class ClaimResponse {
 
     public Long getProofFileSizeBytes() { return proofFileSizeBytes; }
     public void setProofFileSizeBytes(Long proofFileSizeBytes) { this.proofFileSizeBytes = proofFileSizeBytes; }
+
+    public Set<DocumentType> getRequestedDocuments() { return requestedDocuments; }
+    public void setRequestedDocuments(Set<DocumentType> requestedDocuments) { this.requestedDocuments = requestedDocuments; }
 
     public ClaimStatus getStatus() { return status; }
     public void setStatus(ClaimStatus status) { this.status = status; }

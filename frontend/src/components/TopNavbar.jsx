@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Bell, UserCircle, X, Tag, CheckCircle2, XCircle, FileCheck2, Info, Package, Truck, Receipt, Users as UsersIcon } from "lucide-react";
+import { Search, Bell, X, Tag, CheckCircle2, XCircle, FileCheck2, Info, Package, Truck, Receipt, Users as UsersIcon } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import { primaryPortalForRoles } from "../utils/authUtils";
@@ -16,21 +16,17 @@ const PORTAL_LABELS = {
     client: "Client",
 };
 
-// Notifications only exist for the client and export-manager portals right now.
 const NOTIFICATION_API = {
     client: clientApi,
     manager: exportManagerApi,
 };
 
-// Global search backs every portal, unlike notifications.
 const SEARCH_API = {
     client: clientApi,
     manager: exportManagerApi,
     admin: adminApi,
 };
 
-// Where clicking a result of a given type navigates to, per portal. Admin has no
-// standalone orders/shipments page - reports is the closest equivalent list view.
 const SEARCH_ROUTES = {
     client: { ORDER: "/client/orders", SHIPMENT: "/client/shipments", INVOICE: "/client/invoices" },
     manager: { ORDER: "/manager/orders", SHIPMENT: "/manager/shipments", INVOICE: "/manager/invoices" },
@@ -45,19 +41,24 @@ const SEARCH_TYPE_META = {
 };
 
 const SEARCH_PLACEHOLDER = {
-    client: "Search your orders, shipments, invoices...",
-    manager: "Search orders, buyers, shipments...",
-    admin: "Search orders, shipments, invoices, users...",
+    client: "Search orders, shipments, invoices…",
+    manager: "Search orders, buyers, shipments…",
+    admin: "Search orders, shipments, invoices, users…",
 };
 
-// Icon + accent color per Notification.type (backend enum). Falls back to a generic
-// info icon for anything unrecognized so new/legacy types never render blank.
 const NOTIFICATION_TYPE_META = {
     QUOTE: { icon: Tag, className: "notif-icon-quote" },
     ACCEPTANCE: { icon: CheckCircle2, className: "notif-icon-acceptance" },
     REJECTION: { icon: XCircle, className: "notif-icon-rejection" },
     DOCUMENT: { icon: FileCheck2, className: "notif-icon-document" },
 };
+
+function initialsFor(name) {
+    const parts = String(name).split("@")[0].split(/[\s._-]+/).filter(Boolean);
+    if (parts.length === 0) return "U";
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+}
 
 function NotificationIcon({ type }) {
     const meta = NOTIFICATION_TYPE_META[type] || { icon: Info, className: "notif-icon-default" };
@@ -81,6 +82,7 @@ export default function TopNavbar() {
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchLoading, setSearchLoading] = useState(false);
     const searchRef = useRef(null);
+    const searchInputRef = useRef(null);
     const searchApi = SEARCH_API[portal];
 
     useEffect(() => {
@@ -110,6 +112,20 @@ export default function TopNavbar() {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchQuery, portal]);
+
+    useEffect(() => {
+        const handleShortcut = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+                e.preventDefault();
+                searchInputRef.current?.focus();
+                setSearchOpen(true);
+            } else if (e.key === "Escape") {
+                setSearchOpen(false);
+            }
+        };
+        document.addEventListener("keydown", handleShortcut);
+        return () => document.removeEventListener("keydown", handleShortcut);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -176,7 +192,7 @@ export default function TopNavbar() {
             const updated = await notificationApi.markNotificationRead(n.id);
             setNotifications((current) => current.map((item) => (item.id === n.id ? updated : item)));
         } catch {
-            // non-critical - leave it as unread if the request fails
+            return;
         }
     };
 
@@ -186,11 +202,12 @@ export default function TopNavbar() {
                 <div className="search-box">
                     <Search size={16} className="search-icon" />
                     <input
+                        ref={searchInputRef}
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => setSearchOpen(true)}
-                        placeholder={SEARCH_PLACEHOLDER[portal] || "Search..."}
+                        placeholder={SEARCH_PLACEHOLDER[portal] || "Search…"}
                     />
                     {searchQuery ? (
                         <button type="button" className="search-clear-btn" onClick={handleClearSearch} title="Clear search">
@@ -203,9 +220,9 @@ export default function TopNavbar() {
 
                 {searchOpen && searchQuery.trim().length >= 2 && (
                     <div className="search-results-panel">
-                        {searchLoading && <p className="search-results-empty">Searching...</p>}
+                        {searchLoading && <p className="search-results-empty">Searching…</p>}
                         {!searchLoading && searchResults.length === 0 && (
-                            <p className="search-results-empty">No results for "{searchQuery.trim()}"</p>
+                            <p className="search-results-empty">No results for “{searchQuery.trim()}”</p>
                         )}
                         {!searchLoading && Object.entries(groupedResults).map(([type, items]) => {
                             const meta = SEARCH_TYPE_META[type] || { label: type, icon: Info };
@@ -227,7 +244,7 @@ export default function TopNavbar() {
                                                 <strong>{r.title}</strong>
                                                 <small>{r.subtitle}</small>
                                             </span>
-                                            {r.status && <span className="search-result-status">{r.status.replace(/_/g, " ")}</span>}
+                                            {r.status && <span className="search-result-status">{r.status.replace(/_/g, " ").toLowerCase()}</span>}
                                         </button>
                                     ))}
                                 </div>
@@ -243,9 +260,10 @@ export default function TopNavbar() {
                         type="button"
                         className="notification-btn"
                         title="Notifications"
+                        aria-label="Notifications"
                         onClick={() => setNotifOpen((open) => !open)}
                     >
-                        <Bell size={18} />
+                        <Bell size={17} />
                         {unreadCount > 0 && <span className="notification-dot"></span>}
                     </button>
 
@@ -258,7 +276,7 @@ export default function TopNavbar() {
                             <div className="notification-panel-body">
                                 {!notificationApi && <p className="notification-empty">No notifications for this account.</p>}
                                 {notificationApi && notifications.length === 0 && (
-                                    <p className="notification-empty">You're all caught up.</p>
+                                    <p className="notification-empty">You’re all caught up.</p>
                                 )}
                                 {notificationApi && notifications.map((n) => (
                                     <button
@@ -280,9 +298,11 @@ export default function TopNavbar() {
                     )}
                 </div>
 
+                <div className="navbar-divider" />
+
                 <div className="profile">
-                    <div className="profile-avatar">
-                        <UserCircle size={32} />
+                    <div className="profile-avatar" aria-hidden="true">
+                        {initialsFor(displayName)}
                     </div>
                     <div className="profile-info">
                         <strong>{displayName}</strong>

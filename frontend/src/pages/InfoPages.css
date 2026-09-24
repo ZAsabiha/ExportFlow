@@ -11,10 +11,10 @@
     width: 600px;
     max-width: 100%;
     background: #ffffff;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    padding: 32px 36px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    padding: 36px 40px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 12px 32px -12px rgba(15, 23, 42, 0.1);
     height: fit-content;
 }
 
@@ -23,16 +23,17 @@
 }
 
 .info-card h2 {
-    color: #0f172a;
-    font-size: 22px;
+    color: #0b1220;
+    font-size: 24px;
     font-weight: 700;
+    letter-spacing: -0.025em;
     margin: 0 0 10px;
 }
 
 .info-subtext {
-    color: #0f172a;
-    font-size: 13.5px;
-    font-weight: 500;
+    color: #64748b;
+    font-size: 14.5px;
+    font-weight: 400;
     line-height: 1.6;
     margin-bottom: 24px;
 }
@@ -66,7 +67,7 @@
     width: 100%;
     background: #ffffff;
     border: 1px solid #cbd5e1;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 10px 14px;
     font-size: 13.5px;
     color: #0f172a;
@@ -90,8 +91,8 @@
     height: 44px;
     margin-top: 20px;
     background: #2563eb;
-    border: none;
-    border-radius: 6px;
+    border: 1px solid #1d4ed8;
+    border-radius: 8px;
     color: #ffffff;
     font-size: 14px;
     font-weight: 600;
@@ -133,28 +134,44 @@
 }
 
 .portal-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
     background: #ffffff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.portal-card:hover {
+    border-color: #bfdbfe;
+    box-shadow: 0 4px 16px -6px rgba(37, 99, 235, 0.18);
 }
 
 .portal-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
     color: #2563eb;
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 }
 
 .portal-card h4 {
-    color: #0f172a;
+    color: #0b1220;
     margin: 0 0 6px;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
+    text-align: left;
 }
 
 .portal-card p {
-    color: #0f172a;
-    font-size: 13px;
-    font-weight: 500;
+    color: #64748b;
+    font-size: 13.5px;
+    font-weight: 400;
     line-height: 1.5;
     margin: 0;
 }

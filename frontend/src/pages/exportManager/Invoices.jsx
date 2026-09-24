@@ -46,7 +46,7 @@ export default function Invoices() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
                     <h1 className="page-title">Commercial Invoices</h1>
-                    <p className="page-subtitle">Generate export commercial invoices, track payment status, and export official PDF documents</p>
+                    <p className="page-subtitle">Generate commercial invoices, track payment status and export PDFs.</p>
                 </div>
                 <button
                     className="secondary-action"

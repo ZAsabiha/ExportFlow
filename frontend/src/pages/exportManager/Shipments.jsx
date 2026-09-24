@@ -104,8 +104,8 @@ export default function Shipments() {
         <DashboardLayout>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1 className="page-title">Shipments & Logistics</h1>
-                    <p className="page-subtitle">Manage carrier bookings, vessel tracking, container milestones, and destination ETAs</p>
+                    <h1 className="page-title">Shipments</h1>
+                    <p className="page-subtitle">Carrier bookings, vessel tracking, container milestones and arrival estimates.</p>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                     <button
@@ -181,7 +181,7 @@ export default function Shipments() {
                                             <MapPin size={14} color="#059669" /> {shipment.originPort || "Chittagong"} &rarr; {shipment.destinationPort || "Rotterdam"}
                                         </div>
                                     </td>
-                                    <td style={{ fontFamily: "monospace", fontWeight: 700 }}>{shipment.trackingNumber || "N/A"}</td>
+                                    <td style={{ fontFamily: "var(--mono)", fontWeight: 700 }}>{shipment.trackingNumber || "N/A"}</td>
                                     <td style={{ fontWeight: 600, color: "#0f766e" }}>{shipment.estimatedArrival || "TBD"}</td>
                                     <td>
                                         <span style={{

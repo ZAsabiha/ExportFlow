@@ -152,7 +152,7 @@ export default function Users() {
     <DashboardLayout>
       <div>
         <h1 className="page-title">User Management</h1>
-        <p className="page-subtitle">Manage user accounts and roles</p>
+        <p className="page-subtitle">Manage user accounts, roles and permissions.</p>
       </div>
 
       <div className="panel users-toolbar">

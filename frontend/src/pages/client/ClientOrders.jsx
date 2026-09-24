@@ -93,8 +93,8 @@ export default function ClientOrders() {
         <DashboardLayout>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <div>
-                    <h1 className="page-title">My Purchase Orders</h1>
-                    <p className="page-subtitle">Request a new order with full details, then track the export manager's response and pipeline progress</p>
+                    <h1 className="page-title">Purchase Orders</h1>
+                    <p className="page-subtitle">Request new orders and follow the export manager’s quote and each order’s progress.</p>
                 </div>
                 <button
                     className="primary-action"
@@ -204,7 +204,7 @@ export default function ClientOrders() {
                     background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000
                 }}>
                     <div className="panel" style={{ width: "480px", maxWidth: "90%" }}>
-                        <h2>Request Purchase Order</h2>
+                        <h2>Request a Purchase Order</h2>
                         <form onSubmit={handleRequestOrder} style={{ marginTop: "15px", display: "flex", flexDirection: "column", gap: "12px" }}>
                             <div>
                                 <label style={{ fontSize: "13px", fontWeight: 600, color: "#475569" }}>Product Name</label>

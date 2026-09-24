@@ -134,7 +134,7 @@ export default function SystemReports() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
                 <div>
                     <h1 className="page-title">Reports & Analytics</h1>
-                    <p className="page-subtitle">System-wide export order performance, volume breakdown, and financial summaries</p>
+                    <p className="page-subtitle">Export performance, volume breakdown and financial summaries across the platform.</p>
                 </div>
                 <div>
                     <button

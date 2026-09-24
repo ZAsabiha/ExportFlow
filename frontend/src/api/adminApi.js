@@ -55,10 +55,10 @@ export function downloadClaimProofBlob(id) {
     return apiRequest(`/admin/claims/${id}/proof/download`, { method: "GET" }, { asBlob: true });
 }
 
-export function resolveClaim(id, { adminResponse, markGovernmentVerified, documentDeadline, deadlineNote }) {
+export function resolveClaim(id, { adminResponse, markGovernmentVerified, documentDeadline, deadlineNote, requiredDocuments }) {
     return apiRequest(`/admin/claims/${id}/resolve`, {
         method: "POST",
-        body: { adminResponse, markGovernmentVerified, documentDeadline, deadlineNote }
+        body: { adminResponse, markGovernmentVerified, documentDeadline, deadlineNote, requiredDocuments }
     });
 }
 

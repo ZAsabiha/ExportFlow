@@ -10,8 +10,9 @@ import {
     KeyRound,
     BarChart3,
     History,
-    AlertTriangle,
-    LogOut
+    MessageSquareWarning,
+    LogOut,
+    Ship
 } from "lucide-react";
 
 import { useAuth, hasPermission } from "../context/AuthContext";
@@ -37,31 +38,29 @@ export default function Sidebar() {
 
     const menuConfigs = {
         Admin: [
-            { name: "Dashboard", path: "/admin", icon: <LayoutDashboard size={20} /> },
-            { name: "Users", path: "/admin/users", icon: <Users size={20} /> },
-            { name: "Audit Logs", path: "/admin/audit-logs", icon: <History size={20} /> },
-            { name: "Reports", path: "/admin/reports", icon: <BarChart3 size={20} /> },
-            { name: "Claims", path: "/admin/claims", icon: <AlertTriangle size={20} /> },
+            { name: "Dashboard", path: "/admin", icon: <LayoutDashboard size={18} /> },
+            { name: "Users", path: "/admin/users", icon: <Users size={18} /> },
+            { name: "Audit Logs", path: "/admin/audit-logs", icon: <History size={18} /> },
+            { name: "Reports", path: "/admin/reports", icon: <BarChart3 size={18} /> },
+            { name: "Claims", path: "/admin/claims", icon: <MessageSquareWarning size={18} /> },
         ],
         "Export Manager": [
-            { name: "Dashboard", path: "/manager", icon: <LayoutDashboard size={20} /> },
-            { name: "Orders", path: "/manager/orders", icon: <ShoppingCart size={20} /> },
-            { name: "Shipments", path: "/manager/shipments", icon: <Package size={20} /> },
-            { name: "Documents", path: "/manager/documents", icon: <FileText size={20} /> },
-            { name: "Token Generation", path: "/manager/tokens", icon: <KeyRound size={20} /> },
+            { name: "Dashboard", path: "/manager", icon: <LayoutDashboard size={18} /> },
+            { name: "Orders", path: "/manager/orders", icon: <ShoppingCart size={18} /> },
+            { name: "Shipments", path: "/manager/shipments", icon: <Package size={18} /> },
+            { name: "Documents", path: "/manager/documents", icon: <FileText size={18} /> },
+            { name: "Download Tokens", path: "/manager/tokens", icon: <KeyRound size={18} /> },
         ],
         Client: [
-            { name: "Dashboard", path: "/client", icon: <LayoutDashboard size={20} /> },
-            { name: "Orders", path: "/client/orders", icon: <ShoppingCart size={20} /> },
-            { name: "Shipments", path: "/client/shipments", icon: <Package size={20} />, permission: "VIEW_SHIPMENTS" },
-            { name: "Invoices", path: "/client/invoices", icon: <Receipt size={20} /> },
-            { name: "Documents", path: "/client/documents", icon: <FileText size={20} /> },
-            { name: "Claims", path: "/client/claims", icon: <AlertTriangle size={20} /> },
+            { name: "Dashboard", path: "/client", icon: <LayoutDashboard size={18} /> },
+            { name: "Orders", path: "/client/orders", icon: <ShoppingCart size={18} /> },
+            { name: "Shipments", path: "/client/shipments", icon: <Package size={18} />, permission: "VIEW_SHIPMENTS" },
+            { name: "Invoices", path: "/client/invoices", icon: <Receipt size={18} /> },
+            { name: "Documents", path: "/client/documents", icon: <FileText size={18} /> },
+            { name: "Claims", path: "/client/claims", icon: <MessageSquareWarning size={18} /> },
         ],
     };
 
-    // An item with a `permission` only shows up if the logged-in user actually has it -
-    // this is what makes an admin's per-user permission toggle hide the page for that user.
     const currentMenu = (menuConfigs[currentRole] || menuConfigs["Export Manager"]).filter(
         (item) => !item.permission || hasPermission(permissions, item.permission)
     );
@@ -73,12 +72,17 @@ export default function Sidebar() {
 
     return (
         <aside className="sidebar">
-            <div className="sidebar-logo">EXPORT FLOW</div>
-
-            <div className="sidebar-role" style={{ marginBottom: "20px" }}>
-                <span style={{ fontSize: "11px", opacity: 0.8, textTransform: "uppercase", letterSpacing: "0.5px" }}>Active Portal</span>
-                <div style={{ fontWeight: 700, fontSize: "15px", color: "#60a5fa", marginTop: "2px" }}>{currentRole}</div>
+            <div className="sidebar-brand">
+                <div className="brand-mark">
+                    <Ship size={18} />
+                </div>
+                <div className="brand-text">
+                    <div className="sidebar-logo">ExportFlow</div>
+                    <div className="sidebar-role">{currentRole} Portal</div>
+                </div>
             </div>
+
+            <div className="sidebar-section-label">Workspace</div>
 
             <nav className="sidebar-menu">
                 {currentMenu.map((item) => (
@@ -94,10 +98,12 @@ export default function Sidebar() {
                 ))}
             </nav>
 
-            <button className="logout" onClick={handleLogout} style={{ cursor: "pointer", marginTop: "auto", paddingTop: "20px" }}>
-                <LogOut size={20} />
-                <span>Logout</span>
-            </button>
+            <div className="sidebar-footer">
+                <button className="logout" onClick={handleLogout}>
+                    <LogOut size={18} />
+                    <span>Sign out</span>
+                </button>
+            </div>
         </aside>
     );
 }

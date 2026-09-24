@@ -4,17 +4,21 @@ import com.example.exportsystem.dto.admin.RejectClaimRequest;
 import com.example.exportsystem.dto.admin.ResolveClaimRequest;
 import com.example.exportsystem.dto.claim.ClaimResponse;
 import com.example.exportsystem.entity.ClaimStatus;
+import com.example.exportsystem.entity.DocumentType;
 import com.example.exportsystem.entity.User;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Set;
+
 
 public interface ClaimService {
 
     // ---- Client-facing ----
-    ClaimResponse fileClaim(User client, Long orderId, String message, MultipartFile proofFile);
+    ClaimResponse fileClaim(User client, Long orderId, String message, Set<DocumentType> requestedDocuments,
+                            MultipartFile proofFile);
 
     Page<ClaimResponse> listMyClaims(User client, Pageable pageable);
 

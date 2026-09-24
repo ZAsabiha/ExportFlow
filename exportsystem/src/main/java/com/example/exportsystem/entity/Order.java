@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.EnumSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -63,6 +65,13 @@ public class Order {
     private String deadlineNote;
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean deadlineReminderSent = false;
+
+    // Which documents the Export Manager must upload by documentDeadline.
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "order_required_documents", joinColumns = @JoinColumn(name = "order_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "document_type", nullable = false)
+    private Set<DocumentType> requiredDocuments = EnumSet.noneOf(DocumentType.class);
 
     // ---- Government verification (manual, set only by Admin) ----
     @Column(nullable = false, columnDefinition = "boolean default false")
@@ -153,6 +162,9 @@ public class Order {
 
     public boolean isDeadlineReminderSent() { return deadlineReminderSent; }
     public void setDeadlineReminderSent(boolean deadlineReminderSent) { this.deadlineReminderSent = deadlineReminderSent; }
+
+    public Set<DocumentType> getRequiredDocuments() { return requiredDocuments; }
+    public void setRequiredDocuments(Set<DocumentType> requiredDocuments) { this.requiredDocuments = requiredDocuments; }
 
     public boolean isGovernmentVerified() { return governmentVerified; }
     public void setGovernmentVerified(boolean governmentVerified) { this.governmentVerified = governmentVerified; }

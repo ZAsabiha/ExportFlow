@@ -3,6 +3,7 @@ package com.example.exportsystem.controller;
 import com.example.exportsystem.common.PaginationDefaults;
 import com.example.exportsystem.dto.PageResponse;
 import com.example.exportsystem.dto.claim.ClaimResponse;
+import com.example.exportsystem.entity.DocumentType;
 import com.example.exportsystem.entity.User;
 import com.example.exportsystem.repository.UserRepository;
 import com.example.exportsystem.service.ClaimService;
@@ -16,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/client/claims")
@@ -34,8 +37,10 @@ public class ClientClaimController {
     public ResponseEntity<ClaimResponse> fileClaim(Authentication authentication,
                                                      @RequestParam Long orderId,
                                                      @RequestParam String message,
+                                                     @RequestParam(value = "requestedDocuments", required = false) Set<DocumentType> requestedDocuments,
                                                      @RequestParam(value = "proofFile", required = false) MultipartFile proofFile) {
-        return ResponseEntity.ok(claimService.fileClaim(currentUser(authentication), orderId, message, proofFile));
+        return ResponseEntity.ok(claimService.fileClaim(currentUser(authentication), orderId, message,
+                requestedDocuments, proofFile));
     }
 
     @GetMapping
